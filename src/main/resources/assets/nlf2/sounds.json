@@ -1,0 +1,14 @@
+{
+    "broke": {
+        "subtitle": "sound.nlf2.broke",
+        "sounds": [
+            "nlf2:broke"
+        ]
+    },
+    "laugh": {
+        "subtitle": "sound.nlf2.laugh",
+        "sounds": [
+            "nlf2:laugh"
+        ]
+    }
+}

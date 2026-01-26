@@ -39,6 +39,9 @@ dependencies {
 
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+
+    include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)
+    include(implementation("com.nativelibs4java:bridj:0.7.0")!!)
 }
 
 tasks.processResources {
