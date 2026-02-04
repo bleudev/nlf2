@@ -7,12 +7,15 @@
         "PlayerListMixin"
     ],
     "client": [
+        "client.ClientWaypointManagerMixin",
         "client.ConnectScreenMixin",
+        "client.DebugEntryPositionMixin",
         "client.DisconnectedScreenMixin",
         "client.KeyboardHandlerMixin",
         "client.LoadingOverlayMixin",
         "client.MinecraftMixin",
         "client.MouseHandlerMixin",
+        "client.PlayerTabOverlayMixin",
         "client.TitleScreenMixin"
     ],
     "injectors": {
