@@ -3,8 +3,8 @@ package com.bleudev.nlf2.client
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.RelativeSoundInstance
+import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.github.sarxos.webcam.Webcam
-import com.mojang.blaze3d.platform.cursor.CursorTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.ConnectScreen
@@ -17,20 +17,11 @@ import net.minecraft.resources.Identifier
 import kotlin.math.min
 
 object IntroHelper {
-    private var start = System.currentTimeMillis()
-
-    private var t = 0
-
     fun render(guiGraphics: GuiGraphics) {
-        return // temp off
         // Ticker
-        val curr = System.currentTimeMillis()
-        if (curr - start >= 50) {
-            start = curr
-            t++
-        }
+        val t = TICKER_INTRO.tick()
         // Connect to server
-        if (t == 400) {
+        if (t == 400L) {
             val mc = Minecraft.getInstance()
             ConnectScreen.startConnecting(
                 mc.screen ?: TitleScreen(),
@@ -47,8 +38,8 @@ object IntroHelper {
 
         canUseMouse = false
         canUseKeyboard = false
-        Minecraft.getInstance().window.setTitle("ÿ__")
-        Minecraft.getInstance().window.selectCursor(CursorTypes.NOT_ALLOWED)
+        webcamEnabled = t in 190..380
+        Minecraft.getInstance().window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
 
         val w = guiGraphics.guiWidth()
         val h = guiGraphics.guiHeight()
@@ -125,11 +116,9 @@ object IntroHelper {
         guiGraphics.pose().popMatrix()
 
         // Laugh sound
-        if (t == 180) Minecraft.getInstance().soundManager.play(RelativeSoundInstance(Nlf2Sounds.LAUGH))
+        if (t == 180L) Minecraft.getInstance().soundManager.play(RelativeSoundInstance(Nlf2Sounds.LAUGH))
 
         // Webcam
-        webcamEnabled = t in 190..380
-
         if (Webcam.getDefault().isOpen) {
             if (!webcamEnabled) Webcam.getDefault().close()
         } else if (webcamEnabled) Webcam.getDefault().open()
