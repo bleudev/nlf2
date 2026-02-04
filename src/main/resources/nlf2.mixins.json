@@ -7,6 +7,7 @@
         "PlayerListMixin"
     ],
     "client": [
+        "client.AvatarRendererMixin",
         "client.ClientWaypointManagerMixin",
         "client.ConnectScreenMixin",
         "client.DebugEntryPositionMixin",
