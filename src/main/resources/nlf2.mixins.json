@@ -13,6 +13,7 @@
         "client.DebugEntryPositionMixin",
         "client.DisconnectedScreenMixin",
         "client.KeyboardHandlerMixin",
+        "client.LevelLoadingScreenMixin",
         "client.LoadingOverlayMixin",
         "client.MinecraftMixin",
         "client.MouseHandlerMixin",

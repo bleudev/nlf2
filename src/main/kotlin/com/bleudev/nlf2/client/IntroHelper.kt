@@ -14,10 +14,12 @@ import net.minecraft.client.multiplayer.TransferState
 import net.minecraft.client.multiplayer.resolver.ServerAddress
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.resources.Identifier
+import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
 object IntroHelper {
     fun render(guiGraphics: GuiGraphics) {
+//        return
         // Ticker
         val t = TICKER_INTRO.tick()
         // Connect to server
@@ -39,7 +41,13 @@ object IntroHelper {
         canUseMouse = false
         canUseKeyboard = false
         webcamEnabled = t in 190..380
-        Minecraft.getInstance().window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
+
+        val mc = Minecraft.getInstance()
+
+        // Window features
+        if (mc.window.isFullscreen) mc.window.toggleFullScreen()
+        // NO MUSIC!
+        mc.options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(.0)
 
         val w = guiGraphics.guiWidth()
         val h = guiGraphics.guiHeight()
