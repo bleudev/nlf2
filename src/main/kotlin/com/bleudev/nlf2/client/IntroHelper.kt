@@ -1,9 +1,9 @@
 package com.bleudev.nlf2.client
 
-import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.TICKER_INTRO
+import com.bleudev.nlf2.getIdentifier
 import com.github.sarxos.webcam.Webcam
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -13,13 +13,12 @@ import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.client.multiplayer.TransferState
 import net.minecraft.client.multiplayer.resolver.ServerAddress
 import net.minecraft.client.renderer.RenderPipelines
-import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
 object IntroHelper {
     fun render(guiGraphics: GuiGraphics) {
-//        return
+        return
         // Ticker
         val t = TICKER_INTRO.tick()
         // Connect to server
@@ -133,7 +132,7 @@ object IntroHelper {
     }
 
     private fun renderIntroFrame(guiGraphics: GuiGraphics, index: Int, size: Int) {
-        val resource = Identifier.fromNamespaceAndPath(MODID, "textures/anim/intro/$index.png")
+        val resource = getIdentifier("textures/anim/intro/$index.png")
         guiGraphics.blit(
             RenderPipelines.GUI_TEXTURED, resource, 0, 0, 0f, 0f, size, size * 27 / 28, size, size * 27 / 28,
             0xffffffff.toInt()
