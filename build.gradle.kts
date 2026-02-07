@@ -22,11 +22,17 @@ java {
 
 
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 dependencies {
@@ -35,6 +41,7 @@ dependencies {
 
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
 
     include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)
     include(implementation("com.nativelibs4java:bridj:0.7.0")!!)
@@ -44,6 +51,8 @@ tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("minecraft_version", project.property("minecraft_version"))
     inputs.property("loader_version", project.property("loader_version"))
+    inputs.property("fabric_version", project.property("fabric_version"))
+    inputs.property("modmenu_version", project.property("modmenu_version"))
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
@@ -51,7 +60,9 @@ tasks.processResources {
             "version" to project.version,
             "minecraft_version" to project.property("minecraft_version")!!,
             "loader_version" to project.property("loader_version")!!,
-            "kotlin_loader_version" to project.property("kotlin_loader_version")!!
+            "kotlin_loader_version" to project.property("kotlin_loader_version")!!,
+            "fabric_version" to project.property("fabric_version")!!,
+            "modmenu_version" to project.property("modmenu_version")!!,
         )
     }
 }
