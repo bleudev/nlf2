@@ -23,6 +23,7 @@
         "client.LoadingOverlayMixin",
         "client.MinecraftMixin",
         "client.MouseHandlerMixin",
+        "client.PanoramaRendererMixin",
         "client.PlayerTabOverlayMixin",
         "client.TitleScreenMixin"
     ],
