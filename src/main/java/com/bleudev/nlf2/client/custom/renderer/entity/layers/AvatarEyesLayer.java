@@ -30,7 +30,6 @@ public class AvatarEyesLayer extends RenderLayer<@NotNull AvatarRenderState, @No
 
     public @NotNull RenderType getRenderType(String nickname) {
         var eyes = AvatarSkinHelper.getEyesTexture(nickname);
-        System.out.println("EYES " + eyes);
         if (eyes == null) return RT_EMPTY;
         return RenderTypes.eyes(eyes);
     }

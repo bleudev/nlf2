@@ -41,7 +41,6 @@ public class AvatarSkinHelper {
 
     public static @Nullable PlayerSkin getSkin(String entity_nickname, String client_nickname) {
         var texture = getSkinTexture(entity_nickname, client_nickname);
-        System.out.println("SKIN " + texture);
         if (texture == null) return null;
 
         PlayerModelType modelType = PlayerModelType.WIDE;
