@@ -4,7 +4,9 @@
     "package": "com.bleudev.nlf2.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "PlayerListMixin"
+        "EnderEyeItemMixin",
+        "PlayerListMixin",
+        "PortalShapeMixin"
     ],
     "client": [
         "client.AbstractClientPlayerMixin",
