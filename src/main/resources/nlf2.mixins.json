@@ -11,6 +11,7 @@
     "client": [
         "client.AbstractClientPlayerMixin",
         "client.AvatarRendererMixin",
+        "client.AvatarRenderStateMixin",
         "client.ClientWaypointManagerMixin",
         "client.ConnectScreenMixin",
         "client.DebugEntryPositionMixin",
