@@ -13,6 +13,7 @@
         "client.ConnectScreenMixin",
         "client.DebugEntryPositionMixin",
         "client.DisconnectedScreenMixin",
+        "client.GenericMessageScreenMixin",
         "client.KeyboardHandlerMixin",
         "client.LevelLoadingScreenMixin",
         "client.LoadingOverlayMixin",

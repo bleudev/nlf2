@@ -1,9 +1,10 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.TICKER_INTRO
-import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.client.util.blitAnim
 import com.github.sarxos.webcam.Webcam
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -12,13 +13,13 @@ import net.minecraft.client.gui.screens.TitleScreen
 import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.client.multiplayer.TransferState
 import net.minecraft.client.multiplayer.resolver.ServerAddress
-import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
 object IntroHelper {
     fun render(guiGraphics: GuiGraphics) {
-        return
+//        return
+
         // Ticker
         val t = TICKER_INTRO.tick()
         // Connect to server
@@ -59,69 +60,42 @@ object IntroHelper {
         guiGraphics.pose().pushMatrix()
         guiGraphics.pose().translate((w-s) / 2f, (h-s) / 2f)
 
+        val intro = { i: Int -> guiGraphics.blitAnim(Animation.INTRO, i, width = s, height = s * 27 / 28) }
+
         // Eyes appear
-        if (t <= 20)
-            renderIntroFrame(guiGraphics, 1, s)
-        else if (t <= 40)
-            renderIntroFrame(guiGraphics, 2, s)
-        else if (t <= 60)
-            renderIntroFrame(guiGraphics, 3, s)
-        else if (t <= 80)
-            renderIntroFrame(guiGraphics, 4, s)
-        else if (t <= 120)
-            renderIntroFrame(guiGraphics, 5, s)
+        if (t <= 20) intro(1)
+        else if (t <= 40) intro(2)
+        else if (t <= 60) intro(3)
+        else if (t <= 80) intro(4)
+        else if (t <= 120) intro(5)
         // Mouth appear
-        else if (t <= 140)
-            renderIntroFrame(guiGraphics, 6, s)
-        else if (t <= 145)
-            renderIntroFrame(guiGraphics, 7, s)
-        else if (t <= 150)
-            renderIntroFrame(guiGraphics, 8, s)
-        else if (t <= 180)
-            renderIntroFrame(guiGraphics, 9, s)
+        else if (t <= 140) intro(6)
+        else if (t <= 145) intro(7)
+        else if (t <= 150) intro(8)
+        else if (t <= 180) intro(9)
         // Laugh
-        else if (t <= 185)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 190)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 195)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 215)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 220)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 225)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 230)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 235)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 240)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 245)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 250)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 255)
-            renderIntroFrame(guiGraphics, 11, s)
-        else if (t <= 260)
-            renderIntroFrame(guiGraphics, 10, s)
-        else if (t <= 265)
-            renderIntroFrame(guiGraphics, 11, s)
+        else if (t <= 185) intro(10)
+        else if (t <= 190) intro(11)
+        else if (t <= 195) intro(10)
+        else if (t <= 215) intro(11)
+        else if (t <= 220) intro(10)
+        else if (t <= 225) intro(11)
+        else if (t <= 230) intro(10)
+        else if (t <= 235) intro(11)
+        else if (t <= 240) intro(10)
+        else if (t <= 245) intro(11)
+        else if (t <= 250) intro(10)
+        else if (t <= 255) intro(11)
+        else if (t <= 260) intro(10)
+        else if (t <= 265) intro(11)
         // End laugh delay
-        else if (t <= 300)
-            renderIntroFrame(guiGraphics, 9, s)
+        else if (t <= 300) intro(9)
         // Disappear
-        else if (t <= 320)
-            renderIntroFrame(guiGraphics, 12, s)
-        else if (t <= 340)
-            renderIntroFrame(guiGraphics, 13, s)
-        else if (t <= 360)
-            renderIntroFrame(guiGraphics, 14, s)
-        else if (t <= 380)
-            renderIntroFrame(guiGraphics, 15, s)
-        else if (t <= 400)
-            renderIntroFrame(guiGraphics, 16, s)
+        else if (t <= 320) intro(12)
+        else if (t <= 340) intro(13)
+        else if (t <= 360) intro(14)
+        else if (t <= 380) intro(15)
+        else if (t <= 400) intro(16)
         guiGraphics.pose().popMatrix()
 
         // Laugh sound
@@ -131,13 +105,5 @@ object IntroHelper {
         if (Webcam.getDefault().isOpen) {
             if (!webcamEnabled) Webcam.getDefault().close()
         } else if (webcamEnabled) Webcam.getDefault().open()
-    }
-
-    private fun renderIntroFrame(guiGraphics: GuiGraphics, index: Int, size: Int) {
-        val resource = getIdentifier("textures/anim/intro/$index.png")
-        guiGraphics.blit(
-            RenderPipelines.GUI_TEXTURED, resource, 0, 0, 0f, 0f, size, size * 27 / 28, size, size * 27 / 28,
-            0xffffffff.toInt()
-        )
     }
 }
