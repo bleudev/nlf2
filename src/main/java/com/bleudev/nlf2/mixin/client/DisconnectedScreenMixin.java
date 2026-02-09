@@ -10,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
+import static com.bleudev.nlf2.client.util.InjectsKt.black;
+
 @Environment(EnvType.CLIENT)
 @Mixin(DisconnectedScreen.class)
 public class DisconnectedScreenMixin extends Screen {
@@ -20,7 +22,7 @@ public class DisconnectedScreenMixin extends Screen {
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float a) {
         super.render(graphics, mouseX, mouseY, a);
+        black(graphics);
         Minecraft.getInstance().close();
-        graphics.fill(0, 0, graphics.guiWidth(), graphics.guiHeight(), 0xff000000);
     }
 }

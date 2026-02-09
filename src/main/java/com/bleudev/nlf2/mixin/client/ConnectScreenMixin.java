@@ -9,11 +9,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.bleudev.nlf2.client.util.InjectsKt.black;
+
 @Environment(EnvType.CLIENT)
 @Mixin(ConnectScreen.class)
 public class ConnectScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void renderBlack(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        graphics.fill(0, 0, graphics.guiWidth(), graphics.guiHeight(), 0xff000000);
+        black(graphics);
     }
 }
