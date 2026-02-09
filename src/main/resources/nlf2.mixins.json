@@ -14,6 +14,7 @@
         "client.AvatarRenderStateMixin",
         "client.ClientWaypointManagerMixin",
         "client.ConnectScreenMixin",
+        "client.DeathScreenMixin",
         "client.DebugEntryPositionMixin",
         "client.DisconnectedScreenMixin",
         "client.GenericMessageScreenMixin",
