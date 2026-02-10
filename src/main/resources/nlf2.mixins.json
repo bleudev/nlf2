@@ -13,6 +13,7 @@
         "client.AvatarRendererMixin",
         "client.AvatarRenderStateMixin",
         "client.ClientWaypointManagerMixin",
+        "client.CompassAngleStateMixin",
         "client.ConnectScreenMixin",
         "client.DeathScreenMixin",
         "client.DebugEntryPositionMixin",

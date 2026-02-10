@@ -5,6 +5,8 @@ var canUseMouse: Boolean = true
 @JvmField
 var canUseKeyboard: Boolean = true
 var webcamEnabled: Boolean = false
+@JvmField
+var compassForceSpin: Boolean = false
 
 const val ADDRESS: String = "localhost:25565"
 
