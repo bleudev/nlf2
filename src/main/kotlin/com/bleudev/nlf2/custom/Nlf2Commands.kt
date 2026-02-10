@@ -1,7 +1,10 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nlf2.ACTOR_NICKNAME
 import com.bleudev.nlf2.LOGGER
+import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.util.requiresAdmin
+import com.bleudev.nlf2.util.sendToEveryone
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.ChatFormatting
@@ -19,6 +22,20 @@ object Nlf2Commands {
                     .literal("event")
                     .then(Commands
                         .argument("id", IntegerArgumentType.integer(1))
+                        .suggests { _, builder ->
+                            val eventId = builder.input.let {
+                                if (it.startsWith("/nlf2 event ", true))
+                                    return@let it.replaceFirst("/nlf2 event ", "", true)
+                                else return@let it
+                            }
+
+                            eventId.toIntOrNull()?.let {
+                                if (it in eventMap) {
+                                    builder.suggest(eventMap[it]!!)
+                                }
+                            }
+                            builder.buildFuture()
+                        }
                         .executes { ctx ->
                             val id = IntegerArgumentType.getInteger(ctx, "id")
                             if (ctx.source.causeEvent(id)) {
@@ -33,6 +50,20 @@ object Nlf2Commands {
                     .literal("debug")
                     .then(Commands
                         .argument("di", IntegerArgumentType.integer(1))
+                        .suggests { _, builder ->
+                            val debugId = builder.input.let {
+                                if (it.startsWith("/nlf2 debug ", true))
+                                    return@let it.replaceFirst("/nlf2 debug ", "", true)
+                                else return@let it
+                            }
+
+                            debugId.toIntOrNull()?.let {
+                                if (it in debugMap) {
+                                    builder.suggest(debugMap[it]!!)
+                                }
+                            }
+                            builder.buildFuture()
+                        }
                         .executes { ctx ->
                             val di = IntegerArgumentType.getInteger(ctx, "di")
                             if (ctx.source.causeDebug(di)) {
@@ -51,30 +82,40 @@ object Nlf2Commands {
         return 1
     }
 
+    private val eventMap: Map<Int, String> = mapOf(
+        189 to "crash_vert_disappear"
+    )
+
     private fun CommandSourceStack.causeEvent(eventId: Int): Boolean {
-        val eventName: String
         when (eventId) {
+            // crash_vert_disappear
             189 -> {
-                eventName = "crash_vert_disappear"
+                server.sendToEveryone { player ->
+                    if (player.gameProfile.name == ACTOR_NICKNAME) return@sendToEveryone arrayOf()
+                    return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
+                }
             }
             else -> return false
         }
-        LOGGER.info("Caused nlf2:{} event", eventName)
+        LOGGER.info("Caused nlf2:{} event", eventMap[eventId])
         return true
     }
 
+    private val debugMap: Map<Int, String> = mapOf(
+        1001 to "debugtest_nickname_test"
+    )
+
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
-        val debugName: String
         when (debugId) {
+            // debugtest_nickname_test
             1001 -> {
-                debugName = "debugtest_nickname_test"
                 if (player != null) {
                     player!!.sendSystemMessage(Component.literal("Nickname: " + player!!.gameProfile.name))
                 }
             }
             else -> return false
         }
-        LOGGER.info("Caused nlf2:{} debug", debugName)
+        LOGGER.info("Caused nlf2:{} debug", debugMap[debugId])
         return true
     }
 }

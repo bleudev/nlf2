@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
@@ -7,6 +8,7 @@ import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.getIdentifier
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
@@ -56,6 +58,9 @@ class Nlf2Client : ClientModInitializer {
             val maxBlocks = 50.0
             val maxNoise = .5f
             noise_amount = (1f - ((payload.distance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
+        }
+        registerPacketReceiver(CrashClientPayload) {
+            throw ERROR("\nYOU...\nREACHED...\n\n THE END")
         }
     }
 
