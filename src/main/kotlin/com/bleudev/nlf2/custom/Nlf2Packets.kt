@@ -9,6 +9,7 @@ object Nlf2Packets {
     val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
 
     fun initialize() {
-        PayloadTypeRegistry.clientboundPlay().register(WorldBorderNoisePayload)
+        val s2c = PayloadTypeRegistry.clientboundPlay()
+        s2c.register(WorldBorderNoisePayload)
     }
 }

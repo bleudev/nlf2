@@ -1,5 +1,6 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nlf2.custom.Nlf2Commands
 import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
@@ -24,6 +25,7 @@ val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 class Nlf2 : ModInitializer {
     override fun onInitialize() {
         Nlf2Packets.initialize()
+        Nlf2Commands.initialize()
 
         ServerPlayerEvents.JOIN.register { player ->
             Nlf2PlayersData.get(player.level().server).trySetDefault(player.gameProfile.name)
