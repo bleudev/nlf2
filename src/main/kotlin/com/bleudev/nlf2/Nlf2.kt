@@ -49,8 +49,6 @@ class Nlf2 : ModInitializer {
         val maxX = (border.maxX - borderIndent).toInt()
         val minZ = (border.minZ + borderIndent).toInt()
         val maxZ = (border.maxZ - borderIndent).toInt()
-        println("MIN!!!!! $minX $minZ")
-        println("MAX!!!!! $maxX $maxZ")
 
         val x = level.random.nextInt(minX, maxX)
         val z = level.random.nextInt(minZ, maxZ)
