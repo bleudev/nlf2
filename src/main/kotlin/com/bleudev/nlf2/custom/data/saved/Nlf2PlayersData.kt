@@ -45,24 +45,6 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString()))
     }
 
-    enum class ActorChar(private val char: String): StringRepresentable {
-        NULL("null"), ROUGE("rouge"), VERT("vert"), INVISIBLE("inv");
-
-        override fun getSerializedName(): String = char
-        override fun toString(): String = char
-
-        companion object {
-            fun fromString(char: String): ActorChar {
-                return when (char) {
-                    "rouge" -> ROUGE
-                    "vert" -> VERT
-                    "inv" -> INVISIBLE
-                    else -> NULL
-                }
-            }
-        }
-    }
-
     class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL) {
         constructor(actor: String, actorChar: String) : this(actor, ActorChar.fromString(actorChar))
 
@@ -80,6 +62,41 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
             ).apply(it, ::PlayerData)
+            }
+        }
+    }
+}
+
+enum class ActorChar(private val char: String): StringRepresentable {
+    NULL("null"),
+    ROUGE("rouge"),
+    VERT("vert"),
+    VESSEL("vessel"),
+    ROUGE_EYES("rouge_eyes"),
+    INV("inv");
+
+    override fun getSerializedName(): String = char
+    override fun toString(): String = char
+
+    val eyes: String?
+        get() = when (this) {
+            ROUGE -> "rouge"
+            ROUGE_EYES -> "rouge"
+            VERT -> "vert"
+            else -> null
+        }
+    val renderVessel: Boolean
+        get() = this in listOf(ROUGE, VERT, VESSEL)
+
+    companion object {
+        fun fromString(char: String): ActorChar {
+            return when (char) {
+                "rouge" -> ROUGE
+                "vert" -> VERT
+                "vessel" -> VESSEL
+                "rouge_eyes" -> ROUGE_EYES
+                "inv" -> INV
+                else -> NULL
             }
         }
     }
