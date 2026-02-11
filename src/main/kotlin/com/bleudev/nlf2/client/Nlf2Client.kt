@@ -11,6 +11,7 @@ import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.getIdentifier
+import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -32,6 +33,9 @@ class Nlf2Client : ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register {
             it.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
+            if (Webcam.getDefault().isOpen) {
+                if (!webcamEnabled) Webcam.getDefault().close()
+            } else if (webcamEnabled) Webcam.getDefault().open()
             tryHideMod()
         }
         ClientTickEvents.END_LEVEL_TICK.register {

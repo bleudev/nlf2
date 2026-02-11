@@ -5,7 +5,6 @@ import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.blitAnim
-import com.github.sarxos.webcam.Webcam
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.ConnectScreen
@@ -100,10 +99,5 @@ object IntroHelper {
 
         // Laugh sound
         if (t == 180L) Minecraft.getInstance().soundManager.play(RelativeSoundInstance(Nlf2Sounds.LAUGH))
-
-        // Webcam
-        if (Webcam.getDefault().isOpen) {
-            if (!webcamEnabled) Webcam.getDefault().close()
-        } else if (webcamEnabled) Webcam.getDefault().open()
     }
 }
