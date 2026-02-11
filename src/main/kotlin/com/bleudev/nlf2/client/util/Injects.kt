@@ -12,6 +12,7 @@ fun Player.holdsInAnyHand(predicate: (ItemStack) -> Boolean): Boolean = (predica
 fun Player.holdsInAnyHand(item: Item): Boolean = this.holdsInAnyHand { it.item == item }
 
 fun GuiGraphics.overlay(color: Int) = fill(0, 0, guiWidth(), guiHeight(), color)
+fun GuiGraphics.overlay(color: Long) = overlay(color.toInt())
 fun GuiGraphics.black(alpha: Float) = overlay(ARGB.colorFromFloat(alpha, 0f, 0f, 0f))
 fun GuiGraphics.black() = black(1f)
 

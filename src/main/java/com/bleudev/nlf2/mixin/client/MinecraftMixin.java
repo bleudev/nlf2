@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.webcamEnabled;
+import static com.bleudev.nlf2.client.ClientStorageKt.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Minecraft.class)
@@ -24,6 +24,10 @@ public class MinecraftMixin {
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void onScreenClose(Screen screen, CallbackInfo ci) {
-        if (screen == null) webcamEnabled = false;
+        if (screen == null) {
+            webcamEnabled = false;
+            pause_screen_red_screen_effect = false;
+            should_not_play_any_sound = false;
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.client.util.overlay
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -31,8 +32,8 @@ class Nlf2Client : ClientModInitializer {
         Nlf2Sounds.initialize()
         tryHideMod()
 
-        ClientTickEvents.END_CLIENT_TICK.register {
-            it.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
+        ClientTickEvents.END_CLIENT_TICK.register { mc ->
+            mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
             if (Webcam.getDefault().isOpen) {
                 if (!webcamEnabled) Webcam.getDefault().close()
             } else if (webcamEnabled) Webcam.getDefault().open()
@@ -57,6 +58,10 @@ class Nlf2Client : ClientModInitializer {
                     ARGB.colorFromFloat(1f, 0f, noise_amount * 2, noise_amount * 2))
             }
             graphics.black(join_blackness)
+        }
+        HudElementRegistry.addLast(Layer.OVERLAY_PAUSE_SCREEN) { graphics, _ ->
+            if (pause_screen_red_screen_effect)
+                graphics.overlay(0x20ff0000)
         }
 
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
@@ -94,6 +99,7 @@ class Nlf2Client : ClientModInitializer {
     object Layer {
         val BORDER_NOISE: Identifier = getIdentifier("layer/border/noise")
         val OVERLAY_FIX: Identifier = getIdentifier("layer/overlay/fix")
+        val OVERLAY_PAUSE_SCREEN: Identifier = getIdentifier("layer/overlay/pause_screen")
     }
 
     object Sprite {

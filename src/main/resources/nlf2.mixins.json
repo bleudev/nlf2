@@ -28,6 +28,7 @@
         "client.PanoramaRendererMixin",
         "client.PauseScreenMixin",
         "client.PlayerTabOverlayMixin",
+        "client.SoundEngineMixin",
         "client.TitleScreenMixin"
     ],
     "injectors": {

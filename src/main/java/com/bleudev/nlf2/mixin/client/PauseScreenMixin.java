@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.getDisconnectState;
-import static com.bleudev.nlf2.client.ClientStorageKt.webcamEnabled;
+import static com.bleudev.nlf2.client.ClientStorageKt.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PauseScreen.class)
@@ -34,6 +33,8 @@ public class PauseScreenMixin extends Screen {
     @Override
     public void onClose() {
         webcamEnabled = false;
+        pause_screen_red_screen_effect = false;
+        should_not_play_any_sound = false;
         super.onClose();
     }
 }
