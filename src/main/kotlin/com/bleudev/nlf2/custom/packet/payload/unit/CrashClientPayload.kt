@@ -6,7 +6,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class CrashClientPayload() : CustomPacketPayload {
+class CrashClientPayload : CustomPacketPayload {
+    private constructor()
+
     companion object : PacketPayloadCompanion<CrashClientPayload> {
         override val identifier = Nlf2Packets.UNIT_CRASH_CLIENT
         val INSTANCE = CrashClientPayload()

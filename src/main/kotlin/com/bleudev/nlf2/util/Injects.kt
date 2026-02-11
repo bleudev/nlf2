@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.util
 
+import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.mojang.brigadier.builder.ArgumentBuilder
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
@@ -23,3 +24,12 @@ fun <T : CustomPacketPayload> PayloadTypeRegistry<RegistryFriendlyByteBuf>.regis
     register(packet.type, packet.codec)
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =
     requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }
+
+// Data
+val MinecraftServer.actorNickname: String
+    get() = nlf2data.loreData.actor
+val MinecraftServer.actor: ServerPlayer?
+    get() = playerList.getPlayer(actorNickname)
+
+val ServerPlayer.isActor: Boolean
+    get() = gameProfile.name == level().server.actorNickname

@@ -6,6 +6,7 @@ import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
@@ -54,13 +55,17 @@ class Nlf2Client : ClientModInitializer {
             graphics.black(join_blackness)
         }
 
+        registerPacketReceiver(ClientNlf2DataSync) { payload ->
+            dataSyncedActor = payload.actor
+            dataSyncedActorLoreChar = payload.actorChar
+        }
         registerPacketReceiver(WorldBorderNoisePayload) { payload ->
             val maxBlocks = 50.0
             val maxNoise = .5f
             noise_amount = (1f - ((payload.distance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
         }
         registerPacketReceiver(CrashClientPayload) {
-            throw ERROR("\nYOU...\nREACHED...\n\n THE END")
+            throw ERROR("\nYOU...\nREACHED...\n\nTHE END")
         }
     }
 

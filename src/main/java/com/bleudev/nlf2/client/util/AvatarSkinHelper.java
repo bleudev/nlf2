@@ -7,19 +7,20 @@ import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jetbrains.annotations.Nullable;
 
-import static com.bleudev.nlf2.Nlf2ConstKt.*;
+import static com.bleudev.nlf2.Nlf2ConstKt.SUPPORTED_NICKNAMES;
 import static com.bleudev.nlf2.Nlf2Kt.getIdentifier;
+import static com.bleudev.nlf2.client.ClientStorageKt.dataSyncedActor;
+import static com.bleudev.nlf2.client.ClientStorageKt.dataSyncedActorLoreChar;
 
 public class AvatarSkinHelper {
     private static @Nullable Identifier getTexture(String base, String entity_nickname, String client_nickname, boolean withFormat) {
-        if (!PLAYERS_NICKNAMES.contains(client_nickname)) return null;
+        if (!SUPPORTED_NICKNAMES.contains(client_nickname)) return null;
 
-        String lore_char = "";
-        switch (entity_nickname) {
-            case VERT_NICKNAME -> lore_char = "vert";
-            case ROUGE_NICKNAME -> lore_char = "rouge";
-        }
-        if (lore_char.isEmpty()) return null;
+        String lore_char = "null";
+        if (entity_nickname.equals(dataSyncedActor)) lore_char = dataSyncedActorLoreChar;
+        if (lore_char.equals("null")) return null;
+
+        if (client_nickname.equals(dataSyncedActor)) client_nickname = "actor";
 
         base += lore_char + "/" + client_nickname;
         if (withFormat) return getIdentifier(base + ".png");

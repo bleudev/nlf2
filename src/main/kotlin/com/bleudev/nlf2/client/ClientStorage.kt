@@ -14,3 +14,9 @@ var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f
 var noise_tick: Int = 0
 var noise_amount: Float = .1f
+
+// Data
+@JvmField
+var dataSyncedActor: String = "null"
+@JvmField
+var dataSyncedActorLoreChar: String = "null"

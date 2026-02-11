@@ -1,15 +1,21 @@
 package com.bleudev.nlf2.custom
 
-import com.bleudev.nlf2.ACTOR_NICKNAME
 import com.bleudev.nlf2.LOGGER
+import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData
+import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
+import com.bleudev.nlf2.util.actorNickname
+import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
 import com.bleudev.nlf2.util.sendToEveryone
 import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
+import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.network.chat.Component
 
 object Nlf2Commands {
@@ -19,9 +25,28 @@ object Nlf2Commands {
                 .literal("nlf2")
                 .requiresAdmin()
                 .then(Commands
-                    .literal("event")
+                    .literal("actor")
                     .then(Commands
-                        .argument("id", IntegerArgumentType.integer(1))
+                        .literal("set")
+                        .then(Commands
+                            .argument("player", EntityArgument.player())
+                            .executes { ctx ->
+                                val player = EntityArgument.getPlayer(ctx, "player")
+                                ctx.source.server.nlf2data.loreData = Nlf2PlayersData.LoreData(player.gameProfile.name)
+                                return@executes ctx.source.sendSuccess(Component.literal("Actor was set"))
+                            }))
+                    .then(Commands
+                        .literal("char")
+                        .then(Commands
+                            .argument("actorChar", StringArgumentType.word())
+                            .executes { ctx ->
+                                val char = StringArgumentType.getString(ctx, "actorChar")
+                                ctx.source.server.nlf2data.loreData = Nlf2PlayersData.LoreData(ctx.source.server.actorNickname, char)
+                                return@executes ctx.source.sendSuccess(Component.literal("Actor char was set"))
+                            })))
+                .then(Commands
+                    .literal("event")
+                    .then(integer("id", 1)
                         .suggests { _, builder ->
                             val eventId = builder.input.let {
                                 if (it.startsWith("/nlf2 event ", true))
@@ -48,8 +73,7 @@ object Nlf2Commands {
                 }))
                 .then(Commands
                     .literal("debug")
-                    .then(Commands
-                        .argument("di", IntegerArgumentType.integer(1))
+                    .then(integer("di", 1)
                         .suggests { _, builder ->
                             val debugId = builder.input.let {
                                 if (it.startsWith("/nlf2 debug ", true))
@@ -81,6 +105,8 @@ object Nlf2Commands {
         sendSuccess({message}, broadcast)
         return 1
     }
+    private fun integer(name: String, min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE): RequiredArgumentBuilder<CommandSourceStack, Int> =
+        Commands.argument(name, IntegerArgumentType.integer(min, max))
 
     private val eventMap: Map<Int, String> = mapOf(
         189 to "crash_vert_disappear"
@@ -91,7 +117,7 @@ object Nlf2Commands {
             // crash_vert_disappear
             189 -> {
                 server.sendToEveryone { player ->
-                    if (player.gameProfile.name == ACTOR_NICKNAME) return@sendToEveryone arrayOf()
+                    if (player.isActor) return@sendToEveryone arrayOf()
                     return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
                 }
             }

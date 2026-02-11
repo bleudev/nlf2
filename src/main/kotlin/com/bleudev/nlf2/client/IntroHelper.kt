@@ -18,7 +18,7 @@ import kotlin.math.min
 
 object IntroHelper {
     fun render(guiGraphics: GuiGraphics) {
-//        return
+        return
 
         // Ticker
         val t = TICKER_INTRO.tick()
