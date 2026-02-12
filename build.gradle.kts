@@ -90,6 +90,13 @@ tasks.jar {
     }
 }
 
+tasks.runClient {
+    dependsOn("runDatagen")
+}
+tasks.build {
+    dependsOn("runDatagen")
+}
+
 // configure the maven publication
 publishing {
     publications {
