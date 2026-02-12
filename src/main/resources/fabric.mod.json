@@ -25,6 +25,6 @@
         "fabric-language-kotlin": ">=${kotlin_loader_version}",
         "fabric-api": ">=${fabric_version}",
         "modmenu": ">=${modmenu_version}",
-        "minecraft": "26.1-alpha.6"
+        "minecraft": "26.1-alpha.7"
     }
 }
