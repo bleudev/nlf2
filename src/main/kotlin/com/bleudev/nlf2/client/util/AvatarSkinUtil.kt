@@ -15,44 +15,34 @@ import net.minecraft.world.entity.player.PlayerSkin
 
 private val EYES_EMPTY = getIdentifier("textures/entity/player/eyes/empty.png")
 
-fun getEyesTexture(entityNickname: String, clientNickname: String): Identifier {
-    var clientNickname = clientNickname
+fun getLoreCharacter(entityNickname: String): ActorChar {
+    return if (Minecraft.getInstance().gameProfile.name.lowercase() in SUPPORTED_NICKNAMES && entityNickname == dataSyncedActor)
+                ActorChar.fromString(dataSyncedActorLoreChar)
+           else ActorChar.NULL
+}
 
-    if (clientNickname !in SUPPORTED_NICKNAMES) return EYES_EMPTY
-
-    var loreChar: ActorChar = ActorChar.NULL
-    if (entityNickname == dataSyncedActor) loreChar = ActorChar.fromString(dataSyncedActorLoreChar)
+fun getEyesTexture(entityNickname: String): Identifier {
+    var clientNickname = Minecraft.getInstance().gameProfile.name.lowercase()
+    val loreChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL || loreChar.eyes == null) return EYES_EMPTY
-
     if (clientNickname == dataSyncedActor) clientNickname = "actor"
 
     return getIdentifier("textures/entity/player/eyes/${loreChar.eyes}/$clientNickname.png")
 }
-fun getEyesTexture(entityNickname: String): Identifier =
-    getEyesTexture(entityNickname, Minecraft.getInstance().gameProfile.name().lowercase())
-
 fun getEyesRenderType(entityNickname: String): RenderType = RenderTypes.eyes(getEyesTexture(entityNickname))
 
-fun getSkinTexture(entityNickname: String, clientNickname: String): Identifier? {
-    var clientNickname = clientNickname
-
-    if (clientNickname !in SUPPORTED_NICKNAMES) return null
-
-    var loreChar: ActorChar = ActorChar.NULL
-    if (entityNickname == dataSyncedActor) loreChar = ActorChar.fromString(dataSyncedActorLoreChar)
+fun getSkinTexture(entityNickname: String): Identifier? {
+    var clientNickname = Minecraft.getInstance().gameProfile.name.lowercase()
+    val loreChar: ActorChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL) return null
-
     if (clientNickname == dataSyncedActor) clientNickname = "actor"
     if (!loreChar.renderVessel) clientNickname = "empty"
-
     return getIdentifier("entity/player/skin/$clientNickname")
 }
 
-fun getSkin(entityNickname: String, clientNickname: String): PlayerSkin? {
-    val texture = getSkinTexture(entityNickname, clientNickname) ?: return null
+fun getSkin(entityNickname: String): PlayerSkin? {
+    val texture = getSkinTexture(entityNickname) ?: return null
     val modelType = PlayerModelType.WIDE
     // If there will be slim skins, will add code for them
     return PlayerSkin(ResourceTexture(texture), null, null, modelType, true)
 }
-fun getSkin(entityNickname: String): PlayerSkin? =
-    getSkin(entityNickname, Minecraft.getInstance().gameProfile.name().lowercase())

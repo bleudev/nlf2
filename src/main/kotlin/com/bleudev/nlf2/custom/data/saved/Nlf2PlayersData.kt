@@ -85,6 +85,8 @@ enum class ActorChar(private val char: String): StringRepresentable {
             VERT -> "vert"
             else -> null
         }
+    val isInvisibleLike: Boolean
+        get() = this in listOf(ROUGE_EYES, INV)
     val renderVessel: Boolean
         get() = this in listOf(ROUGE, VERT, VESSEL)
 

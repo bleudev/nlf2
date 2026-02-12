@@ -20,6 +20,8 @@
         "client.DisconnectedScreenMixin",
         "client.GenericMessageScreenMixin",
         "client.GridLayout$RowHelperMixin",
+        "client.HumanoidArmorLayerMixin",
+        "client.HumanoidRenderStateMixin",
         "client.KeyboardHandlerMixin",
         "client.LevelLoadingScreenMixin",
         "client.LoadingOverlayMixin",

@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.bleudev.nlf2.client.util.AvatarSkinUtilKt.getLoreCharacter;
+
 @Environment(EnvType.CLIENT)
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvatarEntity> extends LivingEntityRenderer<@NotNull AvatarLike, @NotNull AvatarRenderState, @NotNull PlayerModel> {
@@ -40,7 +42,9 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
     private void setStateNickname(AvatarLike entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
         if (entity instanceof Player player) {
             IAvatarRenderState renderState = (IAvatarRenderState) state;
-            renderState.nlf2$setNickname(player.getGameProfile().name().toLowerCase());
+            final var nickname = player.getGameProfile().name().toLowerCase();
+            renderState.nlf2$setNickname(nickname);
+            renderState.nlf2$setShouldRenderArmor(!getLoreCharacter(nickname).isInvisibleLike());
         }
     }
 }

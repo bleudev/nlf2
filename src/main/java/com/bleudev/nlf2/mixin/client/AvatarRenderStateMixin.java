@@ -20,6 +20,19 @@ public class AvatarRenderStateMixin implements IAvatarRenderState {
 
     @Override
     public void nlf2$setNickname(String newNickname) {
-        this.nickname = newNickname;
+        nickname = newNickname;
+    }
+
+    @Unique
+    private boolean armor = false;
+
+    @Override
+    public boolean nlf2$shouldRenderArmor() {
+        return armor;
+    }
+
+    @Override
+    public void nlf2$setShouldRenderArmor(boolean newShouldRenderArmor) {
+        armor = newShouldRenderArmor;
     }
 }
