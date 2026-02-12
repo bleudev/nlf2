@@ -1,6 +1,7 @@
 package com.bleudev.nlf2
 
 import com.bleudev.nlf2.custom.Nlf2Commands
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
@@ -19,16 +20,17 @@ import org.slf4j.LoggerFactory
 
 
 const val MODID = "nlf2"
-fun getIdentifier(path: String) = Identifier.fromNamespaceAndPath(MODID, path)
+fun getIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MODID, path)
 val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
     override fun onInitialize() {
-        Nlf2Packets.initialize()
         Nlf2Commands.initialize()
+        Nlf2Items.initialize()
+        Nlf2Packets.initialize()
 
         ServerPlayerEvents.JOIN.register { player ->
-            player.level().server.nlf2data.onJoin(player)
+            player.level().server!!.nlf2data.onJoin(player)
 
             if (player.isFirstJoined()) player.teleportOnFirstJoin()
         }
