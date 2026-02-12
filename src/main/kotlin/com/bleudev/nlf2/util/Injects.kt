@@ -20,7 +20,7 @@ fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPack
     for (player in this.playerList.players) player.sendPackets(*generator(player))
 }
 
-fun <T : CustomPacketPayload> PayloadTypeRegistry<RegistryFriendlyByteBuf>.register(packet: PacketPayloadCompanion<T>) =
+fun <T : CustomPacketPayload> PayloadTypeRegistry<RegistryFriendlyByteBuf>.register(packet: PacketPayloadCompanion<T>): CustomPacketPayload.TypeAndCodec<in RegistryFriendlyByteBuf, T> =
     register(packet.type, packet.codec)
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =
     requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }
@@ -32,4 +32,4 @@ val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
 
 val ServerPlayer.isActor: Boolean
-    get() = gameProfile.name == level().server.actorNickname
+    get() = gameProfile.name == level().server!!.actorNickname

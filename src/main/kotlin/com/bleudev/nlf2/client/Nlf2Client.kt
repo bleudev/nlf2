@@ -3,11 +3,13 @@ package com.bleudev.nlf2.client
 import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.overlay
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
+import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
@@ -67,6 +69,11 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
+        }
+        registerPacketReceiver(OpenPuzzle) { payload, ctx ->
+            payload.packetPuzzle?.let {
+                ctx.client().setScreen(PuzzleScreen(it))
+            }
         }
         registerPacketReceiver(WorldBorderNoisePayload) { payload ->
             val maxBlocks = 50.0
