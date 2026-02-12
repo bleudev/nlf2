@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,7 +45,27 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             IAvatarRenderState renderState = (IAvatarRenderState) state;
             final var nickname = player.getGameProfile().name().toLowerCase();
             renderState.nlf2$setNickname(nickname);
-            renderState.nlf2$setShouldRenderArmor(!getLoreCharacter(nickname).isInvisibleLike());
+
+            if (getLoreCharacter(nickname).isInvisibleLike()) {
+                renderState.nlf2$setShouldRenderArmor(false);
+                state.isInvisible = true;
+                state.leftHandItemState.clear();
+                state.leftHandItemStack = ItemStack.EMPTY;
+                state.rightHandItemState.clear();
+                state.rightHandItemStack = ItemStack.EMPTY;
+            } else {
+                renderState.nlf2$setShouldRenderArmor(true);
+            }
         }
     }
+
+//    @Override
+//    protected float getShadowRadius(@NotNull AvatarRenderState state) {
+//        if (getLoreCharacter(((IAvatarRenderState) state).nlf2$getNickname()).isInvisibleLike()) {
+//            System.out.println("INVISIBLE LIKE SHADOW RENDERING MIXIN");
+//            return 0f;
+//        }
+//        System.out.println("NOT INVISIBLE SHADOW RENDERING MIXIN");
+//        return super.getShadowRadius(state);
+//    }
 }
