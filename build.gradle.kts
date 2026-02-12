@@ -19,7 +19,11 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
 }
 
-
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
+}
 
 repositories {
     exclusiveContent {

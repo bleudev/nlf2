@@ -10,6 +10,9 @@
     "icon": "assets/nlf2/icon.png",
     "environment": "*",
     "entrypoints": {
+        "fabric-datagen": [
+            "com.bleudev.nlf2.datagen.Nlf2DataGen"
+        ],
         "client": [
             "com.bleudev.nlf2.client.Nlf2Client"
         ],
