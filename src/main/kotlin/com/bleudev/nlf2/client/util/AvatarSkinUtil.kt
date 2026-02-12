@@ -15,33 +15,33 @@ import net.minecraft.world.entity.player.PlayerSkin
 
 private val EYES_EMPTY = getIdentifier("textures/entity/player/eyes/empty.png")
 
+val clientNickname: String
+    get() = Minecraft.getInstance().gameProfile.name.lowercase()
+
 fun getLoreCharacter(entityNickname: String): ActorChar {
-    return if (Minecraft.getInstance().gameProfile.name.lowercase() in SUPPORTED_NICKNAMES && entityNickname == dataSyncedActor)
+    return if (clientNickname in SUPPORTED_NICKNAMES && entityNickname == dataSyncedActor)
                 ActorChar.fromString(dataSyncedActorLoreChar)
            else ActorChar.NULL
 }
 
 fun getEyesTexture(entityNickname: String): Identifier {
-    var clientNickname = Minecraft.getInstance().gameProfile.name.lowercase()
+    var clientNickname = clientNickname
     val loreChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL || loreChar.eyes == null) return EYES_EMPTY
-    if (clientNickname == dataSyncedActor) clientNickname = "actor"
+    if (clientNickname == dataSyncedActor) clientNickname = "bleugame"
 
     return getIdentifier("textures/entity/player/eyes/${loreChar.eyes}/$clientNickname.png")
 }
 fun getEyesRenderType(entityNickname: String): RenderType = RenderTypes.eyes(getEyesTexture(entityNickname))
 
-fun getSkinTexture(entityNickname: String): Identifier? {
-    var clientNickname = Minecraft.getInstance().gameProfile.name.lowercase()
+fun getSkin(entityNickname: String): PlayerSkin? {
+    var clientNickname = clientNickname
     val loreChar: ActorChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL) return null
-    if (clientNickname == dataSyncedActor) clientNickname = "actor"
+    if (clientNickname == dataSyncedActor) clientNickname = "bleugame"
     if (!loreChar.renderVessel) clientNickname = "empty"
-    return getIdentifier("entity/player/skin/$clientNickname")
-}
+    val texture = getIdentifier("entity/player/skin/$clientNickname")
 
-fun getSkin(entityNickname: String): PlayerSkin? {
-    val texture = getSkinTexture(entityNickname) ?: return null
     val modelType = PlayerModelType.WIDE
     // If there will be slim skins, will add code for them
     return PlayerSkin(ResourceTexture(texture), null, null, modelType, true)
