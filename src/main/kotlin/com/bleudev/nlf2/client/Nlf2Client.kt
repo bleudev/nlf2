@@ -4,10 +4,7 @@ import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
-import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.black
-import com.bleudev.nlf2.client.util.blitAnim
-import com.bleudev.nlf2.client.util.overlay
+import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
@@ -40,6 +37,9 @@ class Nlf2Client : ClientModInitializer {
                 if (!webcamEnabled) Webcam.getDefault().close()
             } else if (webcamEnabled) Webcam.getDefault().open()
             tryHideMod()
+            shouldPlayAmbient = pause_screen_red_screen_effect
+            ambientTick()
+            pause_screen_ticks++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
@@ -62,8 +62,10 @@ class Nlf2Client : ClientModInitializer {
             graphics.black(join_blackness)
         }
         HudElementRegistry.addLast(Layer.OVERLAY_PAUSE_SCREEN) { graphics, _ ->
-            if (pause_screen_red_screen_effect)
+            if (pause_screen_red_screen_effect) {
                 graphics.overlay(0x20ff0000)
+                graphics.overlay(ARGB.colorFromFloat(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f))
+            }
         }
 
         registerPacketReceiver(ClientNlf2DataSync) { payload ->

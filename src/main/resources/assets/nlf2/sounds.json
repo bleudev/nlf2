@@ -10,5 +10,17 @@
         "sounds": [
             "nlf2:laugh"
         ]
+    },
+    "border_ambient": {
+        "subtitle": "sound.nlf2.border_ambient",
+        "sounds": [
+            "nlf2:border_ambient"
+        ]
+    },
+    "pause_cutscene_ambient": {
+        "subtitle": "sound.nlf2.pause_cutscene_ambient",
+        "sounds": [
+            "nlf2:pause_cutscene_ambient"
+        ]
     }
 }

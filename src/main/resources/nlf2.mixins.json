@@ -10,6 +10,7 @@
     ],
     "client": [
         "client.AbstractClientPlayerMixin",
+        "client.AbstractSoundInstanceMixin",
         "client.AvatarRendererMixin",
         "client.AvatarRenderStateMixin",
         "client.ClientWaypointManagerMixin",
@@ -30,7 +31,6 @@
         "client.PanoramaRendererMixin",
         "client.PauseScreenMixin",
         "client.PlayerTabOverlayMixin",
-        "client.SoundEngineMixin",
         "client.TitleScreenMixin"
     ],
     "injectors": {

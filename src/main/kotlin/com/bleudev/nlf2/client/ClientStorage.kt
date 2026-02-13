@@ -25,6 +25,8 @@ var noise_amount: Float = .1f
 var pause_screen_red_screen_effect: Boolean = false
 @JvmField
 var should_not_play_any_sound: Boolean = false
+@JvmField
+var pause_screen_ticks: Int = 0
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path

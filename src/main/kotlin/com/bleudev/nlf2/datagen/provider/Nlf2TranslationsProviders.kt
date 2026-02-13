@@ -12,6 +12,11 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
+        // Sounds
+        builder.add("sound.nlf2.broke", "Broke")
+        builder.add("sound.nlf2.laugh", "Strange laugh")
+        builder.add("sound.nlf2.border_ambient", "Strange noise")
+        builder.add("sound.nlf2.pause_cutscene_ambient", "Strange noise")
     }
 }
 
@@ -21,5 +26,10 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
+        // Sounds
+        builder.add("sound.nlf2.broke", "Удар")
+        builder.add("sound.nlf2.laugh", "Странный смех")
+        builder.add("sound.nlf2.border_ambient", "Странный шум")
+        builder.add("sound.nlf2.pause_cutscene_ambient", "Странный шум")
     }
 }
