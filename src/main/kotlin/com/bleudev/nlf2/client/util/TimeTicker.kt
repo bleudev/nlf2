@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.client.util
 
-abstract class Ticker() {
+abstract class Ticker {
     var ticks: Long = 0L
         protected set
     abstract fun tick(): Long
@@ -9,7 +9,7 @@ abstract class Ticker() {
     }
 }
 
-class TimeTicker() : Ticker() {
+class TimeTicker : Ticker() {
     private var start: Long = System.currentTimeMillis()
 
     override fun tick(): Long {
@@ -23,3 +23,20 @@ class TimeTicker() : Ticker() {
 }
 
 val TICKER_INTRO = TimeTicker()
+/*
+Maybe in future will be needed
+
+class TimeTimer {
+    private var start: Long = System.currentTimeMillis()
+    private var prev: Long = System.currentTimeMillis()
+    private var end: Long = System.currentTimeMillis()
+
+    val time: Long get() = end - start
+    val timeDelta: Long get() = end - prev
+
+    fun tick() {
+        prev = end
+        end = System.currentTimeMillis()
+    }
+}
+ */

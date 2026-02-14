@@ -55,6 +55,7 @@ class Nlf2Client : ClientModInitializer {
                 join_blackness = (join_blackness - .05f).coerceAtLeast(0f)
 
             noise_tick++
+            earthquakeStrength = noise_amount
         }
         ClientPlayConnectionEvents.JOIN.register { _, _, mc ->
             mc.soundManager.play(BorderAmbientSoundInstance())
