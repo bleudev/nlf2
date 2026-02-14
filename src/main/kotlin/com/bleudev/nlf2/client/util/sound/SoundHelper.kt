@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.util
+package com.bleudev.nlf2.client.util.sound
 
 import com.bleudev.nlf2.LOGGER
 import java.io.BufferedInputStream

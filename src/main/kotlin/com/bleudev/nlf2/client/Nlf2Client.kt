@@ -4,7 +4,13 @@ import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
-import com.bleudev.nlf2.client.util.*
+import com.bleudev.nlf2.client.util.Animation
+import com.bleudev.nlf2.client.util.black
+import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.client.util.overlay
+import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
+import com.bleudev.nlf2.client.util.sound.ambientTick
+import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
@@ -15,6 +21,7 @@ import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
@@ -23,6 +30,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 
 class Nlf2Client : ClientModInitializer {
@@ -47,6 +55,12 @@ class Nlf2Client : ClientModInitializer {
                 join_blackness = (join_blackness - .05f).coerceAtLeast(0f)
 
             noise_tick++
+        }
+        ClientPlayConnectionEvents.JOIN.register { _, _, mc ->
+            mc.soundManager.play(BorderAmbientSoundInstance())
+        }
+        ClientPlayConnectionEvents.DISCONNECT.register { _, mc ->
+            mc.soundManager.stop(Nlf2Sounds.BORDER_AMBIENT.location, SoundSource.AMBIENT)
         }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->

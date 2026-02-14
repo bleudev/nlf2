@@ -2,9 +2,9 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.ConnectScreen

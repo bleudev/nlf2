@@ -1,11 +1,11 @@
-package com.bleudev.nlf2.client.util
+package com.bleudev.nlf2.client.util.sound
 
 import net.minecraft.client.resources.sounds.AbstractSoundInstance
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
 
-class RelativeSoundInstance(soundEvent: SoundEvent, soundSource: SoundSource = SoundSource.AMBIENT, randomSource: RandomSource = RandomSource.create()) : AbstractSoundInstance(soundEvent, soundSource, randomSource) {
+open class RelativeSoundInstance(soundEvent: SoundEvent, soundSource: SoundSource = SoundSource.AMBIENT, randomSource: RandomSource = RandomSource.create()) : AbstractSoundInstance(soundEvent, soundSource, randomSource) {
     init {
         this.relative = true
         this.x = .0
