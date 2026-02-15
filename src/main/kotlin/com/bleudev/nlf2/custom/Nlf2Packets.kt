@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
+import com.bleudev.nlf2.custom.packet.payload.OpenManual
 import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 
 object Nlf2Packets {
     val CLIENT_NLF2_DATA_SYNC = getIdentifier("packet/client_nlf2_data_sync")
+    val OPEN_MANUAL = getIdentifier("packet/open_manual")
     val OPEN_PUZZLE = getIdentifier("packet/open_puzzle")
     val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
 
@@ -19,6 +21,7 @@ object Nlf2Packets {
         val s2c = PayloadTypeRegistry.clientboundPlay()
         // Normal
         s2c.register(ClientNlf2DataSync)
+        s2c.register(OpenManual)
         s2c.register(OpenPuzzle)
         s2c.register(WorldBorderNoisePayload)
         // Unit

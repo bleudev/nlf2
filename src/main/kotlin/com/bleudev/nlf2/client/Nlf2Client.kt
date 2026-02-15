@@ -3,6 +3,7 @@ package com.bleudev.nlf2.client
 import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
@@ -12,6 +13,7 @@ import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
+import com.bleudev.nlf2.custom.packet.payload.OpenManual
 import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -86,6 +88,9 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
+        }
+        registerPacketReceiver(OpenManual) { payload, ctx ->
+            ctx.client().setScreen(ManualScreen(payload.manualId))
         }
         registerPacketReceiver(OpenPuzzle) { payload, ctx ->
             payload.packetPuzzle?.let {
