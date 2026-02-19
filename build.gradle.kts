@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.3.0"
+    kotlin("jvm") version "2.3.10"
     id("net.fabricmc.fabric-loom") version "1.15.2"
     id("maven-publish")
 }
@@ -46,6 +46,8 @@ dependencies {
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
+    implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
+    implementation("maven.modrinth:nine_lifes:${project.property("nl_version")}")
 
     include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)
     include(implementation("com.nativelibs4java:bridj:0.7.0")!!)
@@ -57,6 +59,7 @@ tasks.processResources {
     inputs.property("loader_version", project.property("loader_version"))
     inputs.property("fabric_version", project.property("fabric_version"))
     inputs.property("modmenu_version", project.property("modmenu_version"))
+    inputs.property("nl_version", project.property("nl_version"))
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
@@ -67,6 +70,7 @@ tasks.processResources {
             "kotlin_loader_version" to project.property("kotlin_loader_version")!!,
             "fabric_version" to project.property("fabric_version")!!,
             "modmenu_version" to project.property("modmenu_version")!!,
+            "nl_version" to project.property("nl_version")!!,
         )
     }
 }

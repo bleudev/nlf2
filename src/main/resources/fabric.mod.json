@@ -28,6 +28,7 @@
         "fabric-language-kotlin": ">=${kotlin_loader_version}",
         "fabric-api": ">=${fabric_version}",
         "modmenu": ">=${modmenu_version}",
-        "minecraft": "26.1-alpha.7"
+        "nine_lifes": "${nl_version}",
+        "minecraft": "26.1-alpha.9"
     }
 }
