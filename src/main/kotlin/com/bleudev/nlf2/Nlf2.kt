@@ -1,21 +1,30 @@
 package com.bleudev.nlf2
 
 import com.bleudev.nine_lifes.custom.NineLifesDamageSources
+import com.bleudev.nine_lifes.util.lifes
+import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
+import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.util.sendToEveryone
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.core.BlockPos
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.GameType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -26,11 +35,13 @@ val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
     private var ticks = 0
+    private lateinit var serverVersion: String
 
     override fun onInitialize() {
         Nlf2Commands.initialize()
         Nlf2Items.initialize()
         Nlf2Packets.initialize()
+        serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
         ServerPlayerEvents.JOIN.register { player ->
             player.level().server!!.nlf2data.onJoin(player)
@@ -54,7 +65,25 @@ class Nlf2 : ModInitializer {
                 }
             }
         }
+
+        registerPacketReceiver(JoinSendVersion) { payload, ctx ->
+            val clientVersion = payload.version
+            val player = ctx.player()
+            if (serverVersion != clientVersion) {
+                player.setGameMode(GameType.SPECTATOR)
+                player.sendPacket(JoinDisconnectVersion(clientVersion, serverVersion))
+            } else {
+                if (player.gameMode() == GameType.SPECTATOR && player.lifes >= 1) {
+                    player.setGameMode(GameType.SURVIVAL)
+                }
+            }
+        }
     }
+
+    private fun <T : CustomPacketPayload> registerPacketReceiver(packet: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ServerPlayNetworking.Context) -> Unit) =
+        ServerPlayNetworking.registerGlobalReceiver(packet.type, handler)
+    private fun <T : CustomPacketPayload> registerPacketReceiver(packet: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
+        registerPacketReceiver(packet) {payload, _ -> handler(payload)}
 
     private fun ServerPlayer.isFirstJoined(): Boolean = stats.getValue(Stats.CUSTOM.get(Stats.PLAY_TIME)) <= 10
 

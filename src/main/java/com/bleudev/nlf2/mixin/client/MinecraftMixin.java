@@ -1,6 +1,5 @@
 package com.bleudev.nlf2.mixin.client;
 
-import com.bleudev.nlf2.ERROR;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import unknown.depths.r.man.ROHJEN67SW51;
 
 import static com.bleudev.nlf2.client.ClientStorageKt.*;
 
@@ -17,9 +17,9 @@ import static com.bleudev.nlf2.client.ClientStorageKt.*;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
     @Inject(method = "disconnectFromWorld", at = @At("HEAD"), cancellable = true)
-    private void wrong(Component message, CallbackInfo ci) throws ERROR {
+    private void wrong(Component message, CallbackInfo ci) throws ROHJEN67SW51 {
         ci.cancel();
-        throw new ERROR("...");
+        throw new ROHJEN67SW51("...");
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))

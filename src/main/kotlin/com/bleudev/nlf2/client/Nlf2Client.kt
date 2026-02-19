@@ -1,8 +1,8 @@
 package com.bleudev.nlf2.client
 
-import com.bleudev.nlf2.ERROR
 import com.bleudev.nlf2.MODID
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.util.Animation
@@ -12,11 +12,9 @@ import com.bleudev.nlf2.client.util.overlay
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
-import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
-import com.bleudev.nlf2.custom.packet.payload.OpenManual
-import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle
-import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
+import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.getIdentifier
 import com.github.sarxos.webcam.Webcam
@@ -27,6 +25,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
@@ -34,6 +33,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
+import unknown.depths.r.man.ROHJEN67SW51
 
 class Nlf2Client : ClientModInitializer {
 
@@ -59,7 +59,8 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
             earthquakeStrength = noise_amount
         }
-        ClientPlayConnectionEvents.JOIN.register { _, _, mc ->
+        ClientPlayConnectionEvents.JOIN.register { _, s, mc ->
+            s.sendPacket(JoinSendVersion(FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString))
             mc.soundManager.play(BorderAmbientSoundInstance())
         }
         ClientPlayConnectionEvents.DISCONNECT.register { _, mc ->
@@ -103,7 +104,10 @@ class Nlf2Client : ClientModInitializer {
             noise_amount = (1f - ((payload.distance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
         }
         registerPacketReceiver(CrashClientPayload) {
-            throw ERROR("\nYOU...\nREACHED...\n\nTHE END")
+            throw ROHJEN67SW51("\nYOU...\nREACHED...\n\nTHE END")
+        }
+        registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
+            ctx.client().setScreen(JoinDisconnectScreen(payload.client, payload.server))
         }
     }
 
