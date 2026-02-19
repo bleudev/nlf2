@@ -1,5 +1,6 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nine_lifes.custom.NineLifesDamageSources
 import com.bleudev.nlf2.custom.Nlf2Commands
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Packets
@@ -24,6 +25,8 @@ fun getIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MO
 val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
+    private var ticks = 0
+
     override fun onInitialize() {
         Nlf2Commands.initialize()
         Nlf2Items.initialize()
@@ -38,6 +41,18 @@ class Nlf2 : ModInitializer {
             server.sendToEveryone { player -> arrayOf(
                 WorldBorderNoisePayload(player.level().worldBorder.getDistanceToBorder(player))
             ) }
+            ticks++
+            if (ticks % 20 == 0) {
+                server.playerList.players.forEach { player ->
+                    if (player.gameMode()!!.isCreative) return@forEach
+                    val level = player.level()
+                    val dist = level.worldBorder.getDistanceToBorder(player)
+                    if (dist <= 25) {
+                        val damageAmount = (((25 - dist) / 5).toInt() + 1).toFloat()
+                        player.hurtServer(level, NineLifesDamageSources.unknown(level), damageAmount)
+                    }
+                }
+            }
         }
     }
 
@@ -48,7 +63,7 @@ class Nlf2 : ModInitializer {
 
         val level = level()
         val border = level.worldBorder
-        val borderIndent = 20
+        val borderIndent = 25
         val minX = (border.minX + borderIndent).toInt()
         val maxX = (border.maxX - borderIndent).toInt()
         val minZ = (border.minZ + borderIndent).toInt()
