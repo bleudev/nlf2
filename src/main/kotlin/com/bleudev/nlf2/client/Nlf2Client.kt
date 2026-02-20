@@ -88,6 +88,8 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
+            dataSyncedBorderState = payload.borderState
+            dataSyncedEvent101 = payload.event101
         }
         registerPacketReceiver(OpenManual) { payload, ctx ->
             ctx.client().setScreen(ManualScreen(payload.manualId))

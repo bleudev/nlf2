@@ -1,13 +1,13 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.LOGGER
-import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData
+import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
-import com.bleudev.nlf2.util.actorNickname
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
 import com.bleudev.nlf2.util.sendToEveryone
+import com.bleudev.nlf2.util.transform
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
@@ -25,24 +25,43 @@ object Nlf2Commands {
                 .literal("nlf2")
                 .requiresAdmin()
                 .then(Commands
-                    .literal("actor")
+                    .literal("lore")
                     .then(Commands
-                        .literal("set")
+                        .literal("actor")
                         .then(Commands
                             .argument("player", EntityArgument.player())
                             .executes { ctx ->
                                 val player = EntityArgument.getPlayer(ctx, "player")
-                                ctx.source.server.nlf2data.loreData = Nlf2PlayersData.LoreData(player.gameProfile.name)
+                                ctx.source.server.nlf2data::loreData.transform {
+                                    it.actor = player.gameProfile.name
+                                    it.actorChar = ActorChar.NULL
+                                    it
+                                }
                                 return@executes ctx.source.sendSuccess(Component.literal("Actor was set"))
                             }))
                     .then(Commands
-                        .literal("char")
+                        .literal("actorChar")
                         .then(Commands
                             .argument("actorChar", StringArgumentType.word())
                             .executes { ctx ->
                                 val char = StringArgumentType.getString(ctx, "actorChar")
-                                ctx.source.server.nlf2data.loreData = Nlf2PlayersData.LoreData(ctx.source.server.actorNickname, char)
+                                ctx.source.server.nlf2data::loreData.transform {
+                                    it.actorChar = ActorChar.fromString(char)
+                                    it
+                                }
                                 return@executes ctx.source.sendSuccess(Component.literal("Actor char was set"))
+                            }))
+                    .then(Commands
+                        .literal("borderState")
+                        .then(Commands
+                            .argument("borderState", IntegerArgumentType.integer(0, 2))
+                            .executes { ctx ->
+                                val state = IntegerArgumentType.getInteger(ctx, "borderState")
+                                ctx.source.server.nlf2data::loreData.transform {
+                                    it.borderState = state
+                                    it
+                                }
+                                return@executes ctx.source.sendSuccess(Component.literal("Border state was set"))
                             })))
                 .then(Commands
                     .literal("event")

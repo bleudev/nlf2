@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.util
 
+import com.bleudev.nine_lifes.client.Transformer
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -11,6 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
+import kotlin.reflect.KMutableProperty
 
 fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) {
     for (payload in payloads) ServerPlayNetworking.send(this, payload)
@@ -30,6 +32,11 @@ val MinecraftServer.actorNickname: String
     get() = nlf2data.loreData.actor
 val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
-
 val ServerPlayer.isActor: Boolean
     get() = gameProfile.name == level().server!!.actorNickname
+
+// Lang
+fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {
+    val value = this.getter.call()
+    this.setter.call(func(value))
+}

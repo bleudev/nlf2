@@ -23,7 +23,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.event101))
             }
         }
 
@@ -42,16 +42,16 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString()))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.event101))
     }
 
-    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL) {
-        constructor(actor: String, actorChar: String) : this(actor, ActorChar.fromString(actorChar))
-
+    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = 0, var event101: Boolean = false) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
-                StringRepresentable.fromEnum(ActorChar::values).fieldOf("actorChar").forGetter(LoreData::actorChar)
+                StringRepresentable.fromEnum(ActorChar::values).fieldOf("actorChar").forGetter(LoreData::actorChar),
+                Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
+                Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
             ).apply(it, ::LoreData) }
         }
     }

@@ -27,10 +27,12 @@ val earthquakeStrength: Float
     get() = noise_amount / 2
 val blackFogEffect: Float
     get() {
+        if (dataSyncedBorderState != 2) return 0f
         return noise_amount * 2
     }
 val cloudAlphaDelta: Float
     get() {
+        if (dataSyncedBorderState != 2) return 1f
         return 1f - (noise_amount * 2)
     }
 // Pause screen cutscene
@@ -70,3 +72,7 @@ var disconnectState: @Range(from = 0, to = 1) Int
 var dataSyncedActor: String = "null"
 @JvmField
 var dataSyncedActorLoreChar: String = "null"
+@JvmField
+var dataSyncedBorderState: Int = 0
+@JvmField
+var dataSyncedEvent101: Boolean = false
