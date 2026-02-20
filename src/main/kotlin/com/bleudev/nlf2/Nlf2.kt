@@ -55,7 +55,7 @@ class Nlf2 : ModInitializer {
             ticks++
             if (ticks % 20 == 0) {
                 server.playerList.players.forEach { player ->
-                    if (player.gameMode()!!.isCreative) return@forEach
+                    if (!player.gameMode()!!.isSurvival) return@forEach
                     val level = player.level()
                     val dist = level.worldBorder.getDistanceToBorder(player)
                     if (dist <= 25) {

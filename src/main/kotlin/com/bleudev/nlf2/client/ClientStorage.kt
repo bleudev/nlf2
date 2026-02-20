@@ -25,9 +25,13 @@ var noise_tick: Int = 0
 var noise_amount: Float = .0f
 val earthquakeStrength: Float
     get() = noise_amount / 2
+val blackFogEffect: Float
+    get() {
+        return noise_amount * 2
+    }
 val cloudAlphaDelta: Float
     get() {
-        return 1f - noise_amount
+        return 1f - (noise_amount * 2)
     }
 // Pause screen cutscene
 @JvmField
