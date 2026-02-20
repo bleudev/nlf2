@@ -22,7 +22,13 @@ var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f
 // Border
 var noise_tick: Int = 0
-var noise_amount: Float = .1f
+var noise_amount: Float = .0f
+val earthquakeStrength: Float
+    get() = noise_amount / 2
+val cloudAlphaDelta: Float
+    get() {
+        return 1f - noise_amount
+    }
 // Pause screen cutscene
 @JvmField
 var pause_screen_red_screen_effect: Boolean = false
@@ -31,8 +37,6 @@ var should_not_play_any_sound: Boolean = false
 @JvmField
 var pause_screen_ticks: Int = 0
 // Camera
-@JvmField
-var earthquakeStrength: Float = 1f
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path
