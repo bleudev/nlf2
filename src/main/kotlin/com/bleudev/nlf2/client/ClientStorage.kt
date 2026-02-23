@@ -63,6 +63,8 @@ var shaderLostVesselControl: Boolean = false
 var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
+@JvmField
+var shaderAnaglyph: Boolean = true
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path

@@ -33,6 +33,7 @@ public class GameRendererMixin {
         if (shaderLostVesselControl) renderPostEffect(getIdentifier("lost_vessel_control"));
         if (shaderBorderLag) renderPostEffect(getIdentifier("border_lag"));
         if (shaderBorderEnd) renderPostEffect(getIdentifier("border_end"));
+        if (shaderAnaglyph) renderPostEffect(getIdentifier("anaglyph"));
     }
 
     @Unique

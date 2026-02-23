@@ -1,0 +1,52 @@
+{
+    "targets": {
+        "swap": {}
+    },
+    "passes": [
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "nlf2:post/anaglyph",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "AnaglyphConfig": [
+                    {
+                        "name": "Delta",
+                        "type": "vec2",
+                        "value": [ 0.002, 0.001 ]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/bits",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "minecraft:main",
+            "uniforms": {
+                "BitsConfig": [
+                    {
+                        "name": "Resolution",
+                        "type": "float",
+                        "value": 20.0
+                    },
+                    {
+                        "name": "MosaicSize",
+                        "type": "float",
+                        "value": 4.0
+                    }
+                ]
+            }
+        }
+    ]
+}

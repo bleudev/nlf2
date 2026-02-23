@@ -1,7 +1,6 @@
 {
     "targets": {
-        "swap": {},
-        "swap2": {}
+        "swap": {}
     },
     "passes": [
         {
@@ -33,7 +32,7 @@
                     "target": "swap"
                 }
             ],
-            "output": "swap2",
+            "output": "swap",
             "uniforms": {
                 "BitsConfig": [
                     {
@@ -55,7 +54,7 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap2"
+                    "target": "swap"
                 }
             ],
             "uniforms": {
