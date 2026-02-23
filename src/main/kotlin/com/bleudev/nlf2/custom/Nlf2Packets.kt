@@ -2,6 +2,9 @@ package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
+import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.register
@@ -15,11 +18,14 @@ object Nlf2Packets {
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
 
     val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
+    val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
+    val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
 
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
+    val SB_KILL_BORDER_BLACK_FOG = getIdentifier("packet/sb/kill_border_black_fog")
 
     fun initialize() {
-        // ClientBound
+        // Client bound
         val s2c = PayloadTypeRegistry.clientboundPlay()
         // Normal
         s2c.register(ClientNlf2DataSync)
@@ -29,10 +35,14 @@ object Nlf2Packets {
         s2c.register(JoinDisconnectVersion)
         // Unit
         s2c.register(CrashClientPayload)
+        s2c.register(BorderBlackFogStart)
+        s2c.register(CancelBorderBlackFog)
 
-        // ServerBound
+        // Server bound
         val c2s = PayloadTypeRegistry.serverboundPlay()
         // Normal
         c2s.register(JoinSendVersion)
+        // Unit
+        c2s.register(KillBorderBlackFog)
     }
 }

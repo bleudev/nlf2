@@ -29,11 +29,11 @@ public class FogPropertiesMixin {
     @Inject(method = "_get_fogStart_$lambda$0", at = @At("RETURN"), cancellable = true)
     private static void modifyFogStart(float start, CallbackInfoReturnable<Float> cir) {
         float original = cir.getReturnValue();
-        cir.setReturnValue(Mth.lerp(getBlackFogEffect(), original, start * .005f));
+        cir.setReturnValue(Mth.lerp(getBlackFogEffect(), original, start * .03f));
     }
     @Inject(method = "_get_fogEnd_$lambda$0", at = @At("RETURN"), cancellable = true)
     private static void modifyFogEnd(float end, CallbackInfoReturnable<Float> cir) {
         float original = cir.getReturnValue();
-        cir.setReturnValue(Mth.lerp(getBlackFogEffect(), original, end * .005f));
+        cir.setReturnValue(Mth.lerp(getBlackFogEffect(), original, end * .03f));
     }
 }

@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.client
 
-import com.bleudev.nlf2.MODID
+import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
@@ -15,8 +15,10 @@ import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
+import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
-import com.bleudev.nlf2.getIdentifier
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
@@ -57,6 +59,30 @@ class Nlf2Client : ClientModInitializer {
                 join_blackness = (join_blackness - .05f).coerceAtLeast(0f)
 
             noise_tick++
+
+            if (dataSyncedBorderState != 2) return@register
+            if (borderBlackFogTicks == -1) {
+                borderBlackFog = 0f
+                join_blackness = 0f
+                return@register
+            }
+            if (borderBlackFogTicks == 0) {
+                borderBlackFogTicks = -1
+                deathScreenBlackFogEffect = true
+                ClientPlayNetworking.send(KillBorderBlackFog.INSTANCE)
+            }
+            if (borderBlackFogTicks > 0) {
+                if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY) {
+                    borderBlackFog = 1f - ((borderBlackFogTicks - BORDER_BLACK_FOG_KILL_TRANS_DURATION - BORDER_BLACK_FOG_KILL_TRANS_DELAY).toFloat() / BORDER_BLACK_FOG_DURATION)
+                } else {
+                    borderBlackFog = 1f
+                    join_blackness = if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION) 0f
+                    else 1f - (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+                }
+                if (borderBlackFogStarting) borderBlackFogTicks--
+                else borderBlackFogTicks++
+                if (borderBlackFogTicks == BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY + BORDER_BLACK_FOG_DURATION && !borderBlackFogStarting) borderBlackFogTicks = -1
+            }
         }
         ClientPlayConnectionEvents.JOIN.register { _, s, mc ->
             s.sendPacket(JoinSendVersion(FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString))
@@ -109,6 +135,16 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
             ctx.client().setScreen(JoinDisconnectScreen(payload.client, payload.server))
+        }
+        registerPacketReceiver(BorderBlackFogStart) {
+            if (borderBlackFogTicks == -1) {
+                borderBlackFogTicks = BORDER_BLACK_FOG_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY
+                borderBlackFogStarting = true
+            }
+        }
+        registerPacketReceiver(CancelBorderBlackFog) {
+            if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+                borderBlackFogStarting = false
         }
     }
 

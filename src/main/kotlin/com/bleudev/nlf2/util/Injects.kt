@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.util
 
 import com.bleudev.nine_lifes.client.Transformer
+import com.bleudev.nine_lifes.custom.NineLifesDamageSources
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -12,11 +13,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
+import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.level.Level
 import kotlin.reflect.KMutableProperty
 
 fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) {
     for (payload in payloads) ServerPlayNetworking.send(this, payload)
 }
+fun ServerPlayer.hurtServer(source: (Level) -> DamageSource, damage: Float) = level().also {
+    hurtServer(it, source(it), damage)
+}
+fun ServerPlayer.hurtUnknown(damage: Float) = hurtServer(NineLifesDamageSources::unknown, damage)
 
 fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPacketPayload>) {
     for (player in this.playerList.players) player.sendPackets(*generator(player))

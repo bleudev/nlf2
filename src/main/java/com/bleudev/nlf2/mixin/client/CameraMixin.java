@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.bleudev.nlf2.client.ClientStorageKt.getEarthquakeSpeed;
 import static com.bleudev.nlf2.client.ClientStorageKt.getEarthquakeStrength;
 
 @Environment(EnvType.CLIENT)
@@ -28,8 +29,8 @@ public abstract class CameraMixin {
     private void applyShake(DeltaTracker deltaTracker, CallbackInfo ci) {
         float strength = getEarthquakeStrength();
         if (strength > 0.0F) {
-            float yaw = (float) (Math.sin(Util.getMillis() / 30.0) * strength);
-            float pitch = (float) (Math.cos(Util.getMillis() / 60.0) * strength);
+            float yaw = (float) (Math.sin(Util.getMillis() / 30.0 * getEarthquakeSpeed()) * strength);
+            float pitch = (float) (Math.cos(Util.getMillis() / 60.0 * getEarthquakeSpeed()) * strength);
             this.setRotation((float) (this.yRot - pitch * Math.sqrt(2)), this.xRot + (yaw));
         }
     }

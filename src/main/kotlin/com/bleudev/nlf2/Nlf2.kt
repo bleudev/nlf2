@@ -1,6 +1,5 @@
 package com.bleudev.nlf2
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageSources
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands
@@ -11,6 +10,10 @@ import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
+import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
+import com.bleudev.nlf2.util.hurtUnknown
 import com.bleudev.nlf2.util.sendToEveryone
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -44,7 +47,7 @@ class Nlf2 : ModInitializer {
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
         ServerPlayerEvents.JOIN.register { player ->
-            player.level().server!!.nlf2data.onJoin(player)
+            player.level().server.nlf2data.onJoin(player)
 
             if (player.isFirstJoined()) player.teleportOnFirstJoin()
         }
@@ -56,13 +59,13 @@ class Nlf2 : ModInitializer {
             if (ticks % 20 == 0) {
                 server.playerList.players.forEach { player ->
                     if (server.nlf2data.loreData.borderState != 2) return@forEach
-                    if (!player.gameMode()!!.isSurvival) return@forEach
+                    if (!player.gameMode().isSurvival) return@forEach
+                    if (!player.isAlive) return@forEach
                     val level = player.level()
                     val dist = level.worldBorder.getDistanceToBorder(player)
                     if (dist <= 25) {
-                        val damageAmount = (((25 - dist) / 5).toInt() + 1).toFloat()
-                        player.hurtServer(level, NineLifesDamageSources.unknown(level), damageAmount)
-                    }
+                        player.sendPacket(BorderBlackFogStart.INSTANCE)
+                    } else player.sendPacket(CancelBorderBlackFog.INSTANCE)
                 }
             }
         }
@@ -78,6 +81,11 @@ class Nlf2 : ModInitializer {
                     player.setGameMode(GameType.SURVIVAL)
                 }
             }
+        }
+
+        registerPacketReceiver(KillBorderBlackFog) { _, ctx ->
+            if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
+            ctx.player().hurtUnknown(9999f)
         }
     }
 

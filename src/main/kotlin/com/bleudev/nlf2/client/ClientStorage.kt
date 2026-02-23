@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nlf2.BORDER_BLACK_FOG_KILL_TRANS_DURATION
 import net.fabricmc.loader.api.FabricLoader
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
@@ -23,17 +24,28 @@ var join_blackness: Float = 1f
 // Border
 var noise_tick: Int = 0
 var noise_amount: Float = .0f
-val earthquakeStrength: Float
-    get() = noise_amount / 2
+val earthquakeStrength: Float get() =
+    if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) / 2
+    else noise_amount / 2
+val earthquakeSpeed: Float get() =
+    if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 2.5f
+    else 1f
+var borderBlackFogTicks: Int = -1
+var borderBlackFogStarting: Boolean = true
+var borderBlackFog: Float = 0f
+@JvmField
+var deathScreenBlackFogEffect: Boolean = false
 val blackFogEffect: Float
     get() {
         if (dataSyncedBorderState != 2) return 0f
-        return noise_amount * 2
+        return borderBlackFog
     }
 val cloudAlphaDelta: Float
     get() {
         if (dataSyncedBorderState != 2) return 1f
-        return 1f - (noise_amount * 2)
+        return 1f - borderBlackFog
     }
 // Pause screen cutscene
 @JvmField
