@@ -34,6 +34,7 @@ public class GameRendererMixin {
         if (shaderBorderLag) renderPostEffect(getIdentifier("border_lag"));
         if (shaderBorderEnd) renderPostEffect(getIdentifier("border_end"));
         if (shaderAnaglyph) renderPostEffect(getIdentifier("anaglyph"));
+        if (shaderRedMaj) renderPostEffect(getIdentifier("redmaj"));
     }
 
     @Unique
