@@ -19,6 +19,7 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFo
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
+import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
@@ -145,6 +146,9 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(CancelBorderBlackFog) {
             if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION)
                 borderBlackFogStarting = false
+        }
+        registerPacketReceiver(LostVesselControlActivate) {
+            shaderLostVesselControl = !shaderLostVesselControl
         }
     }
 

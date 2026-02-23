@@ -1,9 +1,11 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
+import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
 import com.bleudev.nlf2.util.sendToEveryone
@@ -147,16 +149,14 @@ object Nlf2Commands {
     }
 
     private val debugMap: Map<Int, String> = mapOf(
-        1001 to "debugtest_nickname_test"
+        1001 to "lost_vessel_control_activate"
     )
 
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
         when (debugId) {
-            // debugtest_nickname_test
+            // lost_vessel_control_activate
             1001 -> {
-                if (player != null) {
-                    player!!.sendSystemMessage(Component.literal("Nickname: " + player!!.gameProfile.name))
-                }
+                player?.sendPacket(LostVesselControlActivate.INSTANCE)
             }
             else -> return false
         }

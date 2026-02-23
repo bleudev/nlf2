@@ -54,7 +54,9 @@ var pause_screen_red_screen_effect: Boolean = false
 var should_not_play_any_sound: Boolean = false
 @JvmField
 var pause_screen_ticks: Int = 0
-// Camera
+// Shader effects
+@JvmField
+var shaderLostVesselControl: Boolean = false
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path
