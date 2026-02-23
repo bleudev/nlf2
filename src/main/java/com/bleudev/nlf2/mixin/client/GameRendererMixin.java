@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.bleudev.nlf2.Nlf2Kt.getIdentifier;
-import static com.bleudev.nlf2.client.ClientStorageKt.shaderLostVesselControl;
+import static com.bleudev.nlf2.client.ClientStorageKt.*;
 import static net.minecraft.client.renderer.PostChain.MAIN_TARGET_ID;
 
 @Environment(EnvType.CLIENT)
@@ -31,6 +31,8 @@ public class GameRendererMixin {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER))
     private void renderAdditionalShader(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         if (shaderLostVesselControl) renderPostEffect(getIdentifier("lost_vessel_control"));
+        if (shaderBorderLag) renderPostEffect(getIdentifier("border_lag"));
+        if (shaderBorderEnd) renderPostEffect(getIdentifier("border_end"));
     }
 
     @Unique

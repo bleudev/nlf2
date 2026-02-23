@@ -53,13 +53,24 @@ class Nlf2Client : ClientModInitializer {
             shouldPlayAmbient = pause_screen_red_screen_effect
             ambientTick()
             pause_screen_ticks++
+            noise_tick++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
             if (join_blackness_delay_ticks == 0)
                 join_blackness = (join_blackness - .05f).coerceAtLeast(0f)
 
-            noise_tick++
+            if (shaderBorderLag) {
+                borderLagTicks--
+                if (borderLagTicks == 0) shaderBorderLag = false
+            }
+
+            if (dataSyncedBorderState != 2 && noise_amount > .4f && !shaderBorderLag) {
+                if (it.random.nextFloat() <= .01f) {
+                    shaderBorderLag = true
+                    borderLagTicks = 5
+                }
+            }
 
             if (dataSyncedBorderState != 2) return@register
             if (borderBlackFogTicks == -1) {
@@ -71,6 +82,7 @@ class Nlf2Client : ClientModInitializer {
                 borderBlackFogTicks = -1
                 deathScreenBlackFogEffect = true
                 ClientPlayNetworking.send(KillBorderBlackFog.INSTANCE)
+                shaderBorderEnd = false
             }
             if (borderBlackFogTicks > 0) {
                 if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY) {
@@ -79,6 +91,8 @@ class Nlf2Client : ClientModInitializer {
                     borderBlackFog = 1f
                     join_blackness = if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION) 0f
                     else 1f - (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+
+                    if (join_blackness > .2f) shaderBorderEnd = true
                 }
                 if (borderBlackFogStarting) borderBlackFogTicks--
                 else borderBlackFogTicks++
@@ -148,7 +162,8 @@ class Nlf2Client : ClientModInitializer {
                 borderBlackFogStarting = false
         }
         registerPacketReceiver(LostVesselControlActivate) {
-            shaderLostVesselControl = !shaderLostVesselControl
+            shaderBorderLag = !shaderBorderLag
+//            shaderLostVesselControl = !shaderLostVesselControl
         }
     }
 

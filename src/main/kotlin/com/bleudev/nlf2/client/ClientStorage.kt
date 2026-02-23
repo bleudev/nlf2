@@ -37,6 +37,8 @@ var borderBlackFogStarting: Boolean = true
 var borderBlackFog: Float = 0f
 @JvmField
 var deathScreenBlackFogEffect: Boolean = false
+@JvmField
+var borderLagTicks: Int = 0
 val blackFogEffect: Float
     get() {
         if (dataSyncedBorderState != 2) return 0f
@@ -57,6 +59,10 @@ var pause_screen_ticks: Int = 0
 // Shader effects
 @JvmField
 var shaderLostVesselControl: Boolean = false
+@JvmField
+var shaderBorderLag: Boolean = false
+@JvmField
+var shaderBorderEnd: Boolean = false
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path
