@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom.data.saved
 
+import com.bleudev.nlf2.DATA_FOG_EVENT_STATE_SYNC_DURATION
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
@@ -10,10 +11,12 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.util.Mth
 import net.minecraft.util.StringRepresentable
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
+import org.joml.Vector4f
 
 
 class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
@@ -23,7 +26,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.event101))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState, value.event101))
             }
         }
 
@@ -42,15 +45,16 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.event101))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState, loreData.event101))
     }
 
-    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = 0, var event101: Boolean = false) {
+    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: Int = FogEventStates.BEFORE_MEET_CROCKO, var event101: Boolean = false) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
                 StringRepresentable.fromEnum(ActorChar::values).fieldOf("actorChar").forGetter(LoreData::actorChar),
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
+                Codec.INT.fieldOf("fogEventState").forGetter(LoreData::fogEventState),
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
             ).apply(it, ::LoreData) }
         }
@@ -76,7 +80,7 @@ enum class ActorChar(private val char: String): StringRepresentable {
     INV("inv");
 
     override fun getSerializedName(): String = char
-    override fun toString(): String = char
+    override fun toString(): String = serializedName
 
     val eyes: String?
         get() = when (this) {
@@ -100,6 +104,76 @@ enum class ActorChar(private val char: String): StringRepresentable {
                 "inv" -> INV
                 else -> NULL
             }
+        }
+    }
+}
+
+object BorderStates {
+    const val STANDARD = 0
+    @Deprecated("Use standard instead")
+    const val STANDARD_X_DEPRECATED = 1
+    const val BLACK_FOG_KILL = 2
+}
+
+@Deprecated("Use FogEventState enum instead")
+object FogEventStates {
+    const val BEFORE_MEET_CROCKO = 0
+    const val AFTER_MEET_CROCKO = 1
+    const val BEFORE_MEET_WAFFLA = 2
+    const val AFTER_MEET_WAFFLA = 3
+}
+
+data class FogEventStateFogProperties(val fogColor: Vector4f, val fogStart: Float, val fogEnd: Float)
+
+enum class FogEventState(val value: Int, val fogColor: Vector4f) : StringRepresentable {
+    BEFORE_MEET_CROCKO(0, Vector4f(1f, 1f, 1f, 1f)),
+    AFTER_MEET_CROCKO(1, Vector4f(1f, 1f, 1f, 0f)),
+    BEFORE_MEET_WAFFLA(2, Vector4f(1f, .6f, 0f, 1f)),
+    AFTER_MEET_WAFFLA(3, Vector4f(1f, .6f, 0f, 0f));
+
+    fun getFogProperties(prev: FogEventState?, tick: Int): FogEventStateFogProperties {
+        println("GET FOG PROPERTIES CURR $value PREV $prev (tick = $tick)")
+        var prev = prev
+        if (prev == null) prev = this
+
+        val lerpAmount = tick.toFloat() / DATA_FOG_EVENT_STATE_SYNC_DURATION
+        val direction =
+            if (prev.fogColor.w == this.fogColor.w) 0
+            else if (prev.fogColor.w < this.fogColor.w) 1
+            else -1
+        println("DIRECTION $direction")
+
+        return FogEventStateFogProperties(
+            prev.fogColor.lerp(this.fogColor, lerpAmount),
+            when(direction) {
+                1 -> lerpAmount
+                -1 -> 1f - lerpAmount
+                else -> {
+                    if (fogColor.w == 0f) 1f
+                    else 0f
+                }
+            },
+            Mth.lerp(when (direction) {
+                1 -> lerpAmount
+                -1 -> 1f - lerpAmount
+                else -> {
+                    if (fogColor.w == 0f) 1f
+                    else 0f
+                }
+            }, .1f, 1f),
+        )
+    }
+
+    override fun getSerializedName(): String = value.toString()
+    override fun toString(): String = serializedName
+
+    companion object {
+        fun fromValue(value: Int): FogEventState = when(value) {
+            0 -> BEFORE_MEET_CROCKO
+            1 -> AFTER_MEET_CROCKO
+            2 -> BEFORE_MEET_WAFFLA
+            3 -> AFTER_MEET_WAFFLA
+            else -> throw MatchException(null, null)
         }
     }
 }

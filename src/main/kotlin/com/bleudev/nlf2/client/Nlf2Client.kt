@@ -6,13 +6,12 @@ import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
-import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.black
-import com.bleudev.nlf2.client.util.blitAnim
-import com.bleudev.nlf2.client.util.overlay
+import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
+import com.bleudev.nlf2.custom.data.saved.BorderStates
+import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
@@ -38,6 +37,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
+import net.minecraft.util.Mth
+import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
 
 class Nlf2Client : ClientModInitializer {
@@ -76,42 +77,45 @@ class Nlf2Client : ClientModInitializer {
                 if (borderLagTicks == 0) shaderBorderLag = false
             }
 
-            if (dataSyncedBorderState != 2 && noise_amount > .4f && !shaderBorderLag) {
+            if (dataSyncedBorderState != BorderStates.BLACK_FOG_KILL && noise_amount > .4f && !shaderBorderLag) {
                 if (it.random.nextFloat() <= .01f) {
                     shaderBorderLag = true
                     borderLagTicks = 5
                 }
             }
 
-            if (dataSyncedBorderState != 2) return@register
-            if (borderBlackFogTicks == -1) {
-                borderBlackFog = 0f
-                join_blackness = 0f
-                return@register
-            }
-            if (borderBlackFogTicks == 0) {
-                borderBlackFogTicks = -1
-                deathScreenBlackFogEffect = true
-                shaderAnaglyphUniformX = 0f
-                ClientPlayNetworking.send(KillBorderBlackFog.INSTANCE)
-                shaderBorderEnd = false
-            }
-            if (borderBlackFogTicks > 0) {
-                if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY) {
-                    borderBlackFog = 1f - ((borderBlackFogTicks - BORDER_BLACK_FOG_KILL_TRANS_DURATION - BORDER_BLACK_FOG_KILL_TRANS_DELAY).toFloat() / BORDER_BLACK_FOG_DURATION)
-                } else {
-                    borderBlackFog = 1f
-                    join_blackness = if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION) 0f
-                    else 1f - (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-                    shaderAnaglyphUniformX = join_blackness * 0.01f
+            if (dataSyncedBorderState == BorderStates.BLACK_FOG_KILL) {
+                if (borderBlackFogTicks == -1) {
+                    borderBlackFog = 0f
+                    join_blackness = 0f
+                    return@register
                 }
-                if (borderBlackFogStarting) {
-                    borderBlackFogTicks--
+                if (borderBlackFogTicks == 0) {
+                    borderBlackFogTicks = -1
                     deathScreenBlackFogEffect = true
+                    shaderAnaglyphUniformX = 0f
+                    ClientPlayNetworking.send(KillBorderBlackFog.INSTANCE)
+                    shaderBorderEnd = false
                 }
-                else borderBlackFogTicks++
-                if (borderBlackFogTicks == BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY + BORDER_BLACK_FOG_DURATION && !borderBlackFogStarting) borderBlackFogTicks = -1
+                if (borderBlackFogTicks > 0) {
+                    if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY) {
+                        borderBlackFog = 1f - ((borderBlackFogTicks - BORDER_BLACK_FOG_KILL_TRANS_DURATION - BORDER_BLACK_FOG_KILL_TRANS_DELAY).toFloat() / BORDER_BLACK_FOG_DURATION)
+                    } else {
+                        borderBlackFog = 1f
+                        join_blackness = if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION) 0f
+                        else 1f - (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+                        shaderAnaglyphUniformX = join_blackness * 0.01f
+                    }
+                    if (borderBlackFogStarting) {
+                        borderBlackFogTicks--
+                        deathScreenBlackFogEffect = true
+                    }
+                    else borderBlackFogTicks++
+                    if (borderBlackFogTicks == BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY + BORDER_BLACK_FOG_DURATION && !borderBlackFogStarting) borderBlackFogTicks = -1
+                }
             }
+
+            if (dataFogEventStateSyncTicks > 0) dataFogEventStateSyncTicks--
         }
         ClientPlayConnectionEvents.JOIN.register { _, s, mc ->
             s.sendPacket(JoinSendVersion(FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString))
@@ -140,10 +144,40 @@ class Nlf2Client : ClientModInitializer {
             }
         }
 
+        ClientFogRenderTransformEvents.FOG_COLOR.register { _, current ->
+            current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
+        }
+        ClientFogRenderTransformEvents.FOG_COLOR.register { _, current ->
+            val color = dataSyncedFogProperties.fogColor
+            current.lerp(Vector4f(color.x, color.y, color.z, current.w), color.w)
+        }
+
+        ClientFogRenderTransformEvents.FOG_START.register { original, current ->
+            Mth.lerp(blackFogEffect, current, original * .03f)
+        }
+        ClientFogRenderTransformEvents.FOG_START.register { _, current ->
+            current * dataSyncedFogProperties.fogStart
+        }
+
+        ClientFogRenderTransformEvents.FOG_END.register { original, current ->
+            Mth.lerp(blackFogEffect, current, original * .03f)
+        }
+        ClientFogRenderTransformEvents.FOG_END.register { _, current ->
+            current * dataSyncedFogProperties.fogEnd
+        }
+
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
             dataSyncedBorderState = payload.borderState
+
+            val prevFogEventState = dataSyncedFogEventState
+            if (prevFogEventState.value != payload.fogEventState) {
+                dataSyncedFogEventState = FogEventState.fromValue(payload.fogEventState)
+                dataFogEventStateSyncPrev = prevFogEventState
+                dataFogEventStateSyncTicks = DATA_FOG_EVENT_STATE_SYNC_DURATION
+            }
+
             dataSyncedEvent101 = payload.event101
         }
         registerPacketReceiver(OpenManual) { payload, ctx ->

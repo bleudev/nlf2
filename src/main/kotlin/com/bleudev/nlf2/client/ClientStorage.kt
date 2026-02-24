@@ -1,6 +1,9 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.BORDER_BLACK_FOG_KILL_TRANS_DURATION
+import com.bleudev.nlf2.DATA_FOG_EVENT_STATE_SYNC_DURATION
+import com.bleudev.nlf2.custom.data.saved.FogEventState
+import com.bleudev.nlf2.custom.data.saved.FogEventStateFogProperties
 import net.fabricmc.loader.api.FabricLoader
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
@@ -107,4 +110,16 @@ var dataSyncedActorLoreChar: String = "null"
 @JvmField
 var dataSyncedBorderState: Int = 0
 @JvmField
+var dataSyncedFogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO
+@JvmField
 var dataSyncedEvent101: Boolean = false
+
+val dataSyncedFogProperties: FogEventStateFogProperties get() = dataSyncedFogEventState.getFogProperties(
+    dataFogEventStateSyncPrev, DATA_FOG_EVENT_STATE_SYNC_DURATION - dataFogEventStateSyncTicks.coerceAtLeast(0)).also {
+    println("\nfogColor: ${it.fogColor}\nfogStart: ${it.fogStart}\nfogEnd: ${it.fogEnd}")
+}
+
+@JvmField
+var dataFogEventStateSyncPrev: FogEventState? = null
+@JvmField
+var dataFogEventStateSyncTicks: Int = -1

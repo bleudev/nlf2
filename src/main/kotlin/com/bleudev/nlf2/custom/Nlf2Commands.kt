@@ -149,7 +149,11 @@ object Nlf2Commands {
     }
 
     private val debugMap: Map<Int, String> = mapOf(
-        1001 to "lost_vessel_control_activate"
+        1001 to "lost_vessel_control_activate",
+        89 to "fog_event_state_0",
+        90 to "fog_event_state_1",
+        91 to "fog_event_state_2",
+        92 to "fog_event_state_3"
     )
 
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
@@ -157,6 +161,30 @@ object Nlf2Commands {
             // lost_vessel_control_activate
             1001 -> {
                 player?.sendPacket(LostVesselControlActivate.INSTANCE)
+            }
+            89 -> {
+                server.nlf2data::loreData.transform {
+                    it.fogEventState = 0
+                    it
+                }
+            }
+            90 -> {
+                server.nlf2data::loreData.transform {
+                    it.fogEventState = 1
+                    it
+                }
+            }
+            91 -> {
+                server.nlf2data::loreData.transform {
+                    it.fogEventState = 2
+                    it
+                }
+            }
+            92 -> {
+                server.nlf2data::loreData.transform {
+                    it.fogEventState = 3
+                    it
+                }
             }
             else -> return false
         }
