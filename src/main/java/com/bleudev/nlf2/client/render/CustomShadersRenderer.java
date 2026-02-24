@@ -32,10 +32,9 @@ public class CustomShadersRenderer {
         if (shaderBorderLag) renderCustomPostEffect("border_lag");
         if (shaderBorderEnd) renderCustomPostEffect("border_end");
 
-        if (shaderRedMaj && shaderRedMajUniformStrength > 0)
-            renderCustomPostEffect("redmaj");
-        if (shaderAnaglyph && shaderAnaglyphUniformX != 0 && shaderAnaglyphUniformY != 0)
-            renderCustomPostEffect("anaglyph");
+        // Dynamic shaders
+        if (getShaderRedMaj()) renderCustomPostEffect("redmaj");
+        if (getShaderAnaglyph()) renderCustomPostEffect("anaglyph");
     }
 
     private void renderCustomPostEffect(String name) {

@@ -65,9 +65,7 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
-            shaderRedMajUniformStrength = (shaderRedMajUniformStrength - .005f).coerceIn(0f, 1f)
-//            shaderAnaglyphUniformX += 0.0001f
-//            shaderAnaglyphUniformY += 0.00005f
+            shaderRedMajUniformStrength = join_blackness
 
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
             if (join_blackness_delay_ticks == 0)
@@ -94,6 +92,7 @@ class Nlf2Client : ClientModInitializer {
             if (borderBlackFogTicks == 0) {
                 borderBlackFogTicks = -1
                 deathScreenBlackFogEffect = true
+                shaderAnaglyphUniformX = 0f
                 ClientPlayNetworking.send(KillBorderBlackFog.INSTANCE)
                 shaderBorderEnd = false
             }
@@ -104,10 +103,12 @@ class Nlf2Client : ClientModInitializer {
                     borderBlackFog = 1f
                     join_blackness = if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION) 0f
                     else 1f - (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-
-                    if (join_blackness > .2f) shaderBorderEnd = true
+                    shaderAnaglyphUniformX = join_blackness * 0.01f
                 }
-                if (borderBlackFogStarting) borderBlackFogTicks--
+                if (borderBlackFogStarting) {
+                    borderBlackFogTicks--
+                    deathScreenBlackFogEffect = true
+                }
                 else borderBlackFogTicks++
                 if (borderBlackFogTicks == BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY + BORDER_BLACK_FOG_DURATION && !borderBlackFogStarting) borderBlackFogTicks = -1
             }

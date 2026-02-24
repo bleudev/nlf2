@@ -63,14 +63,14 @@ var shaderLostVesselControl: Boolean = false
 var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
+// Dynamic shaders
+val shaderRedMaj: Boolean
+    get() = shaderRedMajUniformStrength > 0f
+@JvmField
+var shaderRedMajUniformStrength: Float = 0f
 
-@JvmField
-var shaderRedMaj: Boolean = true
-@JvmField
-var shaderRedMajUniformStrength: Float = 1f
-
-@JvmField
-var shaderAnaglyph: Boolean = false
+val shaderAnaglyph: Boolean
+    get() = (shaderAnaglyphUniformX != 0f) || (shaderAnaglyphUniformY != 0f)
 @JvmField
 var shaderAnaglyphUniformX: Float = 0f
 @JvmField
