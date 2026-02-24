@@ -3,6 +3,7 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.custom.data.saved.ActorChar
+import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
@@ -156,6 +157,9 @@ object Nlf2Commands {
         92 to "fog_event_state_3"
     )
 
+    // TODO: Fix strange fog event state shift after time (for example, 89 set fog event state to 1 for some reason)
+    // TODO: Fix strange fast fog start and end lerping
+    // TODO: Fix fog event wrong duration
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
         when (debugId) {
             // lost_vessel_control_activate
@@ -164,25 +168,25 @@ object Nlf2Commands {
             }
             89 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = 0
+                    it.fogEventState = FogEventState.BEFORE_MEET_CROCKO
                     it
                 }
             }
             90 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = 1
+                    it.fogEventState = FogEventState.AFTER_MEET_CROCKO
                     it
                 }
             }
             91 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = 2
+                    it.fogEventState = FogEventState.BEFORE_MEET_WAFFLA
                     it
                 }
             }
             92 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = 3
+                    it.fogEventState = FogEventState.AFTER_MEET_WAFFLA
                     it
                 }
             }

@@ -26,7 +26,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState, value.event101))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState.value, value.event101))
             }
         }
 
@@ -45,16 +45,16 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState, loreData.event101))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState.value, loreData.event101))
     }
 
-    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: Int = FogEventStates.BEFORE_MEET_CROCKO, var event101: Boolean = false) {
+    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO, var event101: Boolean = false) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
                 StringRepresentable.fromEnum(ActorChar::values).fieldOf("actorChar").forGetter(LoreData::actorChar),
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
-                Codec.INT.fieldOf("fogEventState").forGetter(LoreData::fogEventState),
+                StringRepresentable.fromEnum(FogEventState::values).fieldOf("fogEventState").forGetter(LoreData::fogEventState),
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
             ).apply(it, ::LoreData) }
         }
@@ -115,14 +115,6 @@ object BorderStates {
     const val BLACK_FOG_KILL = 2
 }
 
-@Deprecated("Use FogEventState enum instead")
-object FogEventStates {
-    const val BEFORE_MEET_CROCKO = 0
-    const val AFTER_MEET_CROCKO = 1
-    const val BEFORE_MEET_WAFFLA = 2
-    const val AFTER_MEET_WAFFLA = 3
-}
-
 data class FogEventStateFogProperties(val fogColor: Vector4f, val fogStart: Float, val fogEnd: Float)
 
 enum class FogEventState(val value: Int, val fogColor: Vector4f) : StringRepresentable {
@@ -143,24 +135,18 @@ enum class FogEventState(val value: Int, val fogColor: Vector4f) : StringReprese
             else -1
         println("DIRECTION $direction")
 
+        val lerpFogStartEnd = when(direction) {
+            1 -> lerpAmount
+            -1 -> 1f - lerpAmount
+            else -> {
+                if (fogColor.w == 0f) 1f
+                else 0f
+            }
+        }
         return FogEventStateFogProperties(
             prev.fogColor.lerp(this.fogColor, lerpAmount),
-            when(direction) {
-                1 -> lerpAmount
-                -1 -> 1f - lerpAmount
-                else -> {
-                    if (fogColor.w == 0f) 1f
-                    else 0f
-                }
-            },
-            Mth.lerp(when (direction) {
-                1 -> lerpAmount
-                -1 -> 1f - lerpAmount
-                else -> {
-                    if (fogColor.w == 0f) 1f
-                    else 0f
-                }
-            }, .1f, 1f),
+            Mth.lerp(lerpFogStartEnd, .03f, 1f),
+            Mth.lerp(lerpFogStartEnd, .1f, 1f),
         )
     }
 

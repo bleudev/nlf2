@@ -40,7 +40,7 @@ val MinecraftServer.actorNickname: String
 val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
 val ServerPlayer.isActor: Boolean
-    get() = gameProfile.name == level().server!!.actorNickname
+    get() = gameProfile.name == level().server.actorNickname
 
 // Lang
 fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {
