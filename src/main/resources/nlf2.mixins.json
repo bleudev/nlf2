@@ -35,6 +35,7 @@
     "client.PanoramaRendererMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
+    "client.PostPassMixin",
     "client.TitleScreenMixin",
     "client.WorldBorderRendererMixin",
     "client.nine_lifes.FogPropertiesMixin"

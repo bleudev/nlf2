@@ -64,9 +64,14 @@ var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
 @JvmField
-var shaderAnaglyph: Boolean = false
+var shaderRedMaj: Boolean = false
+
 @JvmField
-var shaderRedMaj: Boolean = true
+var shaderAnaglyph: Boolean = true
+@JvmField
+var shaderAnaglyphUniformX: Float = 0f
+@JvmField
+var shaderAnaglyphUniformY: Float = 0f
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path
