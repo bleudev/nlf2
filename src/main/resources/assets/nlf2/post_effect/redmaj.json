@@ -19,6 +19,11 @@
                         "name": "ChMatrix",
                         "type": "vec3",
                         "value": [ 1.0, 0.0, 0.0 ]
+                    },
+                    {
+                        "name": "Strength",
+                        "type": "float",
+                        "value": 0.0
                     }
                 ]
             }

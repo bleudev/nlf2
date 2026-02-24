@@ -49,6 +49,9 @@ class Nlf2Client : ClientModInitializer {
         UniformEditorRegistry.register("AnaglyphConfig", Std140SizeCalculator().putVec2().get()) {
             it.putVec2(shaderAnaglyphUniformX, shaderAnaglyphUniformY)
         }
+        UniformEditorRegistry.register("ChmajConfig", Std140SizeCalculator().putVec3().putFloat().get()) {
+            it.putVec3(1f, 0f, 0f).putFloat(shaderRedMajUniformStrength)
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
@@ -62,6 +65,7 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
+            shaderRedMajUniformStrength = (shaderRedMajUniformStrength - .005f).coerceIn(0f, 1f)
 //            shaderAnaglyphUniformX += 0.0001f
 //            shaderAnaglyphUniformY += 0.00005f
 
@@ -171,7 +175,8 @@ class Nlf2Client : ClientModInitializer {
                 borderBlackFogStarting = false
         }
         registerPacketReceiver(LostVesselControlActivate) {
-            shaderBorderLag = !shaderBorderLag
+//            shaderBorderLag = !shaderBorderLag
+            shaderRedMajUniformStrength = 1f
 //            shaderLostVesselControl = !shaderLostVesselControl
         }
     }

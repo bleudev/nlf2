@@ -28,13 +28,18 @@ public class CustomShadersRenderer {
     public void render() {
         UniformEditorRegistryImpl.internalUpdateBuffers();
 
-        if (shaderLostVesselControl) renderPostEffect(getIdentifier("lost_vessel_control"));
-        if (shaderBorderLag) renderPostEffect(getIdentifier("border_lag"));
-        if (shaderBorderEnd) renderPostEffect(getIdentifier("border_end"));
-        if (shaderRedMaj) renderPostEffect(getIdentifier("redmaj"));
+        if (shaderLostVesselControl) renderCustomPostEffect("lost_vessel_control");
+        if (shaderBorderLag) renderCustomPostEffect("border_lag");
+        if (shaderBorderEnd) renderCustomPostEffect("border_end");
 
+        if (shaderRedMaj && shaderRedMajUniformStrength > 0)
+            renderCustomPostEffect("redmaj");
         if (shaderAnaglyph && shaderAnaglyphUniformX != 0 && shaderAnaglyphUniformY != 0)
-            renderPostEffect(getIdentifier("anaglyph"));
+            renderCustomPostEffect("anaglyph");
+    }
+
+    private void renderCustomPostEffect(String name) {
+        renderPostEffect(getIdentifier(name));
     }
 
     private void renderPostEffect(Identifier postEffectId) {

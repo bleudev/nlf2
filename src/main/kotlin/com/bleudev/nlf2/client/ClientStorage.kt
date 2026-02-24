@@ -63,11 +63,14 @@ var shaderLostVesselControl: Boolean = false
 var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
-@JvmField
-var shaderRedMaj: Boolean = false
 
 @JvmField
-var shaderAnaglyph: Boolean = true
+var shaderRedMaj: Boolean = true
+@JvmField
+var shaderRedMajUniformStrength: Float = 1f
+
+@JvmField
+var shaderAnaglyph: Boolean = false
 @JvmField
 var shaderAnaglyphUniformX: Float = 0f
 @JvmField
