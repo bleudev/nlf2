@@ -1,14 +1,10 @@
 package com.bleudev.nlf2.client.render;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.Std140Builder;
-import com.mojang.blaze3d.buffers.Std140SizeCalculator;
+import com.bleudev.nlf2.client.api.UniformEditorRegistryImpl;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
-import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.Identifier;
 
@@ -22,28 +18,23 @@ public class CustomShadersRenderer {
     private final CrossFrameResourcePool resourcePool;
     private final Supplier<Minecraft> minecraftSupplier;
 
-    public static final int ANAGLYPH_UBO_SIZE = new Std140SizeCalculator().putVec2().get();
-    private final MappableRingBuffer anaglyph_ubo = new MappableRingBuffer(() -> "Anaglyph UBO", 130, ANAGLYPH_UBO_SIZE);
-
     public CustomShadersRenderer(CrossFrameResourcePool resourcePool, Supplier<Minecraft> minecraftSupplier) {
         this.resourcePool = resourcePool;
         this.minecraftSupplier = minecraftSupplier;
+
+        UniformEditorRegistryImpl.internalInitBuffers();
     }
 
     public void render() {
+        UniformEditorRegistryImpl.internalUpdateBuffers();
+
         if (shaderLostVesselControl) renderPostEffect(getIdentifier("lost_vessel_control"));
         if (shaderBorderLag) renderPostEffect(getIdentifier("border_lag"));
         if (shaderBorderEnd) renderPostEffect(getIdentifier("border_end"));
         if (shaderRedMaj) renderPostEffect(getIdentifier("redmaj"));
 
-        if (shaderAnaglyph && shaderAnaglyphUniformX != 0 && shaderAnaglyphUniformY != 0) {
-            try (GpuBuffer.MappedView view = RenderSystem.getDevice().createCommandEncoder().mapBuffer(anaglyph_ubo.currentBuffer(), false, true)) {
-                view.data().position(0);
-                Std140Builder.intoBuffer(view.data()).putVec2(shaderAnaglyphUniformX, shaderAnaglyphUniformY);
-            }
-            CustomRenderSystem.setShaderAnaglyph(anaglyph_ubo.currentBuffer());
+        if (shaderAnaglyph && shaderAnaglyphUniformX != 0 && shaderAnaglyphUniformY != 0)
             renderPostEffect(getIdentifier("anaglyph"));
-        }
     }
 
     private void renderPostEffect(Identifier postEffectId) {

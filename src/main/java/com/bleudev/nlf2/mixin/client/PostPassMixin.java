@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.mixin.client;
 
-import com.bleudev.nlf2.client.render.CustomRenderSystem;
+import com.bleudev.nlf2.client.api.UniformEditorRegistryImpl;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,10 +23,6 @@ public class PostPassMixin {
 
     @Redirect(method = "lambda$addToFrame$1", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/PostPass;customUniforms:Ljava/util/Map;", opcode = Opcodes.GETFIELD))
     private Map<String, GpuBuffer> modifyUniforms(PostPass instance) {
-        Map<String, GpuBuffer> uniforms = this.customUniforms;
-        if (uniforms.containsKey("AnaglyphConfig")) {
-            uniforms.put("AnaglyphConfig", CustomRenderSystem.getShaderAnaglyph());
-        }
-        return uniforms;
+        return UniformEditorRegistryImpl.internalModifyCustomUniforms(this.customUniforms);
     }
 }
