@@ -12,6 +12,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.server.disconnect.version.please.update", "Please update the mod")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
+        builder.add(Nlf2Items.AMETHYST_STICK, "Amethyst stick")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds
@@ -28,6 +29,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.server.disconnect.version.please.update", "Пожалуйста, обновите мод")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
+        builder.add(Nlf2Items.AMETHYST_STICK, "Аметистовая палочка")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds
