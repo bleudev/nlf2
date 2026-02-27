@@ -1,6 +1,5 @@
 package com.bleudev.nlf2.client.render;
 
-import com.bleudev.nlf2.client.api.UniformEditorRegistryImpl;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import net.minecraft.client.Minecraft;
@@ -21,20 +20,12 @@ public class CustomShadersRenderer {
     public CustomShadersRenderer(CrossFrameResourcePool resourcePool, Supplier<Minecraft> minecraftSupplier) {
         this.resourcePool = resourcePool;
         this.minecraftSupplier = minecraftSupplier;
-
-        UniformEditorRegistryImpl.internalInitBuffers();
     }
 
     public void render() {
-        UniformEditorRegistryImpl.internalUpdateBuffers();
-
         if (shaderLostVesselControl) renderCustomPostEffect("lost_vessel_control");
         if (shaderBorderLag) renderCustomPostEffect("border_lag");
         if (shaderBorderEnd) renderCustomPostEffect("border_end");
-
-        // Dynamic shaders
-        if (getShaderRedMaj()) renderCustomPostEffect("redmaj");
-        if (getShaderAnaglyph()) renderCustomPostEffect("anaglyph");
     }
 
     private void renderCustomPostEffect(String name) {

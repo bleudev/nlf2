@@ -35,10 +35,10 @@
     "client.PanoramaRendererMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
-    "client.PostPassMixin",
     "client.TitleScreenMixin",
     "client.WorldBorderRendererMixin",
-    "client.nine_lifes.FogPropertiesMixin"
+    "client.nine_lifes.FogPropertiesMixin",
+    "client.nine_lifes.NineLifesClientDataMixin"
   ],
   "injectors": {
     "defaultRequire": 1

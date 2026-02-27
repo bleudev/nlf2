@@ -1,7 +1,6 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.*
-import com.bleudev.nlf2.client.api.UniformEditorRegistry
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
@@ -21,7 +20,6 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.github.sarxos.webcam.Webcam
-import com.mojang.blaze3d.buffers.Std140SizeCalculator
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -46,13 +44,6 @@ class Nlf2Client : ClientModInitializer {
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         tryHideMod()
-
-        UniformEditorRegistry.register("AnaglyphConfig", Std140SizeCalculator().putVec2().get()) {
-            it.putVec2(shaderAnaglyphUniformX, shaderAnaglyphUniformY)
-        }
-        UniformEditorRegistry.register("ChmajConfig", Std140SizeCalculator().putVec3().putFloat().get()) {
-            it.putVec3(1f, 0f, 0f).putFloat(shaderRedMajUniformStrength)
-        }
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
