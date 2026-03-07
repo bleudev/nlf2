@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.util
 
 import com.bleudev.nine_lifes.client.Transformer
-import com.bleudev.nine_lifes.custom.NineLifesDamageSources
+import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -23,7 +23,7 @@ fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) {
 fun ServerPlayer.hurtServer(source: (Level) -> DamageSource, damage: Float) = level().also {
     hurtServer(it, source(it), damage)
 }
-fun ServerPlayer.hurtUnknown(damage: Float) = hurtServer(NineLifesDamageSources::unknown, damage)
+fun ServerPlayer.hurtUnknown(damage: Float) = hurtServer(NineLifesDamageTypes::unknown, damage)
 
 fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPacketPayload>) {
     for (player in this.playerList.players) player.sendPackets(*generator(player))
