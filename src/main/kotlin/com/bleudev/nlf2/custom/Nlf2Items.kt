@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nlf2.custom.world.item.ManualItem
 import com.bleudev.nlf2.custom.world.item.WDPuzzleItem
 import com.bleudev.nlf2.util.registerCreativeModeTab
 import com.bleudev.nlf2.util.registerItem
@@ -14,6 +15,7 @@ object Nlf2Items {
             .title(Component.translatable("creativeModeTab.nlf2.general"))
             .displayItems { _, output ->
                 output.accept(WD_PUZZLE, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY)
+                output.accept(MANUAL, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY)
             }
         }
 
@@ -21,6 +23,7 @@ object Nlf2Items {
     }
 
     val WD_PUZZLE = registerItem("wd_puzzle", ::WDPuzzleItem)
+    val MANUAL = registerItem("manual", ::ManualItem)
 
     fun initialize() {
         Groups.initialize()

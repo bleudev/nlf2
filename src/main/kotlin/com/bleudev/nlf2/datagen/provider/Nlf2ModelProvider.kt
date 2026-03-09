@@ -13,6 +13,7 @@ class Nlf2ModelProvider(packOutput: FabricPackOutput) : FabricModelProvider(pack
 
     override fun generateItemModels(generator: ItemModelGenerators) {
         generator.generateFlatItem(Nlf2Items.WD_PUZZLE, ModelTemplates.FLAT_ITEM)
+        generator.generateFlatItem(Nlf2Items.MANUAL, ModelTemplates.FLAT_ITEM)
     }
 
 }
