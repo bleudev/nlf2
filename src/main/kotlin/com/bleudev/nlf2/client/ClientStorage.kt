@@ -29,12 +29,12 @@ var noise_tick: Int = 0
 var noise_amount: Float = .0f
 val earthquakeStrength: Float get() =
     if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) / 2
-    else noise_amount / 2
+        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) / 8
+    else noise_amount / 8
 val earthquakeSpeed: Float get() =
     if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
         (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 2.5f
-    else 1f
+    else noise_amount * 2
 var borderBlackFogTicks: Int = -1
 var borderBlackFogStarting: Boolean = true
 var borderBlackFog: Float = 0f

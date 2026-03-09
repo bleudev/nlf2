@@ -24,4 +24,13 @@ public class NineLifesClientDataMixin {
     private float modifyShaderRedMajStrength(float original) {
         return Math.max(original, shaderRedMajUniformStrength);
     }
+    // Shake
+    @ModifyReturnValue(method = "getShakeStrength", at = @At("RETURN"))
+    private float modifyShakeStrength(float original) {
+        return Math.max(original, getEarthquakeStrength());
+    }
+    @ModifyReturnValue(method = "getShakeSpeed", at = @At("RETURN"))
+    private float modifyShakeSpeed(float original) {
+        return Math.max(original, getEarthquakeSpeed());
+    }
 }
