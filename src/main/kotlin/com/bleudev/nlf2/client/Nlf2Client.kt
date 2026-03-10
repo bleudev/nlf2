@@ -68,6 +68,7 @@ class Nlf2Client : ClientModInitializer {
             compassForceSpin = noise_amount > .6f
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
+            if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
 
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
             if (join_blackness_delay_ticks == 0)
@@ -222,6 +223,9 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(ManualUpdateEffect) {
             manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
+        }
+        registerPacketReceiver(Event101ScreenEffectClear) {
+            event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
         }
     }
 

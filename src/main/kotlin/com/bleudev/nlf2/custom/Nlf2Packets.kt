@@ -15,9 +15,10 @@ object Nlf2Packets {
     val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
 
-    val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
+    val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
+    val UNIT_EVENT101_SCREEN_EFFECT_CLEAR = getIdentifier("packet/unit/event101_screen_effect_clear")
     val UNIT_LOST_VESSEL_CONTROL_ACTIVATE = getIdentifier("packet/unit/lost_vessel_control_activate")
     val UNIT_MANUAL_UPDATE_EFFECT = getIdentifier("packet/unit/manual_update_effect")
 
@@ -34,9 +35,10 @@ object Nlf2Packets {
         s2c.register(WorldBorderNoisePayload)
         s2c.register(JoinDisconnectVersion)
         // Unit
-        s2c.register(CrashClientPayload)
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
+        s2c.register(CrashClientPayload)
+        s2c.register(Event101ScreenEffectClear)
         s2c.register(LostVesselControlActivate)
         s2c.register(ManualUpdateEffect)
 

@@ -1,9 +1,6 @@
 package com.bleudev.nlf2.client
 
-import com.bleudev.nlf2.BORDER_BLACK_FOG_KILL_TRANS_DURATION
-import com.bleudev.nlf2.DATA_FOG_EVENT_STATE_SYNC_DURATION
-import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.MANUAL_UPDATE_EFFECT_DURATION
+import com.bleudev.nlf2.*
 import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.FogEventStateFogProperties
 import net.fabricmc.loader.api.FabricLoader
@@ -34,6 +31,8 @@ var noise_amount: Float = .0f
 // Manual
 var manualUpdateTicks: Int = 0
 val manualUpdateEffectOverlay: Float get() = manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION / 2
+// Event 101
+var event101screenEffectClearTicks: Int = 0
 // Earthquake
 private val earthquakeProp: Float get() =
     max(if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
@@ -76,7 +75,7 @@ var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
 //val shaderEvent101: Boolean get() = true
-val shaderEvent101: Boolean get() = !dataSyncedEvent101 && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
+val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
 
 // Nine lifes shaders uniforms
 @JvmField
@@ -85,7 +84,7 @@ var shaderAnaglyphUniformX: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.01f)
 var shaderAnaglyphUniformY: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
-var shaderEvent101Strength: Float = 1f
+val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path

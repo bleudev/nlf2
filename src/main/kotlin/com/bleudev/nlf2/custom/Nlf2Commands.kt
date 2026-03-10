@@ -1,11 +1,13 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nine_lifes.util.sendPacket
+import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
+import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
 import com.bleudev.nlf2.util.isActor
@@ -152,6 +154,7 @@ object Nlf2Commands {
             }
             // orange_skin_overlay_remove
             101 -> {
+                playerList.getPlayer(EVENT101_NICKNAME)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
                 nlf2data::loreData.transform {
                     it.event101 = true
                     it
@@ -187,6 +190,7 @@ object Nlf2Commands {
         90 to "fog_event_state_1",
         91 to "fog_event_state_2",
         92 to "fog_event_state_3",
+        101 to "orange_skin_overlay",
         995 to "manual_0",
         996 to "manual_1",
         997 to "manual_2",
