@@ -2,10 +2,12 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.BORDER_BLACK_FOG_KILL_TRANS_DURATION
 import com.bleudev.nlf2.DATA_FOG_EVENT_STATE_SYNC_DURATION
+import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.MANUAL_UPDATE_EFFECT_DURATION
 import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.FogEventStateFogProperties
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.Minecraft
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
@@ -73,6 +75,8 @@ var shaderLostVesselControl: Boolean = false
 var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
+//val shaderEvent101: Boolean get() = true
+val shaderEvent101: Boolean get() = !dataSyncedEvent101 && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
 
 // Nine lifes shaders uniforms
 @JvmField
@@ -81,6 +85,7 @@ var shaderAnaglyphUniformX: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.01f)
 var shaderAnaglyphUniformY: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
+var shaderEvent101Strength: Float = 1f
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path

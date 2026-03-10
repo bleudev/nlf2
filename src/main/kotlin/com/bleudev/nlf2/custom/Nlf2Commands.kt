@@ -135,6 +135,7 @@ object Nlf2Commands {
 
     private val eventMap: Map<Int, String> = mapOf(
         189 to "crash_vert_disappear",
+        101 to "orange_skin_overlay_remove",
         93 to "manual_1_update",
         94 to "manual_2_update",
     )
@@ -147,6 +148,13 @@ object Nlf2Commands {
                 sendToEveryone { player ->
                     if (player.isActor) return@sendToEveryone arrayOf()
                     return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
+                }
+            }
+            // orange_skin_overlay_remove
+            101 -> {
+                nlf2data::loreData.transform {
+                    it.event101 = true
+                    it
                 }
             }
             // manual_1_update
@@ -189,7 +197,6 @@ object Nlf2Commands {
     // TODO: Fix fog event wrong duration
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
         when (debugId) {
-            // lost_vessel_control_activate
             1001 -> {
                 player?.sendPacket(LostVesselControlActivate.INSTANCE)
             }
@@ -214,6 +221,12 @@ object Nlf2Commands {
             92 -> {
                 server.nlf2data::loreData.transform {
                     it.fogEventState = FogEventState.AFTER_MEET_WAFFLA
+                    it
+                }
+            }
+            101 -> {
+                server.nlf2data::loreData.transform {
+                    it.event101 = false
                     it
                 }
             }

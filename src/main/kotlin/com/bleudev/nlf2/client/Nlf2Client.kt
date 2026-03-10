@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
@@ -46,6 +47,10 @@ class Nlf2Client : ClientModInitializer {
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         tryHideMod()
+
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
+            putFloat(shaderEvent101Strength).putFloat(2.4f)
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
@@ -123,11 +128,14 @@ class Nlf2Client : ClientModInitializer {
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->
             graphics.nlf2noise()
+            graphics.nlf2event101()
             graphics.overlayWithColor(manualUpdateEffectOverlay, 1f, 0f, 0f)
         }
         HudElementRegistry.attachElementAfter(VanillaHudElements.SLEEP, Layer.OVERLAY_FIX) { graphics, _ ->
-            if (Minecraft.getInstance().options.hideGui) {
+            val mc = Minecraft.getInstance()
+            if (mc.options.hideGui) {
                 graphics.nlf2noise()
+                graphics.nlf2event101()
                 // Render red vignette
                 graphics.blit(RenderPipelines.VIGNETTE, Sprite.Vanilla.VIGNETTE, 0, 0, 0f, 0f, graphics.guiWidth(), graphics.guiHeight(), graphics.guiWidth(), graphics.guiHeight(),
                     ARGB.colorFromFloat(1f, 0f, noise_amount * 2, noise_amount * 2))
@@ -234,6 +242,10 @@ class Nlf2Client : ClientModInitializer {
         val noiseCount = 5
         blitAnim(Animation.NOISE, 1 + ((noise_tick % noiseTicks) / (noiseTicks / noiseCount)), color = ARGB.colorFromFloat(noise_amount, 1f, 0f, 0f))
     }
+    private fun GuiGraphics.nlf2event101() {
+        val darken = Minecraft.getInstance().level?.skyDarken ?: 0
+        if (shaderEvent101) overlayWithColor(((shaderEvent101Strength - darken.toFloat() / 7) / 5).coerceIn(0f, .2f), 1f, .5f, 0f)
+    }
 
     object Layer {
         val BORDER_NOISE: Identifier = getIdentifier("layer/border/noise")
@@ -243,7 +255,7 @@ class Nlf2Client : ClientModInitializer {
 
     object Sprite {
         object Vanilla {
-            val VIGNETTE: Identifier = Identifier.withDefaultNamespace("textures/misc/vignette.png");
+            val VIGNETTE: Identifier = Identifier.withDefaultNamespace("textures/misc/vignette.png")
         }
     }
 }

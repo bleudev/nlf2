@@ -1,0 +1,81 @@
+{
+  "targets": {
+    "swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nlf2:post/cconvolve",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "ColorConfig": [
+          {
+            "name": "RedMatrix",
+            "type": "vec3",
+            "value": [ 0.4, 0.39, 0.11 ]
+          },
+          {
+            "name": "GreenMatrix",
+            "type": "vec3",
+            "value": [ 0.3, 0.29, 0.11 ]
+          },
+          {
+            "name": "BlueMatrix",
+            "type": "vec3",
+            "value": [ 0.0, 0.0, 0.0 ]
+          }
+        ],
+        "CustomConvolveConfig": [
+          {
+            "name": "Strength",
+            "type": "float",
+            "value": 1.0
+          },
+          {
+            "name": "Saturation",
+            "type": "float",
+            "value": 2.4
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nlf2:post/cbits",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "output": "minecraft:main",
+      "uniforms": {
+        "BitsConfig": [
+          {
+            "name": "Resolution",
+            "type": "float",
+            "value": 64.0
+          },
+          {
+            "name": "MosaicSize",
+            "type": "float",
+            "value": 5.0
+          }
+        ],
+        "CustomBitsConfig": [
+          {
+            "name": "Strength",
+            "type": "float",
+            "value": 1.0
+          }
+        ]
+      }
+    }
+  ]
+}

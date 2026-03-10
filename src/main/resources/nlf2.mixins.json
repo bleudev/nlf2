@@ -37,7 +37,8 @@
     "client.TitleScreenMixin",
     "client.WorldBorderRendererMixin",
     "client.nine_lifes.FogPropertiesMixin",
-    "client.nine_lifes.NineLifesClientDataMixin"
+    "client.nine_lifes.NineLifesClientDataMixin",
+    "client.nine_lifes.NineLifesPostRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
