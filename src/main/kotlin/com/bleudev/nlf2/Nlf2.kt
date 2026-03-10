@@ -1,8 +1,10 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands
+import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.data.saved.nlf2data
@@ -27,6 +29,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -68,6 +72,14 @@ class Nlf2 : ModInitializer {
                     } else player.sendPacket(CancelBorderBlackFog.INSTANCE)
                 }
             }
+            // Manuals
+            fun shouldUpdate(item: Item): Boolean =
+                server.playerList.players.any { player -> player.inventory.any { (!it.isEmpty) && it.`is`(item) } }
+
+            if (shouldUpdate(Items.DEBUG_STICK) && server.nlf2data.loreData.manualId == 0)
+                server.causeEvent(93)
+            if (shouldUpdate(NineLifesItems.AMETHYST_STICK) && server.nlf2data.loreData.manualId == 1)
+                server.causeEvent(94)
         }
 
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->

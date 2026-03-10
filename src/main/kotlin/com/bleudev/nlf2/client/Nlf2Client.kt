@@ -170,6 +170,7 @@ class Nlf2Client : ClientModInitializer {
             }
 
             dataSyncedEvent101 = payload.event101
+            dataSyncedManualId = payload.manualId
         }
         registerPacketReceiver(OpenManual) { payload, ctx ->
             ctx.client().setScreen(ManualScreen(payload.manualId))

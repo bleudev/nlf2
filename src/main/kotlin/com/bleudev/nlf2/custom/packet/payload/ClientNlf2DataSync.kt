@@ -7,7 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class ClientNlf2DataSync(val actor: String, val actorChar: String, val borderState: Int, val fogEventState: Int, val event101: Boolean) : CustomPacketPayload {
+class ClientNlf2DataSync(val actor: String, val actorChar: String, val borderState: Int, val fogEventState: Int, val event101: Boolean, val manualId: Int) : CustomPacketPayload {
     companion object : PacketPayloadCompanion<ClientNlf2DataSync> {
         override val identifier = Nlf2Packets.CLIENT_NLF2_DATA_SYNC
         override val codec: StreamCodec<RegistryFriendlyByteBuf, ClientNlf2DataSync> = StreamCodec.composite(
@@ -16,6 +16,7 @@ class ClientNlf2DataSync(val actor: String, val actorChar: String, val borderSta
             ByteBufCodecs.INT, ClientNlf2DataSync::borderState,
             ByteBufCodecs.INT, ClientNlf2DataSync::fogEventState,
             ByteBufCodecs.BOOL, ClientNlf2DataSync::event101,
+            ByteBufCodecs.INT, ClientNlf2DataSync::manualId,
             ::ClientNlf2DataSync
         )
     }

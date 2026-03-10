@@ -1,6 +1,8 @@
 package com.bleudev.nlf2.custom.world.item
 
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
+import com.bleudev.nlf2.client.dataSyncedManualId
+import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.OpenManual
 import com.bleudev.nlf2.util.sendPackets
 import net.minecraft.client.Minecraft
@@ -16,12 +18,11 @@ import net.minecraft.world.level.Level
 class ManualItem(properties: Properties) : Item(properties) {
     override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResult {
         player.awardStat(Stats.ITEM_USED.get(this))
-        val manualId = 0
         if (player is ServerPlayer) {
-            player.sendPackets(OpenManual(manualId))
+            player.sendPackets(OpenManual(player.level().server.nlf2data.loreData.manualId))
             return InteractionResult.SUCCESS
         } else if (player is LocalPlayer) {
-            Minecraft.getInstance().setScreen(ManualScreen(manualId))
+            Minecraft.getInstance().setScreen(ManualScreen(dataSyncedManualId))
             return InteractionResult.SUCCESS
         }
         return super.use(level, player, hand)

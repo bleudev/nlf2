@@ -109,6 +109,8 @@ var dataSyncedBorderState: Int = 0
 var dataSyncedFogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO
 @JvmField
 var dataSyncedEvent101: Boolean = false
+@JvmField
+var dataSyncedManualId: Int = 0
 
 val dataSyncedFogProperties: FogEventStateFogProperties get() = dataSyncedFogEventState.getFogProperties(
     dataFogEventStateSyncPrev, DATA_FOG_EVENT_STATE_SYNC_DURATION - dataFogEventStateSyncTicks.coerceAtLeast(0)).also {

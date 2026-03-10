@@ -26,7 +26,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState.value, value.event101))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState.value, value.event101, value.manualId))
             }
         }
 
@@ -45,10 +45,10 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState.value, loreData.event101))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState.value, loreData.event101, loreData.manualId))
     }
 
-    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO, var event101: Boolean = false) {
+    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO, var event101: Boolean = false, var manualId: Int = 0) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
@@ -56,6 +56,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
                 StringRepresentable.fromEnum(FogEventState::values).fieldOf("fogEventState").forGetter(LoreData::fogEventState),
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
+                Codec.INT.fieldOf("manualId").forGetter(LoreData::manualId),
             ).apply(it, ::LoreData) }
         }
     }

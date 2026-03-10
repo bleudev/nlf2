@@ -20,6 +20,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.network.chat.Component
+import net.minecraft.server.MinecraftServer
 
 object Nlf2Commands {
     fun initialize() {
@@ -131,16 +132,39 @@ object Nlf2Commands {
         Commands.argument(name, IntegerArgumentType.integer(min, max))
 
     private val eventMap: Map<Int, String> = mapOf(
-        189 to "crash_vert_disappear"
+        189 to "crash_vert_disappear",
+        93 to "manual_1_update",
+        94 to "manual_2_update",
     )
 
-    private fun CommandSourceStack.causeEvent(eventId: Int): Boolean {
+    private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent(eventId)
+    fun MinecraftServer.causeEvent(eventId: Int): Boolean {
         when (eventId) {
             // crash_vert_disappear
             189 -> {
-                server.sendToEveryone { player ->
+                sendToEveryone { player ->
                     if (player.isActor) return@sendToEveryone arrayOf()
                     return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
+                }
+            }
+            // manual_1_update
+            93 -> {
+                nlf2data::loreData.transform {
+                    it.manualId = 1
+                    it
+                }
+                playerList.players.forEach {
+                    it.sendSystemMessage(Component.literal("The BOOK was updated!"))
+                }
+            }
+            // manual_2_update
+            94 -> {
+                nlf2data::loreData.transform {
+                    it.manualId = 2
+                    it
+                }
+                playerList.players.forEach {
+                    it.sendSystemMessage(Component.literal("The BOOK was updated! again..."))
                 }
             }
             else -> return false
@@ -154,7 +178,10 @@ object Nlf2Commands {
         89 to "fog_event_state_0",
         90 to "fog_event_state_1",
         91 to "fog_event_state_2",
-        92 to "fog_event_state_3"
+        92 to "fog_event_state_3",
+        995 to "manual_0",
+        996 to "manual_1",
+        997 to "manual_2",
     )
 
     // TODO: Fix strange fog event state shift after time (for example, 89 set fog event state to 1 for some reason)
@@ -187,6 +214,24 @@ object Nlf2Commands {
             92 -> {
                 server.nlf2data::loreData.transform {
                     it.fogEventState = FogEventState.AFTER_MEET_WAFFLA
+                    it
+                }
+            }
+            995 -> {
+                server.nlf2data::loreData.transform {
+                    it.manualId = 0
+                    it
+                }
+            }
+            996 -> {
+                server.nlf2data::loreData.transform {
+                    it.manualId = 1
+                    it
+                }
+            }
+            997 -> {
+                server.nlf2data::loreData.transform {
+                    it.manualId = 2
                     it
                 }
             }
