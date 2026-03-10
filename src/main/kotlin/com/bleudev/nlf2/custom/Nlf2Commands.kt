@@ -7,6 +7,7 @@ import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
+import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
 import com.bleudev.nlf2.util.sendToEveryone
@@ -21,6 +22,7 @@ import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.network.chat.Component
 import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
 
 object Nlf2Commands {
     fun initialize() {
@@ -137,8 +139,8 @@ object Nlf2Commands {
         94 to "manual_2_update",
     )
 
-    private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent(eventId)
-    fun MinecraftServer.causeEvent(eventId: Int): Boolean {
+    private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent<Any>(eventId)
+    fun <T1 : Any> MinecraftServer.causeEvent(eventId: Int, info0: T1? = null): Boolean {
         when (eventId) {
             // crash_vert_disappear
             189 -> {
@@ -153,9 +155,8 @@ object Nlf2Commands {
                     it.manualId = 1
                     it
                 }
-                playerList.players.forEach {
-                    it.sendSystemMessage(Component.literal("The BOOK was updated!"))
-                }
+                val owner = info0 as? ServerPlayer?
+                owner?.sendPacket(ManualUpdateEffect.INSTANCE)
             }
             // manual_2_update
             94 -> {
@@ -163,9 +164,8 @@ object Nlf2Commands {
                     it.manualId = 2
                     it
                 }
-                playerList.players.forEach {
-                    it.sendSystemMessage(Component.literal("The BOOK was updated! again..."))
-                }
+                val owner = info0 as? ServerPlayer?
+                owner?.sendPacket(ManualUpdateEffect.INSTANCE)
             }
             else -> return false
         }

@@ -17,7 +17,7 @@ import static com.bleudev.nlf2.client.ClientStorageKt.compassForceSpin;
 @Mixin(CompassAngleState.class)
 public abstract class CompassAngleStateMixin {
     @Shadow
-    abstract float getRandomlySpinningRotation(final int seed, final long gameTime);
+    protected abstract float getRandomlySpinningRotation(final int seed, final long gameTime);
 
     @ModifyReturnValue(method = "calculate", at = @At("RETURN"))
     private float modifySpin(float original, ItemStack itemStack, ClientLevel level, int seed, ItemOwner owner) {

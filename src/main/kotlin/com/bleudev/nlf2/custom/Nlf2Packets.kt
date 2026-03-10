@@ -3,10 +3,7 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
-import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
-import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
-import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
-import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
+import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.register
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
@@ -22,6 +19,7 @@ object Nlf2Packets {
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
     val UNIT_LOST_VESSEL_CONTROL_ACTIVATE = getIdentifier("packet/unit/lost_vessel_control_activate")
+    val UNIT_MANUAL_UPDATE_EFFECT = getIdentifier("packet/unit/manual_update_effect")
 
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
     val SB_KILL_BORDER_BLACK_FOG = getIdentifier("packet/sb/kill_border_black_fog")
@@ -40,6 +38,7 @@ object Nlf2Packets {
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
         s2c.register(LostVesselControlActivate)
+        s2c.register(ManualUpdateEffect)
 
         // Server bound
         val c2s = PayloadTypeRegistry.serverboundPlay()

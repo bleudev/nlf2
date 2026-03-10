@@ -14,11 +14,11 @@ import static com.bleudev.nlf2.client.ClientStorageKt.*;
 public class NineLifesClientDataMixin {
     @ModifyReturnValue(method = "getShaderAnaglyphX", at = @At("RETURN"))
     private float modifyShaderAnaglyphX(float original) {
-        return Math.max(original, shaderAnaglyphUniformX);
+        return Math.max(original, getShaderAnaglyphUniformX());
     }
     @ModifyReturnValue(method = "getShaderAnaglyphY", at = @At("RETURN"))
     private float modifyShaderAnaglyphY(float original) {
-        return Math.max(original, shaderAnaglyphUniformY);
+        return Math.max(original, getShaderAnaglyphUniformY());
     }
     @ModifyReturnValue(method = "getShaderRedMajStrength", at = @At("RETURN"))
     private float modifyShaderRedMajStrength(float original) {

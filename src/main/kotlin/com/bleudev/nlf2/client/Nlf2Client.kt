@@ -1,11 +1,15 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
-import com.bleudev.nlf2.client.util.*
+import com.bleudev.nlf2.client.util.Animation
+import com.bleudev.nlf2.client.util.ClientFogRenderTransformEvents
+import com.bleudev.nlf2.client.util.black
+import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
@@ -15,10 +19,7 @@ import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
-import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
-import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
-import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
-import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
+import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
@@ -38,6 +39,7 @@ import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
 import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
+import kotlin.math.max
 
 class Nlf2Client : ClientModInitializer {
 
@@ -57,7 +59,10 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
-            shaderRedMajUniformStrength = join_blackness
+            shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
+            compassForceSpin = noise_amount > .6f
+
+            if (manualUpdateTicks > 0) manualUpdateTicks--
 
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
             if (join_blackness_delay_ticks == 0)
@@ -118,6 +123,7 @@ class Nlf2Client : ClientModInitializer {
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->
             graphics.nlf2noise()
+            graphics.overlayWithColor(manualUpdateEffectOverlay, 1f, 0f, 0f)
         }
         HudElementRegistry.attachElementAfter(VanillaHudElements.SLEEP, Layer.OVERLAY_FIX) { graphics, _ ->
             if (Minecraft.getInstance().options.hideGui) {
@@ -130,8 +136,8 @@ class Nlf2Client : ClientModInitializer {
         }
         HudElementRegistry.addLast(Layer.OVERLAY_PAUSE_SCREEN) { graphics, _ ->
             if (pause_screen_red_screen_effect) {
-                graphics.overlay(0x20ff0000)
-                graphics.overlay(ARGB.colorFromFloat(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f))
+                graphics.overlayWithColor(0x20ff0000)
+                graphics.overlayWithColor(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f)
             }
         }
 
@@ -205,6 +211,9 @@ class Nlf2Client : ClientModInitializer {
 //            shaderBorderLag = !shaderBorderLag
             shaderRedMajUniformStrength = 1f
 //            shaderLostVesselControl = !shaderLostVesselControl
+        }
+        registerPacketReceiver(ManualUpdateEffect) {
+            manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
         }
     }
 

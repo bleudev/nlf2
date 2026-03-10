@@ -2,6 +2,7 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.BORDER_BLACK_FOG_KILL_TRANS_DURATION
 import com.bleudev.nlf2.DATA_FOG_EVENT_STATE_SYNC_DURATION
+import com.bleudev.nlf2.MANUAL_UPDATE_EFFECT_DURATION
 import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.FogEventStateFogProperties
 import net.fabricmc.loader.api.FabricLoader
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import kotlin.math.max
 
 @JvmField
 var canUseMouse: Boolean = true
@@ -27,14 +29,19 @@ var join_blackness: Float = 1f
 // Border
 var noise_tick: Int = 0
 var noise_amount: Float = .0f
-val earthquakeStrength: Float get() =
-    if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) / 8
-    else noise_amount / 8
-val earthquakeSpeed: Float get() =
-    if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-        (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 2.5f
-    else noise_amount * 2
+// Manual
+var manualUpdateTicks: Int = 0
+val manualUpdateEffectOverlay: Float get() = manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION / 2
+// Earthquake
+private val earthquakeProp: Float get() =
+    max(if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+            (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 1.25f
+        else noise_amount,
+        manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION / 2
+    )
+val earthquakeStrength: Float get() = earthquakeProp / 8
+val earthquakeSpeed: Float get() = earthquakeProp * 2
+// Border black fog
 var borderBlackFogTicks: Int = -1
 var borderBlackFogStarting: Boolean = true
 var borderBlackFog: Float = 0f
@@ -70,10 +77,10 @@ var shaderBorderEnd: Boolean = false
 // Nine lifes shaders uniforms
 @JvmField
 var shaderRedMajUniformStrength: Float = 0f
-@JvmField
 var shaderAnaglyphUniformX: Float = 0f
-@JvmField
+    get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.01f)
 var shaderAnaglyphUniformY: Float = 0f
+    get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
 
 @Suppress("ObjectPropertyName")
 private val ___path: Path
