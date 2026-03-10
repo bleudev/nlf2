@@ -1,8 +1,10 @@
 package com.bleudev.nlf2.client.util
 
+import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
+import com.bleudev.nlf2.client.dataSyncedEvent101
 import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.getIdentifier
 import net.minecraft.client.Minecraft
@@ -24,8 +26,18 @@ fun getLoreCharacter(entityNickname: String): ActorChar {
            else ActorChar.NULL
 }
 
+fun getSkinOverlayTexture(entityNickname: String): Identifier {
+    if (entityNickname == EVENT101_NICKNAME && !dataSyncedEvent101) {
+        return getIdentifier("textures/entity/player/event101.png")
+    }
+    return EYES_EMPTY
+}
+fun getSkinOverlayRenderType(entityNickname: String): RenderType = RenderTypes.entityTranslucent(getSkinOverlayTexture(entityNickname))
+
 fun getEyesTexture(entityNickname: String): Identifier {
     var clientNickname = clientNickname
+    if (entityNickname == EVENT101_NICKNAME && !dataSyncedEvent101)
+        return getIdentifier("textures/entity/player/eyes/event101.png")
     val loreChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL || loreChar.eyes == null) return EYES_EMPTY
     if (clientNickname == dataSyncedActor) clientNickname = "bleugame"
@@ -42,7 +54,6 @@ fun getSkin(entityNickname: String): PlayerSkin? {
     if (!loreChar.renderVessel) clientNickname = "empty"
     val texture = getIdentifier("entity/player/skin/$clientNickname")
 
-    val modelType = PlayerModelType.WIDE
-    // If there will be slim skins, will add code for them
+    val modelType = if (clientNickname in listOf("waflla_kek")) PlayerModelType.SLIM else PlayerModelType.WIDE
     return PlayerSkin(ResourceTexture(texture), null, null, modelType, true)
 }
