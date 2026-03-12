@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.packet.payload.*
+import com.bleudev.nlf2.custom.packet.payload.serverbound.CauseEventWithKey
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
@@ -22,6 +23,7 @@ object Nlf2Packets {
     val UNIT_LOST_VESSEL_CONTROL_ACTIVATE = getIdentifier("packet/unit/lost_vessel_control_activate")
     val UNIT_MANUAL_UPDATE_EFFECT = getIdentifier("packet/unit/manual_update_effect")
 
+    val SB_CAUSE_EVENT_WITH_KEY = getIdentifier("packet/sb/cause_event_with_key")
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
     val SB_KILL_BORDER_BLACK_FOG = getIdentifier("packet/sb/kill_border_black_fog")
 
@@ -45,6 +47,7 @@ object Nlf2Packets {
         // Server bound
         val c2s = PayloadTypeRegistry.serverboundPlay()
         // Normal
+        c2s.register(CauseEventWithKey)
         c2s.register(JoinSendVersion)
         // Unit
         c2s.register(KillBorderBlackFog)

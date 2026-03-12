@@ -11,6 +11,7 @@ import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.CauseEventWithKey
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
@@ -99,6 +100,10 @@ class Nlf2 : ModInitializer {
         registerPacketReceiver(KillBorderBlackFog) { _, ctx ->
             if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
             ctx.player().hurtUnknown(9999f)
+        }
+
+        registerPacketReceiver(CauseEventWithKey) { p, ctx ->
+            ctx.server().causeEvent<Any>(p.eventId)
         }
     }
 

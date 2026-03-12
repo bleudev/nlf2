@@ -2,6 +2,7 @@ package com.bleudev.nlf2
 
 @JvmField
 val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "waflla_kek")
+const val CAN_USE_SECRET_EVENT_KEY_MAPPING_NICKNAME = "bleugame"
 const val EVENT101_NICKNAME = "waflla_kek"
 
 const val BORDER_BLACK_FOG_DURATION = 60
