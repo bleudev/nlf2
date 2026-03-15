@@ -1,6 +1,8 @@
 package com.bleudev.nlf2.client
 
-import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
+import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2KeyMappings
@@ -9,7 +11,6 @@ import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.ClientFogRenderTransformEvents
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
@@ -50,6 +51,33 @@ class Nlf2Client : ClientModInitializer {
         Nlf2KeyMappings.initialize()
         tryHideMod()
 
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            ARGB.srgbLerp(blackFogEffect, current, ARGB.color(ARGB.alpha(current), 0))
+        }
+
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
+        }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            val color = dataSyncedFogProperties.fogColor
+            current.lerp(Vector4f(color.x, color.y, color.z, current.w), color.w)
+        }
+
+        ClientEnvironmentSetupEvents.FOG_START.register { original, current ->
+            Mth.lerp(blackFogEffect, current, original * .03f)
+        }
+        ClientEnvironmentSetupEvents.FOG_START.register { _, current ->
+            current * dataSyncedFogProperties.fogStart
+        }
+
+        ClientEnvironmentSetupEvents.FOG_END.register { original, current ->
+            Mth.lerp(blackFogEffect, current, original * .03f)
+        }
+        ClientEnvironmentSetupEvents.FOG_END.register { _, current ->
+            current * dataSyncedFogProperties.fogEnd
+        }
+
+        PostEffectRegistry.register(getIdentifier("event101") to ::shaderEvent101)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
             putFloat(shaderEvent101Strength).putFloat(2.4f)
         }
@@ -151,28 +179,6 @@ class Nlf2Client : ClientModInitializer {
                 graphics.overlayWithColor(0x20ff0000)
                 graphics.overlayWithColor(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f)
             }
-        }
-
-        ClientFogRenderTransformEvents.FOG_COLOR.register { _, current ->
-            current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
-        }
-        ClientFogRenderTransformEvents.FOG_COLOR.register { _, current ->
-            val color = dataSyncedFogProperties.fogColor
-            current.lerp(Vector4f(color.x, color.y, color.z, current.w), color.w)
-        }
-
-        ClientFogRenderTransformEvents.FOG_START.register { original, current ->
-            Mth.lerp(blackFogEffect, current, original * .03f)
-        }
-        ClientFogRenderTransformEvents.FOG_START.register { _, current ->
-            current * dataSyncedFogProperties.fogStart
-        }
-
-        ClientFogRenderTransformEvents.FOG_END.register { original, current ->
-            Mth.lerp(blackFogEffect, current, original * .03f)
-        }
-        ClientFogRenderTransformEvents.FOG_END.register { _, current ->
-            current * dataSyncedFogProperties.fogEnd
         }
 
         registerPacketReceiver(ClientNlf2DataSync) { payload ->

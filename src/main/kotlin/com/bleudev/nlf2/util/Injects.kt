@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.util
 
-import com.bleudev.nine_lifes.client.Transformer
+import com.bleudev.nine_lifes.api.Transformer
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
