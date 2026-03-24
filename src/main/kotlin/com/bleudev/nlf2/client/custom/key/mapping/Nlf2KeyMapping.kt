@@ -6,9 +6,10 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 
-abstract class Nlf2KeyMapping(name: String, type: InputConstants.Type, value: Int = -1, category: Category = Nlf2KeyMappingCategories.GENERAL, order: Int = 0) : KeyMapping(name, type, value, category, order) {
+abstract class Nlf2KeyMapping(name: String, type: InputConstants.Type, value: Int = -1, category: Category = Nlf2KeyMappingCategories.GENERAL, order: Int = 0) : KeyMapping("key.nlf2.$name", type, value, category, order) {
     abstract fun onPress(mc: Minecraft)
 
+    // TODO: Is visible support
     protected open fun isVisible(mc: Minecraft): Boolean = true
 
     companion object {

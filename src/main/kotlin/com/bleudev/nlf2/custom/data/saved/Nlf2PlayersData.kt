@@ -125,7 +125,7 @@ enum class FogEventState(val value: Int, val fogColor: Vector4f) : StringReprese
     AFTER_MEET_WAFFLA(3, Vector4f(1f, .6f, 0f, 0f));
 
     fun getFogProperties(prev: FogEventState?, tick: Int): FogEventStateFogProperties {
-        println("GET FOG PROPERTIES CURR $value PREV $prev (tick = $tick)")
+//        println("GET FOG PROPERTIES CURR $value PREV $prev (tick = $tick)")
         var prev = prev
         if (prev == null) prev = this
 
@@ -134,7 +134,7 @@ enum class FogEventState(val value: Int, val fogColor: Vector4f) : StringReprese
             if (prev.fogColor.w == this.fogColor.w) 0
             else if (prev.fogColor.w < this.fogColor.w) 1
             else -1
-        println("DIRECTION $direction")
+//        println("DIRECTION $direction")
 
         val lerpFogStartEnd = when(direction) {
             1 -> lerpAmount

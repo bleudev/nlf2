@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
+import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -26,6 +27,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -50,6 +52,7 @@ class Nlf2Client : ClientModInitializer {
         Nlf2Sounds.initialize()
         Nlf2KeyMappings.initialize()
         tryHideMod()
+        their.validateAll()
 
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             ARGB.srgbLerp(blackFogEffect, current, ARGB.color(ARGB.alpha(current), 0))
@@ -150,6 +153,7 @@ class Nlf2Client : ClientModInitializer {
 
             if (dataFogEventStateSyncTicks > 0) dataFogEventStateSyncTicks--
         }
+        ClientRespawnEvents.RESPAWN.register { killedTimes++ }
         ClientPlayConnectionEvents.JOIN.register { _, s, mc ->
             s.sendPacket(JoinSendVersion(FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString))
             mc.soundManager.play(BorderAmbientSoundInstance())
@@ -157,6 +161,7 @@ class Nlf2Client : ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register { _, mc ->
             mc.soundManager.stop(Nlf2Sounds.BORDER_AMBIENT.location, SoundSource.AMBIENT)
         }
+        ClientLifecycleEvents.CLIENT_STOPPING.register { closedTimes++ }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->
             graphics.nlf2noise()

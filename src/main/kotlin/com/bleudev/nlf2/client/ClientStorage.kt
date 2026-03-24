@@ -86,9 +86,81 @@ var shaderAnaglyphUniformY: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
 val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
 
-@Suppress("ObjectPropertyName")
-private val ___path: Path
-    get() = FabricLoader.getInstance().configDir.resolve("nlf2-_____.txt")
+private val theirPath: Path
+    get() = FabricLoader.getInstance().configDir.parent.resolve(".their")
+
+class TheirData {
+    private data class TheirProperty(val default: Int, val validator: (Int) -> Boolean = {true})
+
+    private val data: Array<Int>
+    private val properties: Array<TheirProperty>
+    private val size: Int
+    @Throws(NumberFormatException::class)
+    private constructor(data: List<String>, size: Int) {
+        this.properties = arrayOf(
+            TheirProperty(0) { it in 0..1 },
+            TheirProperty(0) { it >= 0 },
+            TheirProperty(0) { it >= 0},
+        )
+        this.data = Array(size) {this.properties[it].default}
+        data.forEachIndexed { index, string -> this.data[index] = string.toInt() }
+        this.size = size
+    }
+
+    @Throws(NumberFormatException::class)
+    private fun causeCheckScreen(): Int {
+        println("CAUSE CHECK SCREEN")
+        throw NumberFormatException("Validator failed")
+    }
+
+    @Throws(NumberFormatException::class)
+    internal operator fun get(index: Int): Int {
+        val v = this.data[index]
+        return if (this.properties[index].validator(v)) v
+        else causeCheckScreen()
+    }
+    @Throws(NumberFormatException::class)
+    internal operator fun set(index: Int, v: Int): TheirData {
+        if (this.properties[index].validator(v)) this.data[index] = v
+        else causeCheckScreen()
+        return this
+    }
+    @Throws(NumberFormatException::class)
+    internal fun validateAll() {
+        for ((index, property) in this.properties.withIndex()) {
+            if (!property.validator(this.data[index])) {
+                causeCheckScreen()
+                break
+            }
+        }
+    }
+
+    override fun toString(): String = data.joinToString("\n")
+
+    companion object {
+        fun fromLines(s: List<String>): TheirData = TheirData(s, 3)
+        fun default(): TheirData = fromLines(listOf())
+    }
+}
+
+var their: TheirData
+    get() {
+        try {
+            return TheirData.fromLines(Files.readAllLines(theirPath))
+        }
+        catch (_: NumberFormatException) {
+            return TheirData.default()
+        }
+        catch (_: NoSuchFileException) {
+            Files.createFile(theirPath)
+            their = TheirData.default()
+            return TheirData.fromLines(Files.readAllLines(theirPath))
+        }
+    }
+    set(v) {
+        Files.writeString(theirPath, v.toString())
+    }
+
 /**
  * State of ability to disconnect
  *
@@ -97,17 +169,22 @@ private val ___path: Path
  * 1 - There isn't disconnect button
  */
 var disconnectState: @Range(from = 0, to = 1) Int
-    get() {
-        return try { Files.readString(___path).toInt() }
-        catch (_: NumberFormatException) { 0 }
-        catch (_: NoSuchFileException) {
-            Files.createFile(___path)
-            0
-        }
-    }
-    set(value) {
-        Files.writeString(___path, value.toString())
-    }
+    get() = their[0]
+    set(value) {their = their.set(0, value)}
+
+/**
+ * Number of times client was stopped
+ * */
+var closedTimes: @Range(from = 0, to = Long.MAX_VALUE) Int
+    get() = their[1]
+    set(value) {their = their.set(1, value)}
+
+/**
+ * Number of times client was respawned (or killed)
+ */
+var killedTimes: @Range(from = 0, to = Long.MAX_VALUE) Int
+    get() = their[2]
+    set(value) {their = their.set(2, value)}
 
 // Data
 @JvmField
@@ -125,7 +202,7 @@ var dataSyncedManualId: Int = 0
 
 val dataSyncedFogProperties: FogEventStateFogProperties get() = dataSyncedFogEventState.getFogProperties(
     dataFogEventStateSyncPrev, DATA_FOG_EVENT_STATE_SYNC_DURATION - dataFogEventStateSyncTicks.coerceAtLeast(0)).also {
-    println("\nfogColor: ${it.fogColor}\nfogStart: ${it.fogStart}\nfogEnd: ${it.fogEnd}")
+//    println("\nfogColor: ${it.fogColor}\nfogStart: ${it.fogStart}\nfogEnd: ${it.fogEnd}")
 }
 
 @JvmField
