@@ -55,7 +55,7 @@ class MusicSystem(private val mc: Minecraft) {
             try {
                 val inputStream = MusicSystem::class.java.getResourceAsStream(resourcePath)
                 if (inputStream == null) {
-                    println("MusicSystem: $resourcePath was not found!")
+                    LOGGER.error("MusicSystem: $resourcePath was not found!")
                     return@launch
                 }
 
@@ -86,8 +86,9 @@ class MusicSystem(private val mc: Minecraft) {
                     }
                 }
             } catch (e: Exception) {
-                println("Error while playing music")
-                e.printStackTrace()
+                LOGGER.error("MusicSystem: Got error while playing music. Retrying: ${e.message}")
+                curr = null
+                refreshPlay()
             } finally {
                 isPlaying = false
                 volumeControl = null
