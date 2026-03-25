@@ -25,6 +25,10 @@ fabricApi {
     }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/nlf2.classtweaker")
+}
+
 repositories {
     exclusiveContent {
         forRepository {

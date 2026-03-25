@@ -25,6 +25,7 @@
     "client.GridLayout$RowHelperMixin",
     "client.HumanoidArmorLayerMixin",
     "client.HumanoidRenderStateMixin",
+    "client.KeyBindsListMixin",
     "client.KeyboardHandlerMixin",
     "client.LevelLoadingScreenMixin",
     "client.LoadingOverlayMixin",
@@ -36,6 +37,8 @@
     "client.PlayerTabOverlayMixin",
     "client.TitleScreenMixin",
     "client.WorldBorderRendererMixin",
+    "client.accessor.KeyBindsList$KeyEntryAccessor",
+    "client.impl.KeyBindsList$CategoryEntryMixin",
     "client.nine_lifes.NineLifesClientDataMixin"
   ],
   "injectors": {
