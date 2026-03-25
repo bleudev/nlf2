@@ -11,6 +11,7 @@ import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
+import com.bleudev.nlf2.client.music.MusicSystem
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
@@ -47,6 +48,7 @@ import unknown.depths.r.man.ROHJEN67SW51
 import kotlin.math.max
 
 class Nlf2Client : ClientModInitializer {
+    private var musicSystem: MusicSystem? = null
 
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
@@ -94,6 +96,7 @@ class Nlf2Client : ClientModInitializer {
             tryHideMod()
             shouldPlayAmbient = pause_screen_red_screen_effect
             ambientTick()
+            musicSystem?.tick()
             pause_screen_ticks++
             noise_tick++
         }
@@ -161,6 +164,7 @@ class Nlf2Client : ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register { _, mc ->
             mc.soundManager.stop(Nlf2Sounds.BORDER_AMBIENT.location, SoundSource.AMBIENT)
         }
+        ClientLifecycleEvents.CLIENT_STARTED.register { musicSystem = MusicSystem(it) }
         ClientLifecycleEvents.CLIENT_STOPPING.register { closedTimes++ }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->
