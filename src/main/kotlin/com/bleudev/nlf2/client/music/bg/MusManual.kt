@@ -6,8 +6,6 @@ import net.minecraft.client.Minecraft
 class MusManual : BGMusic(1) {
     override val volume: Float
         get() = 1f
-    override val pitch: Float
-        get() = 1f
     override val mus: String = "manual.wav"
 
     override fun canBePlaying(mc: Minecraft): Boolean = mc.screen is ManualScreen

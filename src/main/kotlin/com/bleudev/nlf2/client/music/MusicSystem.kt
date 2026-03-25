@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.client.music
 
+import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.client.music.bg.BGMusic
 import com.bleudev.nlf2.client.music.bg.MusManual
 import com.bleudev.nlf2.client.music.bg.MusPlace
@@ -8,7 +9,9 @@ import net.minecraft.client.Minecraft
 import java.io.BufferedInputStream
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
+import javax.sound.sampled.FloatControl
 import javax.sound.sampled.SourceDataLine
+import kotlin.math.log10
 
 class MusicSystem(private val mc: Minecraft) {
     private val bg: ArrayList<BGMusic> = ArrayList()
@@ -19,6 +22,7 @@ class MusicSystem(private val mc: Minecraft) {
 
     private var curr: BGMusic? = null
     fun tick() {
+        println(curr)
         if (curr?.canBePlaying(mc) == false) curr = null
         refreshPlay()
         bg.sortedByDescending(BGMusic::importance).firstOrNull { it.canBePlaying(mc) }?.let {
@@ -36,9 +40,13 @@ class MusicSystem(private val mc: Minecraft) {
 
     private var playbackJob: Job? = null
     private var isPlaying = false
+
+    private var volumeControl: FloatControl? = null
+
     private fun refreshPlay() {
         if (curr == null) musStop()
         else if (!isPlaying) musPlay("/music/${curr!!.mus}")
+        curr?.run { musVolume(volume) }
     }
     private fun musPlay(resourcePath: String) {
         musStop()
@@ -57,6 +65,13 @@ class MusicSystem(private val mc: Minecraft) {
                     val info = DataLine.Info(SourceDataLine::class.java, format)
                     (AudioSystem.getLine(info) as SourceDataLine).use { line ->
                         line.open(format)
+
+                        if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                            volumeControl = line.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
+                        } else {
+                            LOGGER.warn("MusicSystem: Master gain control isn't supported!")
+                        }
+
                         line.start()
 
                         val buffer = ByteArray(4096)
@@ -75,13 +90,19 @@ class MusicSystem(private val mc: Minecraft) {
                 e.printStackTrace()
             } finally {
                 isPlaying = false
+                volumeControl = null
             }
         }
     }
-
     private fun musStop() {
         isPlaying = false
         playbackJob?.cancel()
     }
-
+    private fun musVolume(volume: Float) {
+        volumeControl?.let {
+            val safeVolume = volume.coerceIn(0.0001f, 1.0f)
+            val db = (20.0 * log10(safeVolume.toDouble())).toFloat()
+            it.value = db.coerceIn(it.minimum, it.maximum)
+        }
+    }
 }
