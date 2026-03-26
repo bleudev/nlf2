@@ -13,29 +13,23 @@ import javax.sound.sampled.FloatControl
 import javax.sound.sampled.SourceDataLine
 import kotlin.math.log10
 
-class MusicSystem(private val mc: Minecraft) {
-    private val bg: ArrayList<BGMusic> = ArrayList()
-    init {
-        bg.add(MusManual())
-        bg.add(MusPlace())
-    }
+class MusicSystem(mc: Minecraft) {
+    private val bg: List<BGMusic> = listOf(
+        MusManual(mc),
+        MusPlace(mc),
+    )
 
     private var curr: BGMusic? = null
+        set(v) {field = v; refreshPlay()}
     fun tick() {
         println(curr)
-        if (curr?.canBePlaying(mc) == false) curr = null
-        refreshPlay()
-        bg.sortedByDescending(BGMusic::importance).firstOrNull { it.canBePlaying(mc) }?.let {
-            if (curr == null) {
-                curr = it
-                refreshPlay()
-            } else if (curr!!.importance < it.importance) {
-                curr = null
-                refreshPlay()
-                curr = it
-                refreshPlay()
-            }
+        val m = bg.filter { it.shouldPlay }.maxOrNull()
+        if (curr == null || m == null) curr = m
+        else if (curr!! < m) {
+            curr = null
+            curr = m
         }
+        curr?.run { musVolume(volume) }
     }
 
     private var playbackJob: Job? = null
@@ -46,7 +40,6 @@ class MusicSystem(private val mc: Minecraft) {
     private fun refreshPlay() {
         if (curr == null) musStop()
         else if (!isPlaying) musPlay("/music/${curr!!.mus}")
-        curr?.run { musVolume(volume) }
     }
     private fun musPlay(resourcePath: String) {
         musStop()
@@ -68,6 +61,7 @@ class MusicSystem(private val mc: Minecraft) {
 
                         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                             volumeControl = line.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
+                            curr?.run { musVolume(volume) }
                         } else {
                             LOGGER.warn("MusicSystem: Master gain control isn't supported!")
                         }
@@ -88,7 +82,6 @@ class MusicSystem(private val mc: Minecraft) {
             } catch (e: Exception) {
                 LOGGER.error("MusicSystem: Got error while playing music. Retrying: ${e.message}")
                 curr = null
-                refreshPlay()
             } finally {
                 isPlaying = false
                 volumeControl = null

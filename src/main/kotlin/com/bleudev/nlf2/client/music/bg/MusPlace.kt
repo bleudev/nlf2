@@ -2,10 +2,9 @@ package com.bleudev.nlf2.client.music.bg
 
 import net.minecraft.client.Minecraft
 
-class MusPlace : BGMusic(0) {
+class MusPlace(mc: Minecraft) : BGMusic("place.wav", 0, mc) {
     override val volume: Float
         get() = 1f
-    override val mus: String = "place.wav"
-
-    override fun canBePlaying(mc: Minecraft): Boolean = true
+    override val shouldPlay: Boolean
+        get() = true
 }
