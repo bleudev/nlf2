@@ -29,7 +29,7 @@ class MusicSystem(mc: Minecraft) {
             curr = null
             curr = m
         }
-        curr?.run { musVolume(volume) }
+        curr?.run { musVolume(getFinalVolume()) }
     }
 
     private var playbackJob: Job? = null
@@ -61,7 +61,7 @@ class MusicSystem(mc: Minecraft) {
 
                         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                             volumeControl = line.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-                            curr?.run { musVolume(volume) }
+                            curr?.run { musVolume(getFinalVolume()) }
                         } else {
                             LOGGER.warn("MusicSystem: Master gain control isn't supported!")
                         }
