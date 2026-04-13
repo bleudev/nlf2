@@ -6,5 +6,5 @@ class MusPlace(mc: Minecraft) : BGMusic("place.wav", 0, mc) {
     override val volume: Float
         get() = 1f
     override val shouldPlay: Boolean
-        get() = true
+        get() = mc.player != null
 }

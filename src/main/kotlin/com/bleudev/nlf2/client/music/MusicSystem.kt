@@ -2,6 +2,7 @@ package com.bleudev.nlf2.client.music
 
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.client.music.bg.BGMusic
+import com.bleudev.nlf2.client.music.bg.MusLab
 import com.bleudev.nlf2.client.music.bg.MusManual
 import com.bleudev.nlf2.client.music.bg.MusPlace
 import kotlinx.coroutines.*
@@ -15,8 +16,9 @@ import kotlin.math.log10
 
 class MusicSystem(mc: Minecraft) {
     private val bg: List<BGMusic> = listOf(
-        MusManual(mc),
         MusPlace(mc),
+        MusManual(mc),
+        MusLab(mc),
     )
 
     private var curr: BGMusic? = null
@@ -24,6 +26,7 @@ class MusicSystem(mc: Minecraft) {
     fun tick() {
         println(curr)
         val m = bg.filter { it.shouldPlay }.maxOrNull()
+        if (curr?.shouldPlay == false) curr = null
         if (curr == null || m == null) curr = m
         else if (curr!! < m) {
             curr = null
