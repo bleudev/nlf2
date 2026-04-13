@@ -262,7 +262,7 @@ class Nlf2Client : ClientModInitializer {
     private fun GuiGraphics.nlf2noise() {
         val noiseTicks = 5
         val noiseCount = 5
-        blitAnim(Animation.NOISE, 1 + ((noise_tick % noiseTicks) / (noiseTicks / noiseCount)), color = ARGB.colorFromFloat(noise_amount, 1f, 0f, 0f))
+        blitAnim(Animation.NOISE, 1 + ((noise_tick % noiseTicks) / (noiseTicks / noiseCount)), color = ARGB.color(noise_amount, 0xffffff))
     }
     private fun GuiGraphics.nlf2event101() {
         val darken = Minecraft.getInstance().level?.skyDarken ?: 0
