@@ -21,7 +21,7 @@ class WDPuzzleItem(properties: Properties) : Item(properties) {
             player.sendPackets(OpenPuzzle(PacketPuzzle.WD))
             return InteractionResult.SUCCESS
         } else if (player is LocalPlayer) {
-            Minecraft.getInstance().setScreen(PuzzleScreen(PacketPuzzle.WD))
+            Minecraft.getInstance().gui.setScreen(PuzzleScreen(PacketPuzzle.WD))
             return InteractionResult.SUCCESS
         }
         return super.use(level, player, hand)

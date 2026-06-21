@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.client.custom.gui.screens
 
 import com.bleudev.nlf2.getIdentifier
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.screens.inventory.PageButton
@@ -40,8 +40,8 @@ class ManualScreen(val manualId: ManualId, val playTurnSound: Boolean = true) : 
         updateButtonVisibility()
     }
 
-    override fun renderBackground(graphics: GuiGraphics, mouseX: Int, mouseY: Int, a: Float) {
-        super.renderBackground(graphics, mouseX, mouseY, a)
+    override fun extractBackground(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
+        super.extractBackground(graphics, mouseX, mouseY, a)
         graphics.blit(RenderPipelines.GUI_TEXTURED, bookLocation, bgLeft, bgTop, 0.0f, 0.0f, 264, 256, 264, 256)
         graphics.blit(RenderPipelines.GUI_TEXTURED, getIdentifier("textures/gui/manual/$manualLanguageCode/manual_$currentPage.png"), bgLeft, bgTop, 0.0f, 0.0f, 264, 256, 264, 256)
     }

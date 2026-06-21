@@ -6,7 +6,7 @@ import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.ConnectScreen
 import net.minecraft.client.gui.screens.TitleScreen
 import net.minecraft.client.multiplayer.ServerData
@@ -16,8 +16,10 @@ import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
 object IntroHelper {
-    fun render(guiGraphics: GuiGraphics) {
-        return
+    private const val ENABLED = false
+
+    fun render(graphics: GuiGraphicsExtractor) {
+        if (!ENABLED) return
 
         // Ticker
         val t = TICKER_INTRO.tick()
@@ -27,7 +29,7 @@ object IntroHelper {
             join_blackness_delay_ticks = 10
             join_blackness = 1f
             ConnectScreen.startConnecting(
-                mc.screen ?: TitleScreen(),
+                mc.gui.screen() ?: TitleScreen(),
                 mc,
                 ServerAddress.parseString(ADDRESS),
                 ServerData("???", ADDRESS, ServerData.Type.OTHER),
@@ -50,16 +52,16 @@ object IntroHelper {
         // NO MUSIC!
         mc.options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(.0)
 
-        val w = guiGraphics.guiWidth()
-        val h = guiGraphics.guiHeight()
+        val w = graphics.guiWidth()
+        val h = graphics.guiHeight()
         // Background
-        guiGraphics.fill(0, 0, w, h, -0x1000000)
+        graphics.fill(0, 0, w, h, -0x1000000)
         // ___ frame
         val s = min(w, h) / 4
-        guiGraphics.pose().pushMatrix()
-        guiGraphics.pose().translate((w-s) / 2f, (h-s) / 2f)
+        graphics.pose().pushMatrix()
+        graphics.pose().translate((w-s) / 2f, (h-s) / 2f)
 
-        val intro = { i: Int -> guiGraphics.blitAnim(Animation.INTRO, i, width = s, height = s * 27 / 28) }
+        val intro = { i: Int -> graphics.blitAnim(Animation.INTRO, i, width = s, height = s * 27 / 28) }
 
         // Eyes appear
         if (t <= 20) intro(1)
@@ -95,7 +97,7 @@ object IntroHelper {
         else if (t <= 360) intro(14)
         else if (t <= 380) intro(15)
         else if (t <= 400) intro(16)
-        guiGraphics.pose().popMatrix()
+        graphics.pose().popMatrix()
 
         // Laugh sound
         if (t == 180L) Minecraft.getInstance().soundManager.play(RelativeSoundInstance(Nlf2Sounds.LAUGH))

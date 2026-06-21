@@ -8,8 +8,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.ModelManager;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,8 +27,8 @@ public class GameRendererMixin {
     private CustomShadersRenderer customShadersRenderer;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, RenderBuffers renderBuffers, BlockRenderDispatcher blockRenderer, CallbackInfo ci) {
-        customShadersRenderer = new CustomShadersRenderer(resourcePool, ((GameRenderer) (Object) this)::getMinecraft);
+    private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
+        customShadersRenderer = new CustomShadersRenderer(resourcePool, Minecraft::getInstance);
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER))

@@ -2,7 +2,7 @@ package com.bleudev.nlf2.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,8 +14,8 @@ import static com.bleudev.nlf2.client.util.InjectsKt.black;
 @Environment(EnvType.CLIENT)
 @Mixin(LevelLoadingScreen.class)
 public class LevelLoadingScreenMixin {
-    @Inject(method = "render", at = @At("TAIL"))
-    private void renderBlack(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void renderBlack(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         black(graphics);
     }
 }

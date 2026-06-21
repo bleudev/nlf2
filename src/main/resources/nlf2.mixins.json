@@ -13,6 +13,7 @@
     "client.AbstractSoundInstanceMixin",
     "client.AvatarRendererMixin",
     "client.AvatarRenderStateMixin",
+    "client.BorderStatusMixin",
     "client.ClientWaypointManagerMixin",
     "client.CloudRendererMixin",
     "client.CompassAngleStateMixin",
@@ -23,6 +24,7 @@
     "client.GameRendererMixin",
     "client.GenericMessageScreenMixin",
     "client.GridLayout$RowHelperMixin",
+    "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
     "client.HumanoidRenderStateMixin",
     "client.KeyBindsListMixin",
@@ -33,14 +35,13 @@
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
     "client.MusicManagerMixin",
-    "client.PanoramaRendererMixin",
+    "client.PanoramaMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
     "client.TitleScreenMixin",
-    "client.WorldBorderRendererMixin",
     "client.accessor.KeyBindsList$KeyEntryAccessor",
     "client.impl.KeyBindsList$CategoryEntryMixin",
-    "client.nine_lifes.NineLifesClientDataMixin"
+    "client.nine_lifes.NineLifesClientStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

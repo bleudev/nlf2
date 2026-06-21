@@ -31,6 +31,6 @@
         "fabric-api": ">=${fabric_version}",
         "modmenu": ">=${modmenu_version}",
         "nine_lifes": "${nl_version}",
-        "minecraft": "26.1-alpha.10"
+        "minecraft": "26.2"
     }
 }

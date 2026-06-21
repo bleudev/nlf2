@@ -2,7 +2,7 @@ package com.bleudev.nlf2.client.custom.gui.screens
 
 import com.bleudev.nlf2.custom.packet.payload.PacketPuzzle
 import com.bleudev.nlf2.getIdentifier
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderPipelines
@@ -26,8 +26,8 @@ class PuzzleScreen(puzzle: PacketPuzzle) : Screen(Component.empty()) {
         )
     }
 
-    override fun renderBackground(graphics: GuiGraphics, mouseX: Int, mouseY: Int, a: Float) {
-        super.renderBackground(graphics, mouseX, mouseY, a)
+    override fun extractBackground(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
+        super.extractBackground(graphics, mouseX, mouseY, a)
         graphics.blit(RenderPipelines.GUI_TEXTURED, bookLocation, bgLeft, bgTop, 0.0f, 0.0f, 192, 192, 256, 256)
     }
 }

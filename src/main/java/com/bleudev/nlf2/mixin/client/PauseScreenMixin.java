@@ -10,7 +10,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.bleudev.nlf2.client.ClientStorageKt.*;
 
@@ -30,11 +32,10 @@ public class PauseScreenMixin extends Screen {
         return original;
     }
 
-    @Override
-    public void onClose() {
+    @Inject(method = "onClose", at = @At("TAIL"))
+    public void onClose(CallbackInfo ci) {
         webcamEnabled = false;
         pause_screen_red_screen_effect = false;
         should_not_play_any_sound = false;
-        super.onClose();
     }
 }

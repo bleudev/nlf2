@@ -7,5 +7,5 @@ class MusManual(mc: Minecraft) : BGMusic("manual.wav", 2, mc) {
     override val volume: Float
         get() = 1f
     override val shouldPlay: Boolean
-        get() = mc.screen is ManualScreen
+        get() = mc.gui.screen() is ManualScreen
 }

@@ -22,7 +22,7 @@ class ManualItem(properties: Properties) : Item(properties) {
             player.sendPackets(OpenManual(player.level().server.nlf2data.loreData.manualId))
             return InteractionResult.SUCCESS
         } else if (player is LocalPlayer) {
-            Minecraft.getInstance().setScreen(ManualScreen(dataSyncedManualId))
+            Minecraft.getInstance().gui.setScreen(ManualScreen(dataSyncedManualId))
             return InteractionResult.SUCCESS
         }
         return super.use(level, player, hand)

@@ -16,8 +16,8 @@ import static com.bleudev.nlf2.client.ClientStorageKt.getCloudAlphaDelta;
 @Mixin(CloudRenderer.class)
 public class CloudRendererMixin {
     @WrapMethod(method = "render")
-    private void modifyColor(int color, CloudStatus type, float bottomY, Vec3 cameraPosition, long gameTime, float partialTicks, Operation<Void> original) {
+    private void modifyColor(int color, CloudStatus cloudStatus, float bottomY, int range, Vec3 cameraPosition, long gameTime, float partialTicks, Operation<Void> original) {
         var newColor = ARGB.color((int) (ARGB.alpha(color) * getCloudAlphaDelta()), ARGB.red(color), ARGB.green(color), ARGB.blue(color));
-        original.call(newColor, type, bottomY, cameraPosition, gameTime, partialTicks);
+        original.call(newColor, cloudStatus, bottomY, range, cameraPosition, gameTime, partialTicks);
     }
 }

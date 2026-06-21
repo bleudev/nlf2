@@ -19,10 +19,10 @@ public class KeyBindsListMixin {
     private int modifyInit(KeyBindsList instance, AbstractSelectionList.Entry<?> entry, Operation<Integer> original) {
         boolean render = true;
         if (entry instanceof KeyBindsList.KeyEntry) {
-            render = Nlf2KeyMapping.shouldRender$nlf2(((KeyBindsList$KeyEntryAccessor) entry).nlf2$key());
+            render = Nlf2KeyMapping.shouldRender$com_bleudev_nlf2(((KeyBindsList$KeyEntryAccessor) entry).nlf2$key());
         }
         if (entry instanceof KeyBindsList.CategoryEntry) {
-            render = Nlf2KeyMapping.shouldRenderCategory$nlf2(((IKeyBindsList$CategoryEntry) entry).nlf2$getCategory());
+            render = Nlf2KeyMapping.shouldRenderCategory$com_bleudev_nlf2(((IKeyBindsList$CategoryEntry) entry).nlf2$getCategory());
         }
         if (render) return original.call(instance, entry);
         else return 0;

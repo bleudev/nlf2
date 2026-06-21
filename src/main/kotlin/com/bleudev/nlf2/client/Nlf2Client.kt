@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
@@ -174,7 +174,7 @@ class Nlf2Client : ClientModInitializer {
         }
         HudElementRegistry.attachElementAfter(VanillaHudElements.SLEEP, Layer.OVERLAY_FIX) { graphics, _ ->
             val mc = Minecraft.getInstance()
-            if (mc.options.hideGui) {
+            if (mc.gui.hud.isHidden) {
                 graphics.nlf2noise()
                 graphics.nlf2event101()
                 // Render red vignette
@@ -206,11 +206,11 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedManualId = payload.manualId
         }
         registerPacketReceiver(OpenManual) { payload, ctx ->
-            ctx.client().setScreen(ManualScreen(payload.manualId))
+            ctx.client().gui.setScreen(ManualScreen(payload.manualId))
         }
         registerPacketReceiver(OpenPuzzle) { payload, ctx ->
             payload.packetPuzzle?.let {
-                ctx.client().setScreen(PuzzleScreen(it))
+                ctx.client().gui.setScreen(PuzzleScreen(it))
             }
         }
         registerPacketReceiver(WorldBorderNoisePayload) { payload ->
@@ -222,7 +222,7 @@ class Nlf2Client : ClientModInitializer {
             throw ROHJEN67SW51("\nYOU...\nREACHED...\n\nTHE END")
         }
         registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
-            ctx.client().setScreen(JoinDisconnectScreen(payload.client, payload.server))
+            ctx.client().gui.setScreen(JoinDisconnectScreen(payload.client, payload.server))
         }
         registerPacketReceiver(BorderBlackFogStart) {
             if (borderBlackFogTicks == -1) {
@@ -259,12 +259,12 @@ class Nlf2Client : ClientModInitializer {
     private fun <T : CustomPacketPayload> registerPacketReceiver(packet: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
         registerPacketReceiver(packet) {payload, _ -> handler(payload)}
 
-    private fun GuiGraphics.nlf2noise() {
+    private fun GuiGraphicsExtractor.nlf2noise() {
         val noiseTicks = 5
         val noiseCount = 5
         blitAnim(Animation.NOISE, 1 + ((noise_tick % noiseTicks) / (noiseTicks / noiseCount)), color = ARGB.color(noise_amount, 0xffffff))
     }
-    private fun GuiGraphics.nlf2event101() {
+    private fun GuiGraphicsExtractor.nlf2event101() {
         val darken = Minecraft.getInstance().level?.skyDarken ?: 0
         if (shaderEvent101) overlayWithColor(((shaderEvent101Strength - darken.toFloat() / 7) / 5).coerceIn(0f, .2f), 1f, .5f, 0f)
     }

@@ -35,7 +35,7 @@ public class CustomShadersRenderer {
     private void renderPostEffect(Identifier postEffectId) {
         PostChain postChain = minecraftSupplier.get().getShaderManager().getPostChain(postEffectId, LevelTargetBundle.MAIN_TARGETS);
         if (postChain != null) {
-            var mainTarget = minecraftSupplier.get().getMainRenderTarget();
+            var mainTarget = minecraftSupplier.get().gameRenderer.mainRenderTarget();
             FrameGraphBuilder frame = new FrameGraphBuilder();
             PostChain.TargetBundle targets = PostChain.TargetBundle.of(MAIN_TARGET_ID, frame.importExternal("main", mainTarget));
             postChain.addToFrame(frame, mainTarget.width, mainTarget.height, targets);

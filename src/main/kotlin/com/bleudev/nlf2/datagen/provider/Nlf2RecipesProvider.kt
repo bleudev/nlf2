@@ -3,7 +3,7 @@ package com.bleudev.nlf2.datagen.provider
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider
-import net.minecraft.advancements.criterion.ItemPredicate
+import net.minecraft.advancements.predicates.ItemPredicate
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.recipes.RecipeCategory
