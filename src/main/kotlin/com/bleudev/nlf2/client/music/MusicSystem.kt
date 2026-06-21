@@ -2,9 +2,7 @@ package com.bleudev.nlf2.client.music
 
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.client.music.bg.BGMusic
-import com.bleudev.nlf2.client.music.bg.MusLab
 import com.bleudev.nlf2.client.music.bg.MusManual
-import com.bleudev.nlf2.client.music.bg.MusPlace
 import kotlinx.coroutines.*
 import net.minecraft.client.Minecraft
 import java.io.BufferedInputStream
@@ -16,9 +14,7 @@ import kotlin.math.log10
 
 class MusicSystem(mc: Minecraft) {
     private val bg: List<BGMusic> = listOf(
-        MusPlace(mc),
         MusManual(mc),
-        MusLab(mc),
     )
 
     private var curr: BGMusic? = null
