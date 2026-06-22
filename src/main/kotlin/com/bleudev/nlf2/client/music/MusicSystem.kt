@@ -2,25 +2,33 @@ package com.bleudev.nlf2.client.music
 
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.client.music.bg.BGMusic
+import com.bleudev.nlf2.client.music.bg.MusBattle
 import com.bleudev.nlf2.client.music.bg.MusManual
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
-import java.io.BufferedInputStream
+import org.lwjgl.openal.AL
+import org.lwjgl.openal.AL10
+import org.lwjgl.openal.ALC
+import org.lwjgl.openal.ALC10
+import org.lwjgl.system.MemoryUtil
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.DataLine
-import javax.sound.sampled.FloatControl
-import javax.sound.sampled.SourceDataLine
-import kotlin.math.log10
 
+// TODO: FIX Volume not changing during music playing (with music depends on music volume ingame)
 class MusicSystem(mc: Minecraft) {
     private val bg: List<BGMusic> = listOf(
         MusManual(mc),
+        MusBattle(mc)
     )
 
     private var curr: BGMusic? = null
         set(v) {field = v; refreshPlay()}
     fun tick() {
-        println(curr)
+        println("$curr $isPlaying")
         val m = bg.filter { it.shouldPlay }.maxOrNull()
         if (curr?.shouldPlay == false) curr = null
         if (curr == null || m == null) curr = m
@@ -28,13 +36,18 @@ class MusicSystem(mc: Minecraft) {
             curr = null
             curr = m
         }
-        curr?.run { musVolume(getFinalVolume()) }
+        if (curr != null) refreshPlay()
+        curr?.run {
+            musVolume = finalVolume
+            musPitch = pitch
+        }
     }
 
     private var playbackJob: Job? = null
     private var isPlaying = false
 
-    private var volumeControl: FloatControl? = null
+    private var musVolume: Float = 1f
+    private var musPitch: Float = 1f
 
     private fun refreshPlay() {
         if (curr == null) musStop()
@@ -44,58 +57,91 @@ class MusicSystem(mc: Minecraft) {
         musStop()
         isPlaying = true
         playbackJob = CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val inputStream = MusicSystem::class.java.getResourceAsStream(resourcePath)
-                if (inputStream == null) {
-                    LOGGER.error("MusicSystem: $resourcePath was not found!")
+            val inputStream = MusicSystem::class.java.getResourceAsStream(resourcePath)
+            if (inputStream == null) {
+                LOGGER.error("MusicSystem: $resourcePath was not found!")
+                return@launch
+            }
+
+            val audioStream = AudioSystem.getAudioInputStream(inputStream)
+            val format = audioStream.format
+
+            if (format.sampleSizeInBits != 16) {
+                System.err.println("MusicSystem: Only 16-bit WAV files are supported by this basic loader. This file is ${format.sampleSizeInBits}-bit.")
+                audioStream.close()
+                return@launch
+            }
+
+            val alFormat = when (format.channels) {
+                1 -> AL10.AL_FORMAT_MONO16
+                2 -> AL10.AL_FORMAT_STEREO16
+                else -> {
+                    System.err.println("MusicSystem: Unsupported channel count: ${format.channels}")
+                    audioStream.close()
                     return@launch
                 }
-
-                val bufferedIn = BufferedInputStream(inputStream)
-                AudioSystem.getAudioInputStream(bufferedIn).use { audioStream ->
-                    val format = audioStream.format
-                    val info = DataLine.Info(SourceDataLine::class.java, format)
-                    (AudioSystem.getLine(info) as SourceDataLine).use { line ->
-                        line.open(format)
-
-                        if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                            volumeControl = line.getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
-                            curr?.run { musVolume(getFinalVolume()) }
-                        } else {
-                            LOGGER.warn("MusicSystem: Master gain control isn't supported!")
-                        }
-
-                        line.start()
-
-                        val buffer = ByteArray(4096)
-                        var bytesRead = audioStream.read(buffer, 0, buffer.size)
-
-                        while (bytesRead != -1 && isPlaying && isActive) {
-                            line.write(buffer, 0, bytesRead)
-                            bytesRead = audioStream.read(buffer, 0, buffer.size)
-                        }
-
-                        line.drain()
-                    }
-                }
-            } catch (e: Exception) {
-                LOGGER.error("MusicSystem: Got error while playing music. Retrying: ${e.message}")
-                curr = null
-            } finally {
-                isPlaying = false
-                volumeControl = null
             }
+
+            val sampleRate = format.sampleRate.toInt()
+
+            val rawBytes = audioStream.readAllBytes()
+            audioStream.close()
+
+            val totalShorts = rawBytes.size / 2
+            val alBuf = MemoryUtil.memAllocShort(totalShorts)
+
+            val byteBuffer = ByteBuffer.wrap(rawBytes).order(ByteOrder.LITTLE_ENDIAN)
+            while (byteBuffer.remaining() >= 2) {
+                alBuf.put(byteBuffer.getShort())
+            }
+            alBuf.flip()
+
+            val device: Long = ALC10.alcOpenDevice(null as ByteBuffer?)
+            check(device != 0L) { "MusicSystem: Failed to open the default OpenAL device." }
+
+            val deviceCaps = ALC.createCapabilities(device)
+            val context = ALC10.alcCreateContext(device, null as IntArray?)
+            if (context == 0L) {
+                ALC10.alcCloseDevice(device)
+                throw IllegalStateException("MusicSystem: Failed to create OpenAL context.")
+            }
+
+            ALC10.alcMakeContextCurrent(context)
+            AL.createCapabilities(deviceCaps)
+
+            val bufferId = AL10.alGenBuffers()
+            AL10.alBufferData(bufferId, alFormat, alBuf, sampleRate)
+            MemoryUtil.memFree(alBuf)
+
+            val sourceId = AL10.alGenSources()
+            AL10.alSourcei(sourceId, AL10.AL_BUFFER, bufferId)
+            AL10.alSourcef(sourceId, AL10.AL_GAIN, musVolume)
+            AL10.alSourcef(sourceId, AL10.AL_PITCH, musPitch)
+
+            AL10.alSourcePlay(sourceId)
+
+            while (isPlaying && AL10.alGetSourcei(sourceId, AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING) {
+                try {
+                    AL10.alSourcef(sourceId, AL10.AL_GAIN, musVolume)
+                    AL10.alSourcef(sourceId, AL10.AL_PITCH, musPitch)
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+            }
+
+            AL10.alDeleteSources(sourceId)
+            AL10.alDeleteBuffers(bufferId)
+
+            ALC10.alcMakeContextCurrent(0)
+            ALC10.alcDestroyContext(context)
+            ALC10.alcCloseDevice(device)
+
+            isPlaying = false
         }
     }
     private fun musStop() {
         isPlaying = false
-        playbackJob?.cancel()
-    }
-    private fun musVolume(volume: Float) {
-        volumeControl?.let {
-            val safeVolume = volume.coerceIn(0.0001f, 1.0f)
-            val db = (20.0 * log10(safeVolume.toDouble())).toFloat()
-            it.value = db.coerceIn(it.minimum, it.maximum)
-        }
+//        playbackJob?.cancel()
     }
 }

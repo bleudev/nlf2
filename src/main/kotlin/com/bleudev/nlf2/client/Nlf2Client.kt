@@ -89,7 +89,7 @@ class Nlf2Client : ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             Nlf2KeyMappings.handle(mc)
-            mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.1")
+            mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.2")
             if (Webcam.getDefault().isOpen) {
                 if (!webcamEnabled) Webcam.getDefault().close()
             } else if (webcamEnabled) Webcam.getDefault().open()
