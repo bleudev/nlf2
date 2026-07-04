@@ -7,6 +7,7 @@ import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.dataSyncedEvent101
 import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.util.with
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.client.renderer.rendertype.RenderTypes
@@ -19,9 +20,11 @@ private val EYES_EMPTY = getIdentifier("textures/entity/player/eyes/empty.png")
 
 val clientNickname: String
     get() = Minecraft.getInstance().gameProfile.name.lowercase()
+val actorNickname: String
+    get() = dataSyncedActor.lowercase()
 
 fun getLoreCharacter(entityNickname: String): ActorChar {
-    return if (clientNickname in SUPPORTED_NICKNAMES && entityNickname == dataSyncedActor)
+    return if ((clientNickname in SUPPORTED_NICKNAMES.with(actorNickname)) && entityNickname.lowercase() == actorNickname)
                 ActorChar.fromString(dataSyncedActorLoreChar)
            else ActorChar.NULL
 }
@@ -40,7 +43,7 @@ fun getEyesTexture(entityNickname: String): Identifier {
         return getIdentifier("textures/entity/player/eyes/event101.png")
     val loreChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL || loreChar.eyes == null) return EYES_EMPTY
-    if (clientNickname == dataSyncedActor) clientNickname = "bleugame"
+    if (clientNickname == actorNickname) clientNickname = "bleugame"
 
     return getIdentifier("textures/entity/player/eyes/${loreChar.eyes}/$clientNickname.png")
 }
@@ -50,7 +53,7 @@ fun getSkin(entityNickname: String): PlayerSkin? {
     var clientNickname = clientNickname
     val loreChar: ActorChar = getLoreCharacter(entityNickname)
     if (loreChar == ActorChar.NULL) return null
-    if (clientNickname == dataSyncedActor) clientNickname = "bleugame"
+    if (clientNickname == actorNickname) clientNickname = "bleugame"
     if (!loreChar.renderVessel) clientNickname = "empty"
     val texture = getIdentifier("entity/player/skin/$clientNickname")
 

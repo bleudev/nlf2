@@ -47,3 +47,8 @@ fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {
     val value = this.getter.call()
     this.setter.call(func(value))
 }
+fun <T> List<T>.with(vararg values: T): List<T> {
+    val cp = this.toMutableList()
+    cp.addAll(values)
+    return cp.toList()
+}
