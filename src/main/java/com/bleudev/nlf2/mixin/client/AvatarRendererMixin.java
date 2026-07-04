@@ -6,7 +6,6 @@ import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -37,19 +36,19 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
         this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::eyes));
     }
 
-    @ModifyReturnValue(method = "shouldShowName", at = @At("RETURN"))
+    @ModifyReturnValue(method = "shouldShowName*", at = @At("RETURN"))
     private boolean doNOTshow(boolean original) {
         return false;
     }
 
-    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    @Inject(method = "extractRenderState*", at = @At("TAIL"))
     private void setStateNickname(AvatarLike entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
         if (entity instanceof Player player) {
             IAvatarRenderState renderState = (IAvatarRenderState) state;
             final var nickname = player.getGameProfile().name().toLowerCase();
             renderState.nlf2$setNickname(nickname);
 
-            var ch = current(Minecraft.getInstance().getGameProfile().name(), nickname);
+            var ch = current(nickname);
             if (ch != null && ch.isInvisible()) {
                 renderState.nlf2$setShouldRenderArmor(false);
                 state.isInvisible = true;

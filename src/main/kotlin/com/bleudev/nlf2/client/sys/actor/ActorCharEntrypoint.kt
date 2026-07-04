@@ -6,7 +6,7 @@ import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
 import com.bleudev.nlf2.client.sys.actor.chars.res.*
 import com.bleudev.nlf2.getIdentifier
-import com.bleudev.nlf2.util.with
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.core.ClientAsset
@@ -14,7 +14,11 @@ import net.minecraft.world.entity.player.PlayerModelType
 import net.minecraft.world.entity.player.PlayerSkin
 
 object ActorCharEntrypoint {
+    private val clientNickname get() = Minecraft.getInstance().gameProfile.name
+
     private val chars: HashMap<String, ActorChar> = HashMap()
+
+    private val SLIM_SKINS = listOf("waflla_kek")
 
     fun initialize() {
         chars["rouge"] = RougeChar()
@@ -25,52 +29,49 @@ object ActorCharEntrypoint {
         chars["inv"] = InvChar()
     }
 
-    @JvmStatic
-    fun current(client: String, entity: String): ActorChar? {
+    private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)
+    private fun prepare(client: String, entity: String): PrepareData {
         var client = client.lowercase()
         val entity = entity.lowercase()
         val actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
         if (client == actor) client = "bleugame"
 
-        if (entity == actor && client in SUPPORTED_NICKNAMES) return chars[char]
-        return null
+        if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])
+        // Other event specific chars...
+        return PrepareData(client, entity, null)
     }
 
+    fun current(client: String, entity: String): ActorChar? = prepare(client, entity).char
     @JvmStatic
-    fun skin(client: String, entity: String): PlayerSkin? {
-        var client = client.lowercase()
-        val entity = entity.lowercase()
-        val actor = dataSyncedActor.lowercase()
-        val char = dataSyncedActorLoreChar
-        if (client == actor) client = "bleugame"
-        if (entity != actor || client !in SUPPORTED_NICKNAMES) return null
+    fun current(entity: String): ActorChar? = current(clientNickname, entity)
 
-        val txt = getIdentifier(chars[char]?.skin(client) ?: return null)
-        val modelType = if (client in listOf("waflla_kek")) PlayerModelType.SLIM else PlayerModelType.WIDE
+    fun skin(client: String, entity: String): PlayerSkin? {
+        val pr = prepare(client, entity)
+        val txt = getIdentifier(pr.char?.skin(pr.client) ?: return null)
+        val modelType = if (pr.client in SLIM_SKINS) PlayerModelType.SLIM else PlayerModelType.WIDE
         return PlayerSkin(ClientAsset.ResourceTexture(txt), null, null, modelType, true)
     }
+    @JvmStatic
+    fun skin(entity: String): PlayerSkin? = skin(clientNickname, entity)
 
     private val EMPTY_FALLBACK = getIdentifier("textures/entity/player/empty.png")
     private val EYES_FALLBACK = RenderTypes.eyes(EMPTY_FALLBACK)
     private val OVERLAY_FALLBACK = RenderTypes.entityTranslucent(EMPTY_FALLBACK)
 
-    @JvmStatic
     fun eyes(client: String, entity: String): RenderType {
-        var client = client.lowercase()
-        val entity = entity.lowercase()
-        val actor = dataSyncedActor.lowercase()
-        val char = dataSyncedActorLoreChar
-        if (client == actor) client = "bleugame"
-        if (entity != actor || client !in SUPPORTED_NICKNAMES.with(actor)) return EYES_FALLBACK
-
-        val txt = getIdentifier("textures/${chars[char]?.eyes(client) ?: return EYES_FALLBACK}.png")
+        val pr = prepare(client, entity)
+        val txt = getIdentifier("textures/${pr.char?.eyes(pr.client) ?: return EYES_FALLBACK}.png")
         return RenderTypes.eyes(txt)
     }
-
     @JvmStatic
+    fun eyes(entity: String): RenderType = eyes(clientNickname, entity)
+
     fun overlay(client: String, entity: String): RenderType {
-        // TODO: event101 support
-        return OVERLAY_FALLBACK
+        val pr = prepare(client, entity)
+        val txt = getIdentifier("textures/${pr.char?.overlay(pr.client) ?: return OVERLAY_FALLBACK}.png")
+        return RenderTypes.entityTranslucent(txt)
     }
+    @JvmStatic
+    fun overlay(entity: String): RenderType = overlay(clientNickname, entity)
 }
