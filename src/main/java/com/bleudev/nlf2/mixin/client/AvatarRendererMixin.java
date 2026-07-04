@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.mixin.client;
 
 import com.bleudev.nlf2.client.custom.renderer.entity.layers.AvatarOverlayLayer;
-import com.bleudev.nlf2.client.util.AvatarSkinUtilKt;
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint;
 import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -32,8 +32,8 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void addEyesLayer(EntityRendererProvider.Context context, boolean slimSteve, CallbackInfo ci) {
-        this.addLayer(new AvatarOverlayLayer(this, AvatarSkinUtilKt::getSkinOverlayRenderType));
-        this.addLayer(new AvatarOverlayLayer(this, AvatarSkinUtilKt::getEyesRenderType));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::eyes));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::overlay));
     }
 
     @ModifyReturnValue(method = "shouldShowName", at = @At("RETURN"))
