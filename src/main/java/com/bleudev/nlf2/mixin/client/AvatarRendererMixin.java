@@ -6,6 +6,7 @@ import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.util.AvatarSkinUtilKt.getLoreCharacter;
+import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.current;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AvatarRenderer.class)
@@ -48,7 +49,8 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             final var nickname = player.getGameProfile().name().toLowerCase();
             renderState.nlf2$setNickname(nickname);
 
-            if (getLoreCharacter(nickname).isInvisibleLike()) {
+            var ch = current(Minecraft.getInstance().getGameProfile().name(), nickname);
+            if (ch != null && ch.isInvisible()) {
                 renderState.nlf2$setShouldRenderArmor(false);
                 state.isInvisible = true;
                 state.leftHandItemState.clear();
@@ -60,14 +62,4 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             }
         }
     }
-
-//    @Override
-//    protected float getShadowRadius(@NotNull AvatarRenderState state) {
-//        if (getLoreCharacter(((IAvatarRenderState) state).nlf2$getNickname()).isInvisibleLike()) {
-//            System.out.println("INVISIBLE LIKE SHADOW RENDERING MIXIN");
-//            return 0f;
-//        }
-//        System.out.println("NOT INVISIBLE SHADOW RENDERING MIXIN");
-//        return super.getShadowRadius(state);
-//    }
 }

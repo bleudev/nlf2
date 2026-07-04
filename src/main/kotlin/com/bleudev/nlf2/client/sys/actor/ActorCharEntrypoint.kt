@@ -4,10 +4,7 @@ import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.InvChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.RougeChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.VertChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.VesselChar
+import com.bleudev.nlf2.client.sys.actor.chars.res.*
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.with
 import net.minecraft.client.renderer.rendertype.RenderType
@@ -23,7 +20,21 @@ object ActorCharEntrypoint {
         chars["rouge"] = RougeChar()
         chars["vert"] = VertChar()
         chars["vessel"] = VesselChar()
+        chars["rouge_eyes"] = RougeEyesChar()
+        chars["vert_eyes"] = VertEyesChar()
         chars["inv"] = InvChar()
+    }
+
+    @JvmStatic
+    fun current(client: String, entity: String): ActorChar? {
+        var client = client.lowercase()
+        val entity = entity.lowercase()
+        val actor = dataSyncedActor.lowercase()
+        val char = dataSyncedActorLoreChar
+        if (client == actor) client = "bleugame"
+
+        if (entity == actor && client in SUPPORTED_NICKNAMES) return chars[char]
+        return null
     }
 
     @JvmStatic
@@ -33,7 +44,7 @@ object ActorCharEntrypoint {
         val actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
         if (client == actor) client = "bleugame"
-        if (entity != actor || client !in SUPPORTED_NICKNAMES.with(actor)) return null
+        if (entity != actor || client !in SUPPORTED_NICKNAMES) return null
 
         val txt = getIdentifier(chars[char]?.skin(client) ?: return null)
         val modelType = if (client in listOf("waflla_kek")) PlayerModelType.SLIM else PlayerModelType.WIDE
