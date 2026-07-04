@@ -51,6 +51,7 @@ dependencies {
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
     implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
+    implementation("maven.modrinth:xaeros-world-map:${project.property("xaeros_world_map_version")}")
     implementation("maven.modrinth:nine_lifes:${project.property("nl_version")}")
 
     include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)

@@ -4,12 +4,6 @@ import com.bleudev.nine_lifes.client.util.overlayWithColor
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.resources.Identifier
-import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-
-fun Player.holdsInAnyHand(predicate: (ItemStack) -> Boolean): Boolean = (predicate(this.mainHandItem) || predicate(this.offhandItem))
-fun Player.holdsInAnyHand(item: Item): Boolean = this.holdsInAnyHand { it.item == item }
 
 fun GuiGraphicsExtractor.black(alpha: Float) = overlayWithColor(alpha, 0f, 0f, 0f)
 fun GuiGraphicsExtractor.black() = black(1f)

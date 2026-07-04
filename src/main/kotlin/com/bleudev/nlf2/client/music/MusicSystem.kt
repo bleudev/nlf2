@@ -28,7 +28,6 @@ class MusicSystem(mc: Minecraft) {
     private var curr: BGMusic? = null
         set(v) {field = v; refreshPlay()}
     fun tick() {
-        println("$curr $isPlaying")
         val m = bg.filter { it.shouldPlay }.maxOrNull()
         if (curr?.shouldPlay == false) curr = null
         if (curr == null || m == null) curr = m
