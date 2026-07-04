@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nlf2.INTRO_ENABLED
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.TICKER_INTRO
@@ -16,10 +17,8 @@ import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
 object IntroHelper {
-    private const val ENABLED = false
-
     fun render(graphics: GuiGraphicsExtractor) {
-        if (!ENABLED) return
+        if (!INTRO_ENABLED) return
 
         // Ticker
         val t = TICKER_INTRO.tick()

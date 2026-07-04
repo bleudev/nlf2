@@ -54,7 +54,7 @@ class Nlf2 : ModInitializer {
         ServerPlayerEvents.JOIN.register { player ->
             player.level().server.nlf2data.onJoin(player)
 
-            if (player.isFirstJoined()) player.teleportOnFirstJoin()
+            if (player.isFirstJoined() && TELEPORT_ON_FIRST_JOIN) player.teleportOnFirstJoin()
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             server.sendToEveryone { player -> arrayOf(
