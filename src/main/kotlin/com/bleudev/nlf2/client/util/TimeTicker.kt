@@ -23,8 +23,6 @@ class TimeTicker : Ticker() {
 }
 
 val TICKER_INTRO = TimeTicker()
-/*
-Maybe in future will be needed
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()
@@ -34,9 +32,15 @@ class TimeTimer {
     val time: Long get() = end - start
     val timeDelta: Long get() = end - prev
 
-    fun tick() {
+    fun tick(): Long {
         prev = end
         end = System.currentTimeMillis()
+        return time
+    }
+
+    fun reset() {
+        start = System.currentTimeMillis()
     }
 }
- */
+
+val TIMER_MASK = TimeTimer()
