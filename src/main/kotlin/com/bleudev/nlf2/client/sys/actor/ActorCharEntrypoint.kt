@@ -27,6 +27,11 @@ object ActorCharEntrypoint {
         chars["rouge_eyes"] = RougeEyesChar()
         chars["vert_eyes"] = VertEyesChar()
         chars["inv"] = InvChar()
+        // Mask
+        chars["mask_bleugame"] = MaskBleugameChar()
+        chars["mask_crockomd"] = MaskCrockoMDChar()
+        chars["mask_waflla_kek"] = MaskWafllaKekChar()
+        chars["mask_boberobo7"] = MaskBoberobo7Char()
     }
 
     private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)

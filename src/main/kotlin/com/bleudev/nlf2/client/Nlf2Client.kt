@@ -14,6 +14,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.music.MusicSystem
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.util.Animation
+import com.bleudev.nlf2.client.util.TIMER_MASK
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
@@ -206,6 +207,8 @@ class Nlf2Client : ClientModInitializer {
 
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
+
+            TIMER_MASK.reset()
         }
         registerPacketReceiver(OpenManual) { payload, ctx ->
             ctx.client().gui.setScreen(ManualScreen(payload.manualId))
