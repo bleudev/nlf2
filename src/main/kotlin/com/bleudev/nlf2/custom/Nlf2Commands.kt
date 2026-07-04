@@ -3,7 +3,6 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.LOGGER
-import com.bleudev.nlf2.custom.data.saved.ActorChar
 import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
@@ -42,7 +41,7 @@ object Nlf2Commands {
                                 val player = EntityArgument.getPlayer(ctx, "player")
                                 ctx.source.server.nlf2data::loreData.transform {
                                     it.actor = player.gameProfile.name
-                                    it.actorChar = ActorChar.NULL
+                                    it.actorChar = "null"
                                     it
                                 }
                                 return@executes ctx.source.sendSuccess(Component.literal("Actor was set"))
@@ -54,7 +53,7 @@ object Nlf2Commands {
                             .executes { ctx ->
                                 val char = StringArgumentType.getString(ctx, "actorChar")
                                 ctx.source.server.nlf2data::loreData.transform {
-                                    it.actorChar = ActorChar.fromString(char)
+                                    it.actorChar = char
                                     it
                                 }
                                 return@executes ctx.source.sendSuccess(Component.literal("Actor char was set"))

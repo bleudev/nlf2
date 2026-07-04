@@ -8,14 +8,14 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import static com.bleudev.nlf2.client.util.AvatarSkinUtilKt.getSkin;
+import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.skin;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AbstractClientPlayer.class)
 public class AbstractClientPlayerMixin {
     @ModifyReturnValue(method = "getSkin", at = @At("RETURN"))
     private PlayerSkin modifySkinForSomeLore(PlayerSkin original) {
-        var skin = getSkin(((AbstractClientPlayer) (Object) this).getGameProfile().name().toLowerCase());
+        var skin = skin(((AbstractClientPlayer) (Object) this).getGameProfile().name());
         if (skin == null) return original;
         return skin;
     }

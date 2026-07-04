@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.mixin.client;
 
 import com.bleudev.nlf2.client.custom.renderer.entity.layers.AvatarOverlayLayer;
-import com.bleudev.nlf2.client.util.AvatarSkinUtilKt;
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint;
 import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.util.AvatarSkinUtilKt.getLoreCharacter;
+import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.current;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AvatarRenderer.class)
@@ -32,23 +32,24 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void addEyesLayer(EntityRendererProvider.Context context, boolean slimSteve, CallbackInfo ci) {
-        this.addLayer(new AvatarOverlayLayer(this, AvatarSkinUtilKt::getSkinOverlayRenderType));
-        this.addLayer(new AvatarOverlayLayer(this, AvatarSkinUtilKt::getEyesRenderType));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::overlay));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::eyes));
     }
 
-    @ModifyReturnValue(method = "shouldShowName", at = @At("RETURN"))
+    @ModifyReturnValue(method = "shouldShowName*", at = @At("RETURN"))
     private boolean doNOTshow(boolean original) {
         return false;
     }
 
-    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    @Inject(method = "extractRenderState*", at = @At("TAIL"))
     private void setStateNickname(AvatarLike entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
         if (entity instanceof Player player) {
             IAvatarRenderState renderState = (IAvatarRenderState) state;
             final var nickname = player.getGameProfile().name().toLowerCase();
             renderState.nlf2$setNickname(nickname);
 
-            if (getLoreCharacter(nickname).isInvisibleLike()) {
+            var ch = current(nickname);
+            if (ch != null && ch.isInvisible()) {
                 renderState.nlf2$setShouldRenderArmor(false);
                 state.isInvisible = true;
                 state.leftHandItemState.clear();
@@ -60,14 +61,4 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             }
         }
     }
-
-//    @Override
-//    protected float getShadowRadius(@NotNull AvatarRenderState state) {
-//        if (getLoreCharacter(((IAvatarRenderState) state).nlf2$getNickname()).isInvisibleLike()) {
-//            System.out.println("INVISIBLE LIKE SHADOW RENDERING MIXIN");
-//            return 0f;
-//        }
-//        System.out.println("NOT INVISIBLE SHADOW RENDERING MIXIN");
-//        return super.getShadowRadius(state);
-//    }
 }

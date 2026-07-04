@@ -26,7 +26,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar.serializedName, value.borderState, value.fogEventState.value, value.event101, value.manualId))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar, value.borderState, value.fogEventState.value, value.event101, value.manualId))
             }
         }
 
@@ -45,14 +45,14 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar.toString(), loreData.borderState, loreData.fogEventState.value, loreData.event101, loreData.manualId))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar, loreData.borderState, loreData.fogEventState.value, loreData.event101, loreData.manualId))
     }
 
-    class LoreData(var actor: String = "", var actorChar: ActorChar = ActorChar.NULL, var borderState: Int = BorderStates.STANDARD, var fogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO, var event101: Boolean = false, var manualId: Int = 0) {
+    class LoreData(var actor: String = "", var actorChar: String = "null", var borderState: Int = BorderStates.STANDARD, var fogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO, var event101: Boolean = false, var manualId: Int = 0) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
-                StringRepresentable.fromEnum(ActorChar::values).fieldOf("actorChar").forGetter(LoreData::actorChar),
+                Codec.STRING.fieldOf("actorChar").forGetter(LoreData::actorChar),
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
                 StringRepresentable.fromEnum(FogEventState::values).fieldOf("fogEventState").forGetter(LoreData::fogEventState),
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
@@ -67,43 +67,6 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
             ).apply(it, ::PlayerData)
-            }
-        }
-    }
-}
-
-enum class ActorChar(private val char: String): StringRepresentable {
-    NULL("null"),
-    ROUGE("rouge"),
-    VERT("vert"),
-    VESSEL("vessel"),
-    ROUGE_EYES("rouge_eyes"),
-    INV("inv");
-
-    override fun getSerializedName(): String = char
-    override fun toString(): String = serializedName
-
-    val eyes: String?
-        get() = when (this) {
-            ROUGE -> "rouge"
-            ROUGE_EYES -> "rouge"
-            VERT -> "vert"
-            else -> null
-        }
-    val isInvisibleLike: Boolean
-        get() = this in listOf(ROUGE_EYES, INV)
-    val renderVessel: Boolean
-        get() = this in listOf(ROUGE, VERT, VESSEL)
-
-    companion object {
-        fun fromString(char: String): ActorChar {
-            return when (char) {
-                "rouge" -> ROUGE
-                "vert" -> VERT
-                "vessel" -> VESSEL
-                "rouge_eyes" -> ROUGE_EYES
-                "inv" -> INV
-                else -> NULL
             }
         }
     }

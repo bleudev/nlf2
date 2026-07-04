@@ -12,6 +12,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.music.MusicSystem
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
@@ -53,6 +54,7 @@ class Nlf2Client : ClientModInitializer {
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         Nlf2KeyMappings.initialize()
+        ActorCharEntrypoint.initialize()
         tryHideMod()
         their.validateAll()
 
