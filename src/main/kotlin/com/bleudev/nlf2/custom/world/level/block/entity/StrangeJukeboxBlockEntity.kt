@@ -8,10 +8,13 @@ import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.M
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.ON
 import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
+import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
@@ -36,6 +39,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             currMus = mus
             updatePlayer(level, on, mus)
         }
+        if (on && t % 20 == 0) spawnMusicParticles(level, pos)
         if (on) t++
 
         if (t >= duration) {
@@ -49,18 +53,19 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         if (mus == StrangeJukeboxBlock.SelectedMus.EASTER_EGG) {
             var pac: StrangeJukeboxRainbowControl? = null
             if (t == ((180.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(true)
-            if (t == ((645.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(false)
+            if (t == ((633.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(false)
 
             if (pac != null) level.server?.sendToEveryone {
                 if (it.distanceToSqr(Vec3.atCenterOf(pos)) <= 15*15) arrayOf(pac)
                 else arrayOf()
             }
         }
-
     }
 
     internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
         if (level.isClientSide || !player.abilities.mayBuild) return InteractionResult.PASS
+        if (state.getValue(ON) && state.getValue(MUS) == StrangeJukeboxBlock.SelectedMus.EASTER_EGG
+            && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.CONSUME
         var state = state.setValue(ON, !state.getValue(ON))
         if (state.getValue(ON)) state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus())
         level.setBlockAndUpdate(pos, state)
@@ -75,6 +80,14 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             level.playSound(null, blockPos, mus.mus_sound, SoundSource.RECORDS, 1f, pitch)
         } else {
             level.server?.sendToEveryone { arrayOf(StrangeJukeboxMusicStop.INSTANCE) }
+        }
+    }
+
+    private fun spawnMusicParticles(level: LevelAccessor, blockPos: BlockPos) {
+        if (level is ServerLevel) {
+            val pos = Vec3.atBottomCenterOf(blockPos).add(0.0, 1.2, 0.0)
+            val randomColor = level.getRandom().nextInt(4).toFloat() / 24.0f
+            level.sendParticles(ParticleTypes.NOTE, pos.x(), pos.y(), pos.z(), 0, randomColor.toDouble(), 0.0, 0.0, 1.0)
         }
     }
 
