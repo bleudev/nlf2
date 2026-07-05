@@ -250,6 +250,11 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
         }
+        registerPacketReceiver(StrangeJukeboxMusicStop) {
+            val sm = Minecraft.getInstance().soundManager
+            sm.stop(Nlf2Sounds.MUS_JUKEBOX.location, SoundSource.RECORDS)
+            sm.stop(Nlf2Sounds.MUS_EASTER_EGG.location, SoundSource.RECORDS)
+        }
     }
 
     private fun tryHideMod() {
