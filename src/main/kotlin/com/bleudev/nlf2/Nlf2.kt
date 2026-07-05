@@ -3,11 +3,8 @@ package com.bleudev.nlf2
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nlf2.custom.Nlf2Blocks
-import com.bleudev.nlf2.custom.Nlf2Commands
+import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
-import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
@@ -51,6 +48,7 @@ class Nlf2 : ModInitializer {
         Nlf2Items.initialize()
         Nlf2Packets.initialize()
         Nlf2Blocks.initialize()
+        Nlf2BlockEntities.initialize()
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
         ServerPlayerEvents.JOIN.register { player ->

@@ -7,6 +7,8 @@ object Nlf2Sounds {
     val LAUGH = registerSound("laugh")
     val BORDER_AMBIENT = registerSound("border_ambient")
     val PAUSE_CUTSCENE_AMBIENT = registerSound("pause_cutscene_ambient")
+    val MUS_JUKEBOX = registerSound("mus_jukebox")
+    val MUS_EASTER_EGG = registerSound("mus_easter_egg")
 
     fun initialize() {}
 }

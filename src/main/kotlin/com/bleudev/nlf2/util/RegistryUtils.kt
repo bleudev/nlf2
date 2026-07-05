@@ -2,6 +2,7 @@ package com.bleudev.nlf2.util
 
 import com.bleudev.nlf2.getIdentifier
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
+import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -11,6 +12,8 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import java.util.*
 
@@ -39,7 +42,12 @@ fun registerBlock(
     }
     return BuiltInRegistries.BLOCK.register(name, block)
 }
-
+fun <T : BlockEntity> registerBlockEntity(
+    name: String, entityFactory: FabricBlockEntityTypeBuilder.Factory<out T>, vararg blocks: Block
+): BlockEntityType<T> = Registry.register<BlockEntityType<*>, BlockEntityType<T>>(
+    BuiltInRegistries.BLOCK_ENTITY_TYPE, getIdentifier(name),
+    FabricBlockEntityTypeBuilder.create(entityFactory, *blocks).build()
+)
 // Client
 fun registerSound(name: String, range: Float? = null): SoundEvent = BuiltInRegistries.SOUND_EVENT
     .register(name, SoundEvent(getIdentifier(name), Optional.ofNullable(range)))

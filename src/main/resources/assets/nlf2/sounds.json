@@ -22,5 +22,17 @@
         "sounds": [
             "nlf2:pause_cutscene_ambient"
         ]
+    },
+    "mus_jukebox": {
+        "subtitle": "sound.nlf2.mus_jukebox",
+        "sounds": [
+            "nlf2:mus_jukebox"
+        ]
+    },
+    "mus_easter_egg": {
+        "subtitle": "sound.nlf2.mus_easter_egg",
+        "sounds": [
+            "nlf2:mus_easter_egg"
+        ]
     }
 }
