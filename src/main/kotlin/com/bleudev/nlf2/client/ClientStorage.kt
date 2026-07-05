@@ -20,8 +20,6 @@ var webcamEnabled: Boolean = false
 @JvmField
 var compassForceSpin: Boolean = false
 
-const val ADDRESS: String = "localhost:25565"
-
 // Join blackness
 var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f

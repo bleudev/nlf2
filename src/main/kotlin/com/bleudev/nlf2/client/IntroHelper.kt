@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.INTRO_ENABLED
+import com.bleudev.nlf2.SERVER_ADDRESS
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.TICKER_INTRO
@@ -30,8 +31,8 @@ object IntroHelper {
             ConnectScreen.startConnecting(
                 mc.gui.screen() ?: TitleScreen(),
                 mc,
-                ServerAddress.parseString(ADDRESS),
-                ServerData("???", ADDRESS, ServerData.Type.OTHER),
+                ServerAddress.parseString(SERVER_ADDRESS),
+                ServerData("???", SERVER_ADDRESS, ServerData.Type.OTHER),
                 false,
                 null as TransferState?
             )

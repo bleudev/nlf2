@@ -1,5 +1,7 @@
 package com.bleudev.nlf2
 
+const val SERVER_ADDRESS: String = "white.fnode.me:25623"
+
 @JvmField
 val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "waflla_kek")
 const val CAN_USE_SECRET_EVENT_KEY_MAPPING_NICKNAME = "bleugame"
