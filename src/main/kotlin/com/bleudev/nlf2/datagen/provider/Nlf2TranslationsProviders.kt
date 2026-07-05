@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.datagen.provider
 
+import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
@@ -13,6 +14,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
         builder.add(Nlf2Items.MANUAL, "Manual")
+        builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Strange jukebox")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds
@@ -30,6 +32,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
         builder.add(Nlf2Items.MANUAL, "Руководство")
+        builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Странный проигрыватель")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds
