@@ -89,6 +89,10 @@ class Nlf2Client : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
             putFloat(shaderEvent101Strength).putFloat(2.4f)
         }
+        PostEffectRegistry.register(getIdentifier("rainbow") to ::shaderRainbow)
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("RainbowConfig", getIdentifier("rainbow")), {putFloat().putFloat()}) {
+            putFloat(shaderRainbowHue).putFloat(shaderRainbowStrength)
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             Nlf2KeyMappings.handle(mc)
@@ -104,6 +108,8 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
         }
         ClientTickEvents.END_LEVEL_TICK.register {
+            if (rainbowTicks >= 0) rainbowTicks++
+
             shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
             compassForceSpin = noise_amount > .6f
 
@@ -218,6 +224,9 @@ class Nlf2Client : ClientModInitializer {
                 ctx.client().gui.setScreen(PuzzleScreen(it))
             }
         }
+        registerPacketReceiver(StrangeJukeboxRainbowControl) { payload ->
+            rainbowTicks = if (payload.start) 0 else -1
+        }
         registerPacketReceiver(WorldBorderNoisePayload) { payload ->
             val maxBlocks = 50.0
             val maxNoise = .5f
@@ -249,6 +258,11 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
+        }
+        registerPacketReceiver(StrangeJukeboxMusicStop) {
+            val sm = Minecraft.getInstance().soundManager
+            sm.stop(Nlf2Sounds.MUS_JUKEBOX.location, SoundSource.RECORDS)
+            sm.stop(Nlf2Sounds.MUS_EASTER_EGG.location, SoundSource.RECORDS)
         }
     }
 

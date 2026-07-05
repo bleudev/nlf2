@@ -2,8 +2,6 @@ package com.bleudev.nlf2.client.music
 
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.client.music.bg.BGMusic
-import com.bleudev.nlf2.client.music.bg.MusBattle
-import com.bleudev.nlf2.client.music.bg.MusManual
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,11 +16,11 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.sound.sampled.AudioSystem
 
-// TODO: FIX Volume not changing during music playing (with music depends on music volume ingame)
+// TODO: Fix all Minecraft sound system being disabled after playing soundtracks
 class MusicSystem(mc: Minecraft) {
     private val bg: List<BGMusic> = listOf(
-        MusManual(mc),
-        MusBattle(mc)
+//        MusManual(mc),
+//        MusBattle(mc)
     )
 
     private var curr: BGMusic? = null

@@ -1,5 +1,7 @@
 package com.bleudev.nlf2
 
+const val SERVER_ADDRESS: String = "white.fnode.me:25623"
+
 @JvmField
 val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "waflla_kek")
 const val CAN_USE_SECRET_EVENT_KEY_MAPPING_NICKNAME = "bleugame"
@@ -14,6 +16,9 @@ const val MANUAL_UPDATE_EFFECT_DURATION = 15
 const val EVENT101_SCREEN_EFFECT_CLEAR_DURATION = 40
 
 const val DATA_FOG_EVENT_STATE_SYNC_DURATION = 100
+
+const val RAINBOW_START_TICKS = 60
+const val RAINBOW_HUE_TICKS = 100
 
 // Debug consts
 const val TELEPORT_ON_FIRST_JOIN = false

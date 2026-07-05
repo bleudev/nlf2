@@ -1,14 +1,17 @@
 package com.bleudev.nlf2.datagen.provider
 
+import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelGenerators
 import net.minecraft.client.data.models.model.ModelTemplates
+import net.minecraft.client.data.models.model.TexturedModel
 
 class Nlf2ModelProvider(packOutput: FabricPackOutput) : FabricModelProvider(packOutput) {
     override fun generateBlockStateModels(blockModelGenerators: BlockModelGenerators) {
+        blockModelGenerators.createTrivialBlock(Nlf2Blocks.STRANGE_JUKEBOX, TexturedModel.CUBE_TOP)
     }
 
     override fun generateItemModels(generator: ItemModelGenerators) {

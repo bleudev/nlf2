@@ -22,6 +22,7 @@ java {
 fabricApi {
     configureDataGeneration {
         client = true
+        modId = "nlf2"
     }
 }
 

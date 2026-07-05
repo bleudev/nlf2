@@ -13,6 +13,7 @@ object Nlf2Packets {
     val CLIENT_NLF2_DATA_SYNC = getIdentifier("packet/client_nlf2_data_sync")
     val OPEN_MANUAL = getIdentifier("packet/open_manual")
     val OPEN_PUZZLE = getIdentifier("packet/open_puzzle")
+    val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
     val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
 
@@ -22,6 +23,7 @@ object Nlf2Packets {
     val UNIT_EVENT101_SCREEN_EFFECT_CLEAR = getIdentifier("packet/unit/event101_screen_effect_clear")
     val UNIT_LOST_VESSEL_CONTROL_ACTIVATE = getIdentifier("packet/unit/lost_vessel_control_activate")
     val UNIT_MANUAL_UPDATE_EFFECT = getIdentifier("packet/unit/manual_update_effect")
+    val UNIT_STRANGE_JUKEBOX_MUSIC_STOP = getIdentifier("packet/unit/strange_jukebox_music_stop")
 
     val SB_CAUSE_EVENT_WITH_KEY = getIdentifier("packet/sb/cause_event_with_key")
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
@@ -32,10 +34,11 @@ object Nlf2Packets {
         val s2c = PayloadTypeRegistry.clientboundPlay()
         // Normal
         s2c.register(ClientNlf2DataSync)
+        s2c.register(JoinDisconnectVersion)
         s2c.register(OpenManual)
         s2c.register(OpenPuzzle)
+        s2c.register(StrangeJukeboxRainbowControl)
         s2c.register(WorldBorderNoisePayload)
-        s2c.register(JoinDisconnectVersion)
         // Unit
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
@@ -43,6 +46,7 @@ object Nlf2Packets {
         s2c.register(Event101ScreenEffectClear)
         s2c.register(LostVesselControlActivate)
         s2c.register(ManualUpdateEffect)
+        s2c.register(StrangeJukeboxMusicStop)
 
         // Server bound
         val c2s = PayloadTypeRegistry.serverboundPlay()
