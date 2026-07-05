@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom.world.level.block.entity
 
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
+import com.bleudev.nlf2.custom.packet.payload.StrangeJukeboxRainbowControl
 import com.bleudev.nlf2.custom.packet.payload.unit.StrangeJukeboxMusicStop
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.MUS
@@ -14,6 +15,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.Vec3
 
 
 class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Nlf2BlockEntities.STRANGE_JUKEBOX_ENTITY, pos, state) {
@@ -40,7 +42,17 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             } else updatePlayer(level, on, mus)
         }
 
-        println("$t $duration")
+        if (mus == StrangeJukeboxBlock.SelectedMus.EASTER_EGG) {
+            var pac: StrangeJukeboxRainbowControl? = null
+            if (t == ((180.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(true)
+            if (t == ((645.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(false)
+
+            if (pac != null) level.server?.sendToEveryone {
+                if (it.distanceToSqr(Vec3.atCenterOf(pos)) <= 15*15) arrayOf(pac)
+                else arrayOf()
+            }
+        }
+
     }
 
     internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {

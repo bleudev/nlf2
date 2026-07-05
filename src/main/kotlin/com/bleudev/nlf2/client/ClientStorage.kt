@@ -67,6 +67,8 @@ var pause_screen_red_screen_effect: Boolean = false
 var should_not_play_any_sound: Boolean = false
 @JvmField
 var pause_screen_ticks: Int = 0
+// Rainbow effect
+var rainbowTicks: Int = -1
 // Shader effects
 @JvmField
 var shaderLostVesselControl: Boolean = false
@@ -76,6 +78,7 @@ var shaderBorderLag: Boolean = false
 var shaderBorderEnd: Boolean = false
 //val shaderEvent101: Boolean get() = true
 val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
+val shaderRainbow: Boolean get() = rainbowTicks != -1
 
 // Nine lifes shaders uniforms
 @JvmField
@@ -85,6 +88,8 @@ var shaderAnaglyphUniformX: Float = 0f
 var shaderAnaglyphUniformY: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
 val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
+val shaderRainbowStrength: Float get() = (rainbowTicks.toFloat() / RAINBOW_START_TICKS).coerceAtMost(1f)/4
+val shaderRainbowHue: Float get() = (rainbowTicks % RAINBOW_HUE_TICKS).toFloat() / RAINBOW_HUE_TICKS
 
 private val theirPath: Path
     get() = FabricLoader.getInstance().configDir.parent.resolve(".their")

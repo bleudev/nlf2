@@ -13,6 +13,7 @@ object Nlf2Packets {
     val CLIENT_NLF2_DATA_SYNC = getIdentifier("packet/client_nlf2_data_sync")
     val OPEN_MANUAL = getIdentifier("packet/open_manual")
     val OPEN_PUZZLE = getIdentifier("packet/open_puzzle")
+    val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
     val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
 
@@ -33,10 +34,11 @@ object Nlf2Packets {
         val s2c = PayloadTypeRegistry.clientboundPlay()
         // Normal
         s2c.register(ClientNlf2DataSync)
+        s2c.register(JoinDisconnectVersion)
         s2c.register(OpenManual)
         s2c.register(OpenPuzzle)
+        s2c.register(StrangeJukeboxRainbowControl)
         s2c.register(WorldBorderNoisePayload)
-        s2c.register(JoinDisconnectVersion)
         // Unit
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
