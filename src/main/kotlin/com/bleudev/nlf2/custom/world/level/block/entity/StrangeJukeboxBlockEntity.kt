@@ -63,12 +63,14 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     }
 
     internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
-        if (level.isClientSide || !player.abilities.mayBuild) return InteractionResult.PASS
+        if (!player.abilities.mayBuild) return InteractionResult.PASS
         if (state.getValue(ON) && state.getValue(MUS) == StrangeJukeboxBlock.SelectedMus.EASTER_EGG
-            && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.CONSUME
-        var state = state.setValue(ON, !state.getValue(ON))
-        if (state.getValue(ON)) state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus())
-        level.setBlockAndUpdate(pos, state)
+            && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.TRY_WITH_EMPTY_HAND
+        if (!level.isClientSide) {
+            var state = state.setValue(ON, !state.getValue(ON))
+            if (state.getValue(ON)) state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus())
+            level.setBlockAndUpdate(pos, state)
+        }
         return InteractionResult.SUCCESS
     }
 
