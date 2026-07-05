@@ -22,6 +22,8 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("sound.nlf2.laugh", "Strange laugh")
         builder.add("sound.nlf2.border_ambient", "Strange noise")
         builder.add("sound.nlf2.pause_cutscene_ambient", "Strange noise")
+        builder.add("sound.nlf2.mus_jukebox", "08 The Abandoned World")
+        builder.add("sound.nlf2.mus_easter_egg", "09 Jukeboxing to the fullest")
     }
 }
 
