@@ -209,7 +209,7 @@ var dataSyncedActorLoreChar: String = "null"
 @JvmField
 var dataSyncedBorderState: Int = 0
 @JvmField
-var dataSyncedMeetState = 1
+var dataSyncedMeetState = -1
 @JvmField
 var dataSyncedEvent101: Boolean = false
 @JvmField

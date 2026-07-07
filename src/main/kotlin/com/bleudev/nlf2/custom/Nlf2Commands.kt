@@ -132,6 +132,10 @@ object Nlf2Commands {
 
     private val eventMap: Map<Int, String> = mapOf(
         101 to "orange_skin_overlay_remove_wip",
+        80 to "meet_before_crocko",
+        81 to "meet_after_crocko",
+        82 to "meet_before_waflla",
+        83 to "meet_after_waflla",
         92 to "manual_0_reset",
         93 to "manual_1_update_internal",
         94 to "manual_2_update_internal",
@@ -145,6 +149,34 @@ object Nlf2Commands {
                 playerList.getPlayer(EVENT101_NICKNAME)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
                 nlf2data::loreData.transform {
                     it.event101 = true
+                    it
+                }
+            }
+            // meet_before_crocko
+            80 -> {
+                nlf2data::loreData.transform {
+                    it.meetState = 0
+                    it
+                }
+            }
+            // meet_after_crocko
+            81 -> {
+                nlf2data::loreData.transform {
+                    it.meetState = 1
+                    it
+                }
+            }
+            // meet_before_waflla
+            82 -> {
+                nlf2data::loreData.transform {
+                    it.meetState = 2
+                    it
+                }
+            }
+            // meet_after_waflla
+            83 -> {
+                nlf2data::loreData.transform {
+                    it.meetState = 3
                     it
                 }
             }
@@ -198,30 +230,6 @@ object Nlf2Commands {
         when (debugId) {
             1001 -> {
                 player?.sendPacket(LostVesselControlActivate.INSTANCE)
-            }
-            89 -> {
-                server.nlf2data::loreData.transform {
-                    it.meetState = 0
-                    it
-                }
-            }
-            90 -> {
-                server.nlf2data::loreData.transform {
-                    it.meetState = 1
-                    it
-                }
-            }
-            91 -> {
-                server.nlf2data::loreData.transform {
-                    it.meetState = 2
-                    it
-                }
-            }
-            92 -> {
-                server.nlf2data::loreData.transform {
-                    it.meetState = 3
-                    it
-                }
             }
             101 -> {
                 server.nlf2data::loreData.transform {

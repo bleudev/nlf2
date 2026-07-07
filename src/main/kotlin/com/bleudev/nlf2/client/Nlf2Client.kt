@@ -205,8 +205,9 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
             dataSyncedBorderState = payload.borderState
-            dataSyncedMeetState = payload.fogEventState
-            if (dataSyncedMeetState in listOf(1, 3))
+            val oldMeetState = dataSyncedMeetState
+            dataSyncedMeetState = payload.meetState
+            if (oldMeetState != dataSyncedMeetState && oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
                 beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
