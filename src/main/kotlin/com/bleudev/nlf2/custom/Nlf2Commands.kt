@@ -223,9 +223,6 @@ object Nlf2Commands {
         997 to "manual_2",
     )
 
-    // TODO: Fix strange fog event state shift after time (for example, 89 set fog event state to 1 for some reason)
-    // TODO: Fix strange fast fog start and end lerping
-    // TODO: Fix fog event wrong duration
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
         when (debugId) {
             1001 -> {
