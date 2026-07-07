@@ -24,6 +24,7 @@ object ActorCharEntrypoint {
         chars["rouge"] = RougeChar()
         chars["vert"] = VertChar()
         chars["vessel"] = VesselChar()
+        chars["ghost"] = GhostChar()
         chars["rouge_eyes"] = RougeEyesChar()
         chars["vert_eyes"] = VertEyesChar()
         chars["inv"] = InvChar()
