@@ -3,15 +3,11 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.LOGGER
-import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.data.saved.nlf2data
-import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
-import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
-import com.bleudev.nlf2.util.sendToEveryone
 import com.bleudev.nlf2.util.transform
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -135,22 +131,15 @@ object Nlf2Commands {
         Commands.argument(name, IntegerArgumentType.integer(min, max))
 
     private val eventMap: Map<Int, String> = mapOf(
-        189 to "crash_vert_disappear",
-        101 to "orange_skin_overlay_remove",
-        93 to "manual_1_update",
-        94 to "manual_2_update",
+        101 to "orange_skin_overlay_remove_wip",
+        92 to "manual_0_reset",
+        93 to "manual_1_update_internal",
+        94 to "manual_2_update_internal",
     )
 
     private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent<Any>(eventId)
     fun <T1 : Any> MinecraftServer.causeEvent(eventId: Int, info0: T1? = null): Boolean {
         when (eventId) {
-            // crash_vert_disappear
-            189 -> {
-                sendToEveryone { player ->
-                    if (player.isActor) return@sendToEveryone arrayOf()
-                    return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
-                }
-            }
             // orange_skin_overlay_remove
             101 -> {
                 playerList.getPlayer(EVENT101_NICKNAME)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
@@ -159,7 +148,14 @@ object Nlf2Commands {
                     it
                 }
             }
-            // manual_1_update
+            // manual_0_reset
+            92 -> {
+                nlf2data::loreData.transform {
+                    it.manualId = 0
+                    it
+                }
+            }
+            // manual_1_update_internal
             93 -> {
                 nlf2data::loreData.transform {
                     it.manualId = 1
@@ -168,7 +164,7 @@ object Nlf2Commands {
                 val owner = info0 as? ServerPlayer?
                 owner?.sendPacket(ManualUpdateEffect.INSTANCE)
             }
-            // manual_2_update
+            // manual_2_update_internal
             94 -> {
                 nlf2data::loreData.transform {
                     it.manualId = 2
@@ -205,25 +201,25 @@ object Nlf2Commands {
             }
             89 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = FogEventState.BEFORE_MEET_CROCKO
+                    it.meetState = 0
                     it
                 }
             }
             90 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = FogEventState.AFTER_MEET_CROCKO
+                    it.meetState = 1
                     it
                 }
             }
             91 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = FogEventState.BEFORE_MEET_WAFFLA
+                    it.meetState = 2
                     it
                 }
             }
             92 -> {
                 server.nlf2data::loreData.transform {
-                    it.fogEventState = FogEventState.AFTER_MEET_WAFFLA
+                    it.meetState = 3
                     it
                 }
             }

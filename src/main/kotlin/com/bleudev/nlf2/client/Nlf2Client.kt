@@ -21,7 +21,6 @@ import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
 import com.bleudev.nlf2.custom.data.saved.BorderStates
-import com.bleudev.nlf2.custom.data.saved.FogEventState
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
@@ -62,29 +61,30 @@ class Nlf2Client : ClientModInitializer {
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             ARGB.srgbLerp(blackFogEffect, current, ARGB.color(ARGB.alpha(current), 0))
         }
-
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
         }
-        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
-            val color = dataSyncedFogProperties.fogColor
-            current.lerp(Vector4f(color.x, color.y, color.z, current.w), color.w)
-        }
-
         ClientEnvironmentSetupEvents.FOG_START.register { original, current ->
             Mth.lerp(blackFogEffect, current, original * .03f)
         }
-        ClientEnvironmentSetupEvents.FOG_START.register { _, current ->
-            current * dataSyncedFogProperties.fogStart
-        }
-
         ClientEnvironmentSetupEvents.FOG_END.register { original, current ->
             Mth.lerp(blackFogEffect, current, original * .03f)
         }
-        ClientEnvironmentSetupEvents.FOG_END.register { _, current ->
-            current * dataSyncedFogProperties.fogEnd
-        }
 
+        PostEffectRegistry.register(getIdentifier("before_meet_orange_overlay") to ::shaderBeforeMeetOrangeOverlay)
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("before_meet_orange_overlay")), {putFloat().putFloat()}) {
+            putFloat(shaderBeforeMeetOrangeOverlayStrength).putFloat(5.4f)
+        }
+        PostEffectRegistry.register(getIdentifier("before_meet") to ::shaderBeforeMeet)
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CopyConfig", getIdentifier("before_meet")), {putVec2().putFloat()}) {
+            putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", getIdentifier("before_meet")), {putVec3().putFloat()}) {
+            putVec3(1f, 0f, 0f).putFloat(shaderBeforeMeetRedmajStrength)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", getIdentifier("before_meet")), {putVec2()}) {
+            putVec2(shaderBeforeMeetAnaglyphX, 0f)
+        }
         PostEffectRegistry.register(getIdentifier("event101") to ::shaderEvent101)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
             putFloat(shaderEvent101Strength).putFloat(2.4f)
@@ -109,6 +109,8 @@ class Nlf2Client : ClientModInitializer {
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++
+            if (beforeMeetTick >= 0) beforeMeetTick++
+            if (beforeMeetTransTicks > 0) beforeMeetTransTicks--
 
             shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
             compassForceSpin = noise_amount > .6f
@@ -203,14 +205,9 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedActor = payload.actor
             dataSyncedActorLoreChar = payload.actorChar
             dataSyncedBorderState = payload.borderState
-
-            val prevFogEventState = dataSyncedFogEventState
-            if (prevFogEventState.value != payload.fogEventState) {
-                dataSyncedFogEventState = FogEventState.fromValue(payload.fogEventState)
-                dataFogEventStateSyncPrev = prevFogEventState
-                dataFogEventStateSyncTicks = DATA_FOG_EVENT_STATE_SYNC_DURATION
-            }
-
+            dataSyncedMeetState = payload.fogEventState
+            if (dataSyncedMeetState in listOf(1, 3))
+                beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
 

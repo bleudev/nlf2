@@ -1,8 +1,7 @@
 package com.bleudev.nlf2.client
 
+import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
-import com.bleudev.nlf2.custom.data.saved.FogEventState
-import com.bleudev.nlf2.custom.data.saved.FogEventStateFogProperties
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import org.jetbrains.annotations.Range
@@ -67,6 +66,12 @@ var should_not_play_any_sound: Boolean = false
 var pause_screen_ticks: Int = 0
 // Rainbow effect
 var rainbowTicks: Int = -1
+// Before meet effect
+var beforeMeetTick: Int = 0
+private val beforeMeetPreAmount: Float get() = (beforeMeetTick % BEFORE_MEET_EFFECT_BEAT_DURATION).toFloat() / BEFORE_MEET_EFFECT_BEAT_DURATION
+private val beforeMeetAmount: Float get() = if (beforeMeetPreAmount <= 0.5) (beforeMeetPreAmount * 2) else (-2 * beforeMeetPreAmount + 2)
+var beforeMeetTransTicks: Int = 0
+private val beforeMeetStrength get() = if (dataSyncedMeetState in listOf(0, 2)) 1f else beforeMeetTransTicks.toFloat() / BEFORE_MEET_TRANS_DURATION
 // Shader effects
 @JvmField
 var shaderLostVesselControl: Boolean = false
@@ -74,6 +79,8 @@ var shaderLostVesselControl: Boolean = false
 var shaderBorderLag: Boolean = false
 @JvmField
 var shaderBorderEnd: Boolean = false
+val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSyncedMeetState == 3 && beforeMeetTransTicks > 0)
+val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
 //val shaderEvent101: Boolean get() = true
 val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
 val shaderRainbow: Boolean get() = rainbowTicks != -1
@@ -85,6 +92,11 @@ var shaderAnaglyphUniformX: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.01f)
 var shaderAnaglyphUniformY: Float = 0f
     get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
+val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
+val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength
+val shaderBeforeMeetCopyStrength: Float get() = beforeMeetAmount.lerp(0f, .15f) * beforeMeetStrength
+val shaderBeforeMeetRedmajStrength: Float get() = .75f * beforeMeetStrength
+val shaderBeforeMeetAnaglyphX: Float get() = beforeMeetAmount.lerp(.001f, .0025f) * beforeMeetStrength
 val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
 val shaderRainbowStrength: Float get() = (rainbowTicks.toFloat() / RAINBOW_START_TICKS).coerceAtMost(1f)/4
 val shaderRainbowHue: Float get() = (rainbowTicks % RAINBOW_HUE_TICKS).toFloat() / RAINBOW_HUE_TICKS
@@ -197,18 +209,10 @@ var dataSyncedActorLoreChar: String = "null"
 @JvmField
 var dataSyncedBorderState: Int = 0
 @JvmField
-var dataSyncedFogEventState: FogEventState = FogEventState.BEFORE_MEET_CROCKO
+var dataSyncedMeetState = 1
 @JvmField
 var dataSyncedEvent101: Boolean = false
 @JvmField
 var dataSyncedManualId: Int = 0
-
-val dataSyncedFogProperties: FogEventStateFogProperties get() = dataSyncedFogEventState.getFogProperties(
-    dataFogEventStateSyncPrev, DATA_FOG_EVENT_STATE_SYNC_DURATION - dataFogEventStateSyncTicks.coerceAtLeast(0)).also {
-//    println("\nfogColor: ${it.fogColor}\nfogStart: ${it.fogStart}\nfogEnd: ${it.fogEnd}")
-}
-
-@JvmField
-var dataFogEventStateSyncPrev: FogEventState? = null
 @JvmField
 var dataFogEventStateSyncTicks: Int = -1

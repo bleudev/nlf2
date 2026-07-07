@@ -1,0 +1,97 @@
+{
+  "targets": {
+    "swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nine_lifes:post/chmaj",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "ChmajConfig": [
+          {
+            "name": "ChMatrix",
+            "type": "vec3",
+            "value": [ 1.0, 0.0, 0.0 ]
+          },
+          {
+            "name": "Strength",
+            "type": "float",
+            "value": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nine_lifes:post/anaglyph",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "AnaglyphConfig": [
+          {
+            "name": "Delta",
+            "type": "vec2",
+            "value": [ 0.0015, 0.0 ]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "nlf2:post/copy",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "output": "swap",
+      "uniforms": {
+        "CopyConfig": [
+          {
+            "name": "Size",
+            "type": "vec2",
+            "value": [ 0.95, 0.95 ]
+          },
+          {
+            "name": "Strength",
+            "type": "float",
+            "value": 0.2
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [ 1.0, 1.0, 1.0, 1.0 ]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}
