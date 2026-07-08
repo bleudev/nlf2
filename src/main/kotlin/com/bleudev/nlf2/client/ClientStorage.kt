@@ -69,9 +69,14 @@ var rainbowTicks: Int = -1
 // Before meet effect
 var beforeMeetTick: Int = 0
 private val beforeMeetPreAmount: Float get() = (beforeMeetTick % BEFORE_MEET_EFFECT_BEAT_DURATION).toFloat() / BEFORE_MEET_EFFECT_BEAT_DURATION
-private val beforeMeetAmount: Float get() = if (beforeMeetPreAmount <= 0.5) (beforeMeetPreAmount * 2) else (-2 * beforeMeetPreAmount + 2)
+val beforeMeetAmount: Float get() = if (beforeMeetPreAmount <= 0.5) (beforeMeetPreAmount * 2) else (-2 * beforeMeetPreAmount + 2)
 var beforeMeetTransTicks: Int = 0
 private val beforeMeetStrength get() = if (dataSyncedMeetState in listOf(0, 2)) 1f else beforeMeetTransTicks.toFloat() / BEFORE_MEET_TRANS_DURATION
+// Lab overlay effect
+var labOverlayTick: Int = 0
+private val labOverlayPreAmount: Float get() = (labOverlayTick % LAB_OVERLAY_EFFECT_BEAT_DURATION).toFloat() / LAB_OVERLAY_EFFECT_BEAT_DURATION
+val labOverlayAmount: Float get() = if (labOverlayPreAmount <= 0.5) (labOverlayPreAmount * 2) else (-2 * labOverlayPreAmount + 2)
+val labOverlayStrength: Float get() = 1f
 // Shader effects
 @JvmField
 var shaderLostVesselControl: Boolean = false
@@ -81,6 +86,7 @@ var shaderBorderLag: Boolean = false
 var shaderBorderEnd: Boolean = false
 val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSyncedMeetState == 3 && beforeMeetTransTicks > 0)
 val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
+val shaderLabOverlay: Boolean get() = true
 //val shaderEvent101: Boolean get() = true
 val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
 val shaderRainbow: Boolean get() = rainbowTicks != -1
@@ -97,6 +103,9 @@ val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * 
 val shaderBeforeMeetCopyStrength: Float get() = beforeMeetAmount.lerp(0f, .15f) * beforeMeetStrength
 val shaderBeforeMeetRedmajStrength: Float get() = .75f * beforeMeetStrength
 val shaderBeforeMeetAnaglyphX: Float get() = beforeMeetAmount.lerp(.001f, .0025f) * beforeMeetStrength
+val shaderLabOverlayConvolveStrength: Float get() = labOverlayAmount.lerp(.5f, .8f) * labOverlayStrength
+val shaderLabOverlayConvolveSaturation: Float get() = labOverlayAmount.lerp(.9f, .4f) * labOverlayStrength
+val shaderLabOverlayBitsStrength: Float get() = labOverlayAmount.lerp(.5f, .8f) * labOverlayStrength
 val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
 val shaderRainbowStrength: Float get() = (rainbowTicks.toFloat() / RAINBOW_START_TICKS).coerceAtMost(1f)/4
 val shaderRainbowHue: Float get() = (rainbowTicks % RAINBOW_HUE_TICKS).toFloat() / RAINBOW_HUE_TICKS

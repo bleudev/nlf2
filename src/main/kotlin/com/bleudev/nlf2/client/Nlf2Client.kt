@@ -79,6 +79,13 @@ class Nlf2Client : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CopyConfig", getIdentifier("before_meet")), {putVec2().putFloat()}) {
             putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
         }
+        PostEffectRegistry.register(getIdentifier("lab_overlay") to ::shaderLabOverlay)
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("lab_overlay")), {putFloat().putFloat()}) {
+            putFloat(shaderLabOverlayConvolveStrength).putFloat(shaderLabOverlayConvolveSaturation)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomBitsConfig", getIdentifier("lab_overlay")), {putFloat()}) {
+            putFloat(shaderLabOverlayBitsStrength)
+        }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", getIdentifier("before_meet")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(shaderBeforeMeetRedmajStrength)
         }
@@ -110,6 +117,7 @@ class Nlf2Client : ClientModInitializer {
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++
             if (beforeMeetTick >= 0) beforeMeetTick++
+            if (labOverlayTick >= 0) labOverlayTick++
             if (beforeMeetTransTicks > 0) beforeMeetTransTicks--
 
             shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
