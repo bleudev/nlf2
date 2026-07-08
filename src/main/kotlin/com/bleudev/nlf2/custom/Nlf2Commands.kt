@@ -139,6 +139,8 @@ object Nlf2Commands {
         92 to "manual_0_reset",
         93 to "manual_1_update_internal",
         94 to "manual_2_update_internal",
+        140 to "lab_overlay_0",
+        141 to "lab_overlay_1",
     )
 
     private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent<Any>(eventId)
@@ -205,6 +207,20 @@ object Nlf2Commands {
                 val owner = info0 as? ServerPlayer?
                 owner?.sendPacket(ManualUpdateEffect.INSTANCE)
             }
+            // lab_overlay_0
+            140 -> {
+                nlf2data::loreData.transform {
+                    it.labOverlayState = 0
+                    it
+                }
+            }
+            // lab_overlay_1
+            141 -> {
+                nlf2data::loreData.transform {
+                    it.labOverlayState = 1
+                    it
+                }
+            }
             else -> return false
         }
         LOGGER.info("Caused nlf2:{} event", eventMap[eventId])
@@ -213,42 +229,17 @@ object Nlf2Commands {
 
     private val debugMap: Map<Int, String> = mapOf(
         1001 to "lost_vessel_control_activate",
-        89 to "fog_event_state_0",
-        90 to "fog_event_state_1",
-        91 to "fog_event_state_2",
-        92 to "fog_event_state_3",
         101 to "orange_skin_overlay",
-        995 to "manual_0",
-        996 to "manual_1",
-        997 to "manual_2",
     )
-
-    private fun CommandSourceStack.causeDebug(debugId: Int): Boolean {
+    private fun CommandSourceStack.causeDebug(debugId: Int): Boolean = server.causeDebug(debugId, player)
+    private fun MinecraftServer.causeDebug(debugId: Int, player: ServerPlayer?): Boolean {
         when (debugId) {
             1001 -> {
                 player?.sendPacket(LostVesselControlActivate.INSTANCE)
             }
             101 -> {
-                server.nlf2data::loreData.transform {
+                nlf2data::loreData.transform {
                     it.event101 = false
-                    it
-                }
-            }
-            995 -> {
-                server.nlf2data::loreData.transform {
-                    it.manualId = 0
-                    it
-                }
-            }
-            996 -> {
-                server.nlf2data::loreData.transform {
-                    it.manualId = 1
-                    it
-                }
-            }
-            997 -> {
-                server.nlf2data::loreData.transform {
-                    it.manualId = 2
                     it
                 }
             }

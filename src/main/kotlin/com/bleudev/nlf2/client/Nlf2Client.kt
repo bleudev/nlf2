@@ -119,6 +119,7 @@ class Nlf2Client : ClientModInitializer {
             if (beforeMeetTick >= 0) beforeMeetTick++
             if (labOverlayTick >= 0) labOverlayTick++
             if (beforeMeetTransTicks > 0) beforeMeetTransTicks--
+            if (labOverlayTransTicks > 0) labOverlayTransTicks--
 
             shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
             compassForceSpin = noise_amount > .6f
@@ -217,6 +218,10 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedMeetState = payload.meetState
             if (oldMeetState != dataSyncedMeetState && oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
                 beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
+            val oldLabOverlayState = dataSyncedLabOverlayState
+            dataSyncedLabOverlayState = payload.labOverlayState
+            if (oldLabOverlayState != dataSyncedLabOverlayState && oldLabOverlayState != -1)
+                labOverlayTransTicks = LAB_OVERLAY_TRANS_DURATION
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
 

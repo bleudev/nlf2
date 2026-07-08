@@ -76,7 +76,9 @@ private val beforeMeetStrength get() = if (dataSyncedMeetState in listOf(0, 2)) 
 var labOverlayTick: Int = 0
 private val labOverlayPreAmount: Float get() = (labOverlayTick % LAB_OVERLAY_EFFECT_BEAT_DURATION).toFloat() / LAB_OVERLAY_EFFECT_BEAT_DURATION
 val labOverlayAmount: Float get() = if (labOverlayPreAmount <= 0.5) (labOverlayPreAmount * 2) else (-2 * labOverlayPreAmount + 2)
-val labOverlayStrength: Float get() = 1f
+var labOverlayTransTicks: Int = 0
+val labOverlayStrength: Float get() = (labOverlayTransTicks.toFloat() / LAB_OVERLAY_TRANS_DURATION)
+    .let { if (dataSyncedLabOverlayState == 0) it else 1f - it }
 // Shader effects
 @JvmField
 var shaderLostVesselControl: Boolean = false
@@ -86,7 +88,7 @@ var shaderBorderLag: Boolean = false
 var shaderBorderEnd: Boolean = false
 val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSyncedMeetState == 3 && beforeMeetTransTicks > 0)
 val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
-val shaderLabOverlay: Boolean get() = true
+val shaderLabOverlay: Boolean get() = dataSyncedLabOverlayState == 1 || labOverlayTransTicks > 0
 //val shaderEvent101: Boolean get() = true
 val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
 val shaderRainbow: Boolean get() = rainbowTicks != -1
@@ -219,6 +221,8 @@ var dataSyncedActorLoreChar: String = "null"
 var dataSyncedBorderState: Int = 0
 @JvmField
 var dataSyncedMeetState = -1
+@JvmField
+var dataSyncedLabOverlayState = -1
 @JvmField
 var dataSyncedEvent101: Boolean = false
 @JvmField
