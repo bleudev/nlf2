@@ -5,10 +5,13 @@ import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
 import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
+import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.requiresAdmin
+import com.bleudev.nlf2.util.sendToEveryone
 import com.bleudev.nlf2.util.transform
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -144,6 +147,7 @@ object Nlf2Commands {
         94 to "manual_2_update_internal",
         140 to "lab_overlay_0",
         141 to "lab_overlay_1",
+        189 to "end_serie_crash",
     )
 
     private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent<Any>(eventId)
@@ -247,6 +251,13 @@ object Nlf2Commands {
                 nlf2data::loreData.transform {
                     it.labOverlayState = 1
                     it
+                }
+            }
+            // end_serie_crash
+            189 -> {
+                sendToEveryone { player ->
+                    if (player.isActor) return@sendToEveryone arrayOf()
+                    return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
                 }
             }
             else -> return false
