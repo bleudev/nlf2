@@ -3,6 +3,7 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.LOGGER
+import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.LostVesselControlActivate
@@ -132,6 +133,8 @@ object Nlf2Commands {
 
     private val eventMap: Map<Int, String> = mapOf(
         101 to "orange_skin_overlay_remove_wip",
+        34 to "try_teleport_on_first_join_internal",
+        35 to "reset_teleports_on_first_join",
         80 to "meet_before_crocko",
         81 to "meet_after_crocko",
         82 to "meet_before_waflla",
@@ -152,6 +155,31 @@ object Nlf2Commands {
                 nlf2data::loreData.transform {
                     it.event101 = true
                     it
+                }
+            }
+            // try_teleport_on_first_join_internal
+            34 -> {
+                for (name in nlf2data.getPlayers().filter { !it.teleported }.map { it.name }) {
+                    val lc = name.lowercase()
+                    if (lc in TELEPORT_LOCATIONS) {
+                        playerList.getPlayer(name)?.let { pl ->
+                            val loc = TELEPORT_LOCATIONS[lc] ?: return@let
+                            pl.teleportTo(loc.x, loc.y, loc.z)
+                            nlf2data.changePlayerData(name) {
+                                it.teleported = true
+                                it
+                            }
+                        }
+                    }
+                }
+            }
+            // reset_teleports_on_first_join
+            35 -> {
+                for (name in nlf2data.getPlayers().map { it.name }) {
+                    nlf2data.changePlayerData(name) {
+                        it.teleported = false
+                        it
+                    }
                 }
             }
             // meet_before_crocko
@@ -230,6 +258,7 @@ object Nlf2Commands {
     private val debugMap: Map<Int, String> = mapOf(
         1001 to "lost_vessel_control_activate",
         101 to "orange_skin_overlay",
+        34 to "re_teleport_on_first_join",
     )
     private fun CommandSourceStack.causeDebug(debugId: Int): Boolean = server.causeDebug(debugId, player)
     private fun MinecraftServer.causeDebug(debugId: Int, player: ServerPlayer?): Boolean {
@@ -242,6 +271,10 @@ object Nlf2Commands {
                     it.event101 = false
                     it
                 }
+            }
+            34 -> {
+                causeEvent<Any>(35)
+                causeEvent<Any>(34)
             }
             else -> return false
         }

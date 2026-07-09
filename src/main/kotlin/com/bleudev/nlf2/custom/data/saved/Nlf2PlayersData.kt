@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom.data.saved
 
+import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
@@ -38,6 +39,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         setPlayerData((getPlayers().find { it.name == name }?: PlayerData(name)).let(changer))
 
     fun onJoin(player: ServerPlayer) {
+        player.level().server.causeEvent<Any>(34)
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
@@ -58,10 +60,11 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         }
     }
 
-    class PlayerData(var name: String, var curse: Float = 0f) {
+    class PlayerData(var name: String, var teleported: Boolean = false, var curse: Float = 0f) {
         companion object {
             val CODEC: Codec<PlayerData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
+                Codec.BOOL.fieldOf("teleported").forGetter(PlayerData::teleported),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
             ).apply(it, ::PlayerData)
             }
