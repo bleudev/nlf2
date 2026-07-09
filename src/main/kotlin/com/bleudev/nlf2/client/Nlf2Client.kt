@@ -6,7 +6,6 @@ import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.*
-import com.bleudev.nlf2.client.custom.Nlf2KeyMappings
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
@@ -53,7 +52,6 @@ class Nlf2Client : ClientModInitializer {
 
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
-        Nlf2KeyMappings.initialize()
         ActorCharEntrypoint.initialize()
         tryHideMod()
         their.validateAll()
@@ -102,7 +100,6 @@ class Nlf2Client : ClientModInitializer {
         }
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
-            Nlf2KeyMappings.handle(mc)
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.2")
             if (Webcam.getDefault().isOpen) {
                 if (!webcamEnabled) Webcam.getDefault().close()

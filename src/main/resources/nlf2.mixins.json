@@ -27,7 +27,6 @@
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
     "client.HumanoidRenderStateMixin",
-    "client.KeyBindsListMixin",
     "client.KeyboardHandlerMixin",
     "client.LevelLoadingScreenMixin",
     "client.LoadingOverlayMixin",
