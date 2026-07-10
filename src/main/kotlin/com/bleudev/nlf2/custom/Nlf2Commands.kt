@@ -245,6 +245,7 @@ object Nlf2Commands {
             140 -> {
                 nlf2data::loreData.transform {
                     it.labOverlayState = 0
+                    it.compassCrazy = false
                     it
                 }
             }
@@ -252,6 +253,7 @@ object Nlf2Commands {
             141 -> {
                 nlf2data::loreData.transform {
                     it.labOverlayState = 1
+                    it.compassCrazy = true
                     it
                 }
             }
