@@ -6,7 +6,7 @@ import com.bleudev.nlf2.client.noise_amount
 import net.minecraft.client.Minecraft
 import net.minecraft.world.item.Items
 
-val isCompassCrazy: Boolean get() = noise_amount > .6f || dataSyncedCompassCrazy
+val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy
 
 val isHoldingCompass: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
