@@ -119,7 +119,6 @@ class Nlf2Client : ClientModInitializer {
             if (labOverlayTransTicks > 0) labOverlayTransTicks--
 
             shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
-            compassForceSpin = noise_amount > .6f
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
@@ -221,6 +220,7 @@ class Nlf2Client : ClientModInitializer {
                 labOverlayTransTicks = LAB_OVERLAY_TRANS_DURATION
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
+            dataSyncedCompassCrazy = payload.compassCrazy
 
             TIMER_MASK.reset()
         }

@@ -16,8 +16,6 @@ var canUseMouse: Boolean = true
 var canUseKeyboard: Boolean = true
 @JvmField
 var webcamEnabled: Boolean = false
-@JvmField
-var compassForceSpin: Boolean = false
 
 // Join blackness
 var join_blackness_delay_ticks: Int = 10
@@ -227,5 +225,7 @@ var dataSyncedLabOverlayState = -1
 var dataSyncedEvent101: Boolean = false
 @JvmField
 var dataSyncedManualId: Int = 0
+@JvmField
+var dataSyncedCompassCrazy: Boolean = false
 @JvmField
 var dataFogEventStateSyncTicks: Int = -1

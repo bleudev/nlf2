@@ -6,7 +6,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,9 +19,23 @@ import static com.bleudev.nlf2.client.util.ClientCallbacksKt.isHoldingCompass;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
-public class GuiMixin {
+public abstract class GuiMixin {
+    @Shadow
+    public abstract @Nullable Screen screen();
+
+    @Shadow
+    public abstract void setScreen(@Nullable Screen screen);
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void tickXaeroMap(CallbackInfo ci) {
+        if (!isHoldingCompass()) {
+            Screen screen = screen();
+            if (screen != null && screen.getTitle().equals(Component.translatable("gui.xaero_world_map_screen"))) setScreen(null);
+        }
+    }
+
     @Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
-    private void onSetScreen(Screen screen, CallbackInfo ci) {
+    private void blockSpecificScreens(Screen screen, CallbackInfo ci) {
         if (screen == null) {
             webcamEnabled = false;
             pause_screen_red_screen_effect = false;

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.compassForceSpin;
+import static com.bleudev.nlf2.client.util.ClientCallbacksKt.isCompassCrazy;
 
 @Environment(EnvType.CLIENT)
 @Mixin(CompassAngleState.class)
@@ -21,7 +21,7 @@ public abstract class CompassAngleStateMixin {
 
     @ModifyReturnValue(method = "calculate", at = @At("RETURN"))
     private float modifySpin(float original, ItemStack itemStack, ClientLevel level, int seed, ItemOwner owner) {
-        if (compassForceSpin) return getRandomlySpinningRotation(seed, level.getGameTime());
+        if (isCompassCrazy()) return getRandomlySpinningRotation(seed, level.getGameTime());
         return original;
     }
 }

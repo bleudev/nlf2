@@ -23,7 +23,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             field = value
             setDirty()
             if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar, value.borderState, value.meetState, value.labOverlayState, value.event101, value.manualId))
+                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar, value.borderState, value.meetState, value.labOverlayState, value.event101, value.manualId, value.compassCrazy))
             }
         }
 
@@ -43,10 +43,10 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar, loreData.borderState, loreData.meetState, loreData.labOverlayState, loreData.event101, loreData.manualId))
+        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar, loreData.borderState, loreData.meetState, loreData.labOverlayState, loreData.event101, loreData.manualId, loreData.compassCrazy))
     }
 
-    class LoreData(var actor: String = "", var actorChar: String = "null", var borderState: Int = BorderStates.STANDARD, var meetState: Int = 0, var labOverlayState: Int = 0, var event101: Boolean = false, var manualId: Int = 0) {
+    class LoreData(var actor: String = "", var actorChar: String = "null", var borderState: Int = BorderStates.STANDARD, var meetState: Int = 0, var labOverlayState: Int = 0, var event101: Boolean = false, var manualId: Int = 0, var compassCrazy: Boolean = false) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
@@ -56,6 +56,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.INT.fieldOf("labOverlayState").forGetter(LoreData::labOverlayState),
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
                 Codec.INT.fieldOf("manualId").forGetter(LoreData::manualId),
+                Codec.BOOL.fieldOf("compassCrazy").forGetter(LoreData::compassCrazy),
             ).apply(it, ::LoreData) }
         }
     }

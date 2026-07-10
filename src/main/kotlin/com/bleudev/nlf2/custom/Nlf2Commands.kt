@@ -148,6 +148,8 @@ object Nlf2Commands {
         140 to "lab_overlay_0",
         141 to "lab_overlay_1",
         189 to "end_serie_crash",
+        200 to "compass_crazy_off",
+        201 to "compass_crazy_on",
     )
 
     private fun CommandSourceStack.causeEvent(eventId: Int): Boolean = server.causeEvent<Any>(eventId)
@@ -258,6 +260,20 @@ object Nlf2Commands {
                 sendToEveryone { player ->
                     if (player.isActor) return@sendToEveryone arrayOf()
                     return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
+                }
+            }
+            // compass_crazy_off
+            200 -> {
+                nlf2data::loreData.transform {
+                    it.compassCrazy = false
+                    it
+                }
+            }
+            // compass_crazy_on
+            201 -> {
+                nlf2data::loreData.transform {
+                    it.compassCrazy = true
+                    it
                 }
             }
             else -> return false
