@@ -24,7 +24,7 @@ public class PauseScreenMixin extends Screen {
     }
 
     @SuppressWarnings("unchecked")
-    @ModifyArg(method = "createPauseMenu()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;I)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 0))
+    @ModifyArg(method = "createPauseMenu()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;I)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 1))
     private <T extends LayoutElement> T modifyDisconnectButton(T original) {
         if (original instanceof Button button && getDisconnectState() == 0) {
             return (T) new AdvancedDisconnectButton(button);

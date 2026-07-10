@@ -17,7 +17,6 @@ import com.bleudev.nlf2.client.util.TIMER_MASK
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
-import com.bleudev.nlf2.client.util.sound.ambientTick
 import com.bleudev.nlf2.client.util.sound.shouldPlayAmbient
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
@@ -106,8 +105,8 @@ class Nlf2Client : ClientModInitializer {
             } else if (webcamEnabled) Webcam.getDefault().open()
             tryHideMod()
             shouldPlayAmbient = pause_screen_red_screen_effect
-            ambientTick()
-            musicSystem?.tick()
+//            ambientTick()
+//            musicSystem?.tick()
             pause_screen_ticks++
             noise_tick++
         }
