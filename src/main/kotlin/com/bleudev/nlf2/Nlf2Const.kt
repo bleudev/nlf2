@@ -10,7 +10,6 @@ val TELEPORT_LOCATIONS = mapOf(
     "bleugame" to Vec3(-522.0, 66.0, 90.0),
     "crockomd" to Vec3(-543.0, 73.0, 235.0),
 )
-const val CAN_USE_SECRET_EVENT_KEY_MAPPING_NICKNAME = "bleugame"
 const val EVENT101_NICKNAME = "waflla_kek"
 
 const val BORDER_BLACK_FOG_DURATION = 60
