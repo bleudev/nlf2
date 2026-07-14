@@ -122,3 +122,5 @@ runs/
 .kotlin/
 
 src/main/generated/
+
+ost/vid/
