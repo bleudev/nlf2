@@ -21,6 +21,7 @@
     "client.DeathScreenMixin",
     "client.DebugEntryPositionMixin",
     "client.DisconnectedScreenMixin",
+    "client.EntityHitboxDebugRendererMixin",
     "client.GameRendererMixin",
     "client.GenericMessageScreenMixin",
     "client.GridLayout$RowHelperMixin",
