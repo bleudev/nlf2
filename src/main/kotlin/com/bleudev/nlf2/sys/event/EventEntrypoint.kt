@@ -1,0 +1,42 @@
+package com.bleudev.nlf2.sys.event
+
+import com.bleudev.nlf2.LOGGER
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
+
+object EventEntrypoint {
+    private var initialized = false
+    private val events = HashMap<Int, Nlf2Event>()
+    val names = HashMap<Int, String>()
+
+    fun initialize(server: MinecraftServer) {
+        if (initialized) return
+        initialized = true
+        fun add(id: Int, constr: (MinecraftServer) -> Nlf2Event) {
+            val ev = constr(server)
+            events[id] = ev
+            names[id] = ev.name
+        }
+
+        add(34, ::TryTeleportOnFirstJoin)
+        add(35, ::ResetTeleportsOnFirstJoin)
+        add(80, ::MeetBeforeCrocko)
+        add(81, ::MeetAfterCrocko)
+        add(82, ::MeetBeforeWaflla)
+        add(83, ::MeetAfterWaflla)
+        add(92, ::Manual0)
+        add(93, ::Manual1)
+        add(94, ::Manual2)
+        add(101, ::OrangeSkinOverlayRemove)
+        add(140, ::LabOverlay0)
+        add(141, ::LabOverlay1)
+        add(189, ::EndSerieCrash)
+        add(200, ::CompassCrazyFalse)
+        add(201, ::CompassCrazyTrue)
+    }
+
+    fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {
+        LOGGER.info("Caused nlf2:{} event", names[id])
+        return events[id]?.cause(causedBy, args) == null
+    }
+}

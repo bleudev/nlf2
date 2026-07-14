@@ -31,3 +31,5 @@ const val RAINBOW_START_TICKS = 60
 const val RAINBOW_HUE_TICKS = 100
 
 const val INTRO_ENABLED = true
+
+const val DEV_EVENT_101 = true

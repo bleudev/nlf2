@@ -1,0 +1,29 @@
+package com.bleudev.nlf2.sys.event
+
+import com.bleudev.nlf2.LOGGER
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
+
+object DebugEntrypoint {
+    private var initialized = false
+    private val debugs = HashMap<Int, Nlf2Event>()
+    val names = HashMap<Int, String>()
+
+    fun initialize(server: MinecraftServer) {
+        if (initialized) return
+        initialized = true
+        fun add(id: Int, constr: (MinecraftServer) -> Nlf2Event) {
+            val ev = constr(server)
+            debugs[id] = ev
+            names[id] = ev.name
+        }
+
+        add(101, ::OrangeSkinOverlay)
+        add(34, ::ReTeleportOnFirstJoin)
+    }
+
+    fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {
+        LOGGER.info("Caused nlf2:{} debug", names[id])
+        return debugs[id]?.cause(causedBy, args) == null
+    }
+}

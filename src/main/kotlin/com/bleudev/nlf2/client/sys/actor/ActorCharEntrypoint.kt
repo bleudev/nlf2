@@ -1,8 +1,11 @@
 package com.bleudev.nlf2.client.sys.actor
 
+import com.bleudev.nlf2.DEV_EVENT_101
+import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
+import com.bleudev.nlf2.client.dataSyncedEvent101
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
 import com.bleudev.nlf2.client.sys.actor.chars.res.*
 import com.bleudev.nlf2.getIdentifier
@@ -33,6 +36,8 @@ object ActorCharEntrypoint {
         chars["mask_crockomd"] = MaskCrockoMDChar()
         chars["mask_waflla_kek"] = MaskWafllaKekChar()
         chars["mask_boberobo7"] = MaskBoberobo7Char()
+        // Event 101
+        chars["event101"] = Event101Char()
     }
 
     private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)
@@ -41,6 +46,15 @@ object ActorCharEntrypoint {
         val entity = entity.lowercase()
         val actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
+
+        // Try event 101
+        if (!dataSyncedEvent101) {
+            @Suppress("SimplifyBooleanWithConstants")
+            if ((DEV_EVENT_101 && entity == actor) || (!DEV_EVENT_101 && entity == EVENT101_NICKNAME)) {
+                return PrepareData(client, entity, chars["event101"])
+            }
+        }
+
         if (client == actor) client = "bleugame"
 
         if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])

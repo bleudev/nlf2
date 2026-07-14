@@ -9,15 +9,17 @@ import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
-import com.bleudev.nlf2.custom.packet.payload.serverbound.CauseEventWithKey
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
+import com.bleudev.nlf2.sys.event.DebugEntrypoint
+import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.hurtUnknown
 import com.bleudev.nlf2.util.sendToEveryone
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
@@ -46,6 +48,10 @@ class Nlf2 : ModInitializer {
         Nlf2BlockEntities.initialize()
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
+        ServerLifecycleEvents.SERVER_STARTED.register {
+            EventEntrypoint.initialize(it)
+            DebugEntrypoint.initialize(it)
+        }
         ServerPlayerEvents.JOIN.register { player ->
             player.level().server.nlf2data.onJoin(player)
         }
@@ -72,9 +78,9 @@ class Nlf2 : ModInitializer {
             val owner = server.playerList.players.firstOrNull { player -> player.inventory.any { it.`is`(Nlf2Items.MANUAL) } }
 
             if (shouldUpdate(Items.DEBUG_STICK) && server.nlf2data.loreData.manualId == 0)
-                server.causeEvent(93, owner)
+                causeEvent(93, owner)
             if (shouldUpdate(NineLifesItems.AMETHYST_STICK) && server.nlf2data.loreData.manualId == 1)
-                server.causeEvent(94, owner)
+                causeEvent(94, owner)
         }
 
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->
@@ -93,10 +99,6 @@ class Nlf2 : ModInitializer {
         registerPacketReceiver(KillBorderBlackFog) { _, ctx ->
             if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
             ctx.player().hurtUnknown(9999f)
-        }
-
-        registerPacketReceiver(CauseEventWithKey) { p, ctx ->
-            ctx.server().causeEvent<Any>(p.eventId)
         }
     }
 
