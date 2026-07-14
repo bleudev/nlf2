@@ -16,6 +16,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.hurtUnknown
+import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.sendToEveryone
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -90,7 +91,7 @@ class Nlf2 : ModInitializer {
                 player.setGameMode(GameType.SPECTATOR)
                 player.sendPacket(JoinDisconnectVersion(clientVersion, serverVersion))
             } else {
-                if (player.gameMode() == GameType.SPECTATOR && player.lifes >= 1) {
+                if (player.gameMode() == GameType.SPECTATOR && player.lifes >= 1 && !player.isActor) {
                     player.setGameMode(GameType.SURVIVAL)
                 }
             }
