@@ -39,7 +39,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         setPlayerData((getPlayers().find { it.name == name }?: PlayerData(name)).let(changer))
 
     fun onJoin(player: ServerPlayer) {
-        player.level().server.causeEvent<Any>(34)
+        causeEvent(34)
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
 

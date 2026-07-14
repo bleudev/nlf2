@@ -30,6 +30,6 @@ const val EVENT101_SCREEN_EFFECT_CLEAR_DURATION = 40
 const val RAINBOW_START_TICKS = 60
 const val RAINBOW_HUE_TICKS = 100
 
-const val INTRO_ENABLED = true
+const val INTRO_ENABLED = false
 
 const val DEV_EVENT_101 = true

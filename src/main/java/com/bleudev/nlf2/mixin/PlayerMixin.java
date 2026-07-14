@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +15,7 @@ import static com.bleudev.nlf2.client.ClientStorageKt.dataSyncedActor;
 import static com.bleudev.nlf2.util.InjectsKt.isActor;
 
 @Mixin(Player.class)
-public class PlayerMixin extends Avatar {
+public abstract class PlayerMixin extends Avatar {
     @Shadow
     @Final
     private GameProfile gameProfile;
@@ -31,10 +30,5 @@ public class PlayerMixin extends Avatar {
             return !isActor(serverPlayer);
         }
         return !(gameProfile.name().equalsIgnoreCase(dataSyncedActor));
-    }
-
-    @Override
-    public ResolvableProfile getProfile() {
-        return null;
     }
 }

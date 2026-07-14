@@ -37,6 +37,8 @@ object EventEntrypoint {
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {
         LOGGER.info("Caused nlf2:{} event", names[id])
-        return events[id]?.cause(causedBy, args) == null
+        val ev = events[id] ?: return false
+        ev.cause(causedBy, args)
+        return true
     }
 }
