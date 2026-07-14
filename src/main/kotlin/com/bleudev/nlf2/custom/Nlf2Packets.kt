@@ -20,7 +20,6 @@ object Nlf2Packets {
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
     val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
     val UNIT_EVENT101_SCREEN_EFFECT_CLEAR = getIdentifier("packet/unit/event101_screen_effect_clear")
-    val UNIT_LOST_VESSEL_CONTROL_ACTIVATE = getIdentifier("packet/unit/lost_vessel_control_activate")
     val UNIT_MANUAL_UPDATE_EFFECT = getIdentifier("packet/unit/manual_update_effect")
     val UNIT_STRANGE_JUKEBOX_MUSIC_STOP = getIdentifier("packet/unit/strange_jukebox_music_stop")
 
@@ -42,7 +41,6 @@ object Nlf2Packets {
         s2c.register(CancelBorderBlackFog)
         s2c.register(CrashClientPayload)
         s2c.register(Event101ScreenEffectClear)
-        s2c.register(LostVesselControlActivate)
         s2c.register(ManualUpdateEffect)
         s2c.register(StrangeJukeboxMusicStop)
 

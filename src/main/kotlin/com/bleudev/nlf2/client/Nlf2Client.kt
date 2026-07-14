@@ -255,11 +255,6 @@ class Nlf2Client : ClientModInitializer {
             if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION)
                 borderBlackFogStarting = false
         }
-        registerPacketReceiver(LostVesselControlActivate) {
-//            shaderBorderLag = !shaderBorderLag
-            shaderRedMajUniformStrength = 1f
-//            shaderLostVesselControl = !shaderLostVesselControl
-        }
         registerPacketReceiver(ManualUpdateEffect) {
             manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
         }
