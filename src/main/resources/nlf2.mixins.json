@@ -6,7 +6,6 @@
   "mixins": [
     "EnderEyeItemMixin",
     "PlayerListMixin",
-    "PlayerMixin",
     "PortalShapeMixin"
   ],
   "client": [

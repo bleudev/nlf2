@@ -82,6 +82,12 @@ class Nlf2 : ModInitializer {
                 causeEvent(93, owner)
             if (shouldUpdate(NineLifesItems.AMETHYST_STICK) && server.nlf2data.loreData.manualId == 1)
                 causeEvent(94, owner)
+
+            server.playerList.players.forEach {
+                val wpm = it.level().waypointManager
+                if (it.isActor) wpm.untrackWaypoint(it)
+                else wpm.trackWaypoint(it)
+            }
         }
 
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->
