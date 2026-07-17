@@ -24,6 +24,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.Version
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
@@ -93,7 +94,8 @@ class Nlf2 : ModInitializer {
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->
             val clientVersion = payload.version
             val player = ctx.player()
-            if (serverVersion != clientVersion) {
+
+            if (Version.parse(serverVersion) > Version.parse(clientVersion)) {
                 player.setGameMode(GameType.SPECTATOR)
                 player.sendPacket(JoinDisconnectVersion(clientVersion, serverVersion))
             } else {
