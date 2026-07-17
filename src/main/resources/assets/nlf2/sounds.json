@@ -34,5 +34,17 @@
         "sounds": [
             "nlf2:mus_easter_egg"
         ]
+    },
+    "mus_milkich_appears": {
+        "subtitle": "sound.nlf2.mus_milkich_appears",
+        "sounds": [
+            "nlf2:mus_milkich_appears"
+        ]
+    },
+    "mus_strange_noise": {
+        "subtitle": "sound.nlf2.mus_strange_noise",
+        "sounds": [
+            "nlf2:mus_strange_noise"
+        ]
     }
 }

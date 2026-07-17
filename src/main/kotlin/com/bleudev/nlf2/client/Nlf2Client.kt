@@ -254,8 +254,10 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(StrangeJukeboxMusicStop) {
             val sm = Minecraft.getInstance().soundManager
-            sm.stop(Nlf2Sounds.MUS_JUKEBOX.location, SoundSource.RECORDS)
-            sm.stop(Nlf2Sounds.MUS_EASTER_EGG.location, SoundSource.RECORDS)
+
+            for (mus in Nlf2Sounds.allJukeboxMusic()) {
+                sm.stop(mus.location, SoundSource.RECORDS)
+            }
         }
     }
 

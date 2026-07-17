@@ -4,6 +4,7 @@ import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
+import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.sendPackets
 import com.bleudev.nlf2.util.sendToEveryone
@@ -46,7 +47,16 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar, loreData.borderState, loreData.meetState, loreData.labOverlayState, loreData.event101, loreData.manualId, loreData.compassCrazy))
     }
 
-    class LoreData(var actor: String = "", var actorChar: String = "null", var borderState: Int = BorderStates.STANDARD, var meetState: Int = 0, var labOverlayState: Int = 0, var event101: Boolean = false, var manualId: Int = 0, var compassCrazy: Boolean = false) {
+    class LoreData(
+        var actor: String = "", var actorChar: String = "null",
+        var borderState: Int = BorderStates.STANDARD,
+        var meetState: Int = 0,
+        var labOverlayState: Int = 0,
+        var event101: Boolean = false,
+        var manualId: Int = 0,
+        var compassCrazy: Boolean = false,
+        var forceJukeboxMus: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL,
+    ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
@@ -57,6 +67,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
                 Codec.INT.fieldOf("manualId").forGetter(LoreData::manualId),
                 Codec.BOOL.fieldOf("compassCrazy").forGetter(LoreData::compassCrazy),
+                StrangeJukeboxBlock.SelectedMus.CODEC.fieldOf("forceJukeboxMus").forGetter(LoreData::forceJukeboxMus),
             ).apply(it, ::LoreData) }
         }
     }
@@ -82,7 +93,7 @@ object BorderStates {
 
 private val CODEC: Codec<Nlf2PlayersData> = RecordCodecBuilder.create { it.group(
     LoreData.CODEC.fieldOf("lore").forGetter(Nlf2PlayersData::loreData),
-    Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2PlayersData::getPlayers)
+    Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2PlayersData::getPlayers),
 ).apply(it, ::Nlf2PlayersData) }
 
 private val TYPE: SavedDataType<Nlf2PlayersData> = SavedDataType(getIdentifier("lore_players_data"), ::Nlf2PlayersData, CODEC,

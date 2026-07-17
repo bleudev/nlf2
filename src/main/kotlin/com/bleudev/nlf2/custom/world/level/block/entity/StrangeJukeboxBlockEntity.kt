@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom.world.level.block.entity
 
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
+import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.StrangeJukeboxRainbowControl
 import com.bleudev.nlf2.custom.packet.payload.unit.StrangeJukeboxMusicStop
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
@@ -27,6 +28,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
 
     var currOn: Boolean? = null
     var currMus: StrangeJukeboxBlock.SelectedMus? = null
+    var currForce: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL
     var t: Int = 0
     var duration: Int = 100000
 
@@ -34,7 +36,21 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
 
     internal fun tick(level: Level, pos: BlockPos, state: BlockState) {
         val on = state.getValue(ON)
-        val mus = state.getValue(MUS)
+        var mus = state.getValue(MUS)
+
+        if (on) (level as? ServerLevel)?.let {
+            val force = it.server.nlf2data.loreData.forceJukeboxMus
+
+            if (currForce != force) {
+                mus = if (force == StrangeJukeboxBlock.SelectedMus.NULL) StrangeJukeboxBlock.SelectedMus.newMus(it.server) else force
+                currMus = mus
+                currForce = force
+                level.setBlockAndUpdate(pos, state.setValue(MUS, mus))
+                updatePlayer(level, false, mus)
+                updatePlayer(level, true, mus)
+            }
+        }
+
         if (currOn != on || currMus != mus) {
             currOn = on
             currMus = mus
@@ -74,7 +90,9 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.TRY_WITH_EMPTY_HAND
         if (!level.isClientSide) {
             var state = state.setValue(ON, !state.getValue(ON))
-            if (state.getValue(ON)) state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus())
+            (level as? ServerLevel)?.let { if (state.getValue(ON))
+                state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus(it.server))
+            }
             level.setBlockAndUpdate(pos, state)
         }
         return InteractionResult.SUCCESS

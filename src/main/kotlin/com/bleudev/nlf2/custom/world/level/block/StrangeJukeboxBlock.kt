@@ -2,9 +2,13 @@ package com.bleudev.nlf2.custom.world.level.block
 
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
+import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.world.level.block.entity.StrangeJukeboxBlockEntity
+import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
+import net.minecraft.server.MinecraftServer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.InteractionResult
@@ -54,19 +58,37 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
     }
 
     enum class SelectedMus(val mus_name: String, val mus_sound: SoundEvent, val duration: Int, private val min_pitch: Float, private val max_pitch: Float, val loop: Boolean) : StringRepresentable {
+        STRANGE_NOISE("strange_noise", Nlf2Sounds.MUS_STRANGE_NOISE, 20, .9f, 1.1f, true),
+        MILKICH_APPEARS("milkich_appears", Nlf2Sounds.MUS_MILKICH_APPEARS, 790, 1f, 1f, true),
         JUKEBOX("jukebox", Nlf2Sounds.MUS_JUKEBOX, 1675, 1f, 1f, true),
-        EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, false);
+        EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, false),
+        NULL("null_cludge", Nlf2Sounds.MUS_JUKEBOX, 0, 1f, 1f, false);
 
         override fun getSerializedName(): String = mus_name
 
         val pitch: Float get() = if (min_pitch == max_pitch) min_pitch else Random.nextDouble(min_pitch.toDouble(), max_pitch.toDouble()).toFloat()
 
         companion object {
-            fun newMus(): SelectedMus {
+            fun newMus(server: MinecraftServer): SelectedMus {
+                val force = server.nlf2data.loreData.forceJukeboxMus
+                if (force != NULL) return force
                 val rnd = Random.nextFloat()
                 if (rnd <= .2f) return EASTER_EGG
                 return JUKEBOX
             }
+
+            fun fromName(name: String): SelectedMus = when (name) {
+                "strange_noise" -> STRANGE_NOISE
+                "milkich_appears" -> MILKICH_APPEARS
+                "jukebox" -> JUKEBOX
+                "easter_egg" -> EASTER_EGG
+                "null_cludge" -> NULL
+                else -> throw MatchException(null, null)
+            }
+
+            val CODEC: Codec<SelectedMus> = RecordCodecBuilder.create { it.group(
+                Codec.STRING.fieldOf("name").forGetter(SelectedMus::mus_name),
+            ).apply(it, SelectedMus::fromName) }
         }
     }
 }

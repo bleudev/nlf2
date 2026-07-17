@@ -9,6 +9,7 @@ import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
+import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.sendToEveryone
 import com.bleudev.nlf2.util.transform
@@ -126,3 +127,17 @@ open class FI_CompassCrazy(server: MinecraftServer, val crazy: Boolean) : Nlf2Ev
 
 class CompassCrazyTrue(server: MinecraftServer) : FI_CompassCrazy(server, true)
 class CompassCrazyFalse(server: MinecraftServer) : FI_CompassCrazy(server, false)
+
+open class FI_ForceJukeboxMus(server: MinecraftServer, val mus: StrangeJukeboxBlock.SelectedMus) : Nlf2Event(server, "force_jukebox_mus_${mus.mus_name}") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        server.nlf2data::loreData.transform {
+            it.forceJukeboxMus = mus
+            it
+        }
+    }
+}
+
+class ForceJukeboxNull(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.NULL)
+class ForceJukeboxStrangeNoise(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.STRANGE_NOISE)
+class ForceJukeboxMilkichAppears(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.MILKICH_APPEARS)
+
