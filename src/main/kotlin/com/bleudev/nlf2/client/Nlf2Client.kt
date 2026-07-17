@@ -11,10 +11,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
-import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.TIMER_MASK
-import com.bleudev.nlf2.client.util.black
-import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
@@ -64,20 +61,20 @@ class Nlf2Client : ClientModInitializer {
             Mth.lerp(blackFogEffect, current, original * .03f)
         }
 
-        PostEffectRegistry.register(getIdentifier("before_meet_orange_overlay") to ::shaderBeforeMeetOrangeOverlay)
+        PostEffectRegistry.registerNlf2("before_meet_orange_overlay" to ::shaderBeforeMeetOrangeOverlay)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("before_meet_orange_overlay")), {putFloat().putFloat()}) {
             putFloat(shaderBeforeMeetOrangeOverlayStrength).putFloat(5.4f)
         }
-        PostEffectRegistry.register(getIdentifier("before_meet") to ::shaderBeforeMeet)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CopyConfig", getIdentifier("before_meet")), {putVec2().putFloat()}) {
-            putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
-        }
-        PostEffectRegistry.register(getIdentifier("lab_overlay") to ::shaderLabOverlay)
+        PostEffectRegistry.registerNlf2("lab_overlay" to ::shaderLabOverlay)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("lab_overlay")), {putFloat().putFloat()}) {
             putFloat(shaderLabOverlayConvolveStrength).putFloat(shaderLabOverlayConvolveSaturation)
         }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomBitsConfig", getIdentifier("lab_overlay")), {putFloat()}) {
             putFloat(shaderLabOverlayBitsStrength)
+        }
+        PostEffectRegistry.registerNlf2("before_meet" to ::shaderBeforeMeet)
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CopyConfig", getIdentifier("before_meet")), {putVec2().putFloat()}) {
+            putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
         }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", getIdentifier("before_meet")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(shaderBeforeMeetRedmajStrength)
@@ -85,14 +82,16 @@ class Nlf2Client : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", getIdentifier("before_meet")), {putVec2()}) {
             putVec2(shaderBeforeMeetAnaglyphX, 0f)
         }
-        PostEffectRegistry.register(getIdentifier("event101") to ::shaderEvent101)
+        PostEffectRegistry.registerNlf2("event101" to ::shaderEvent101)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
             putFloat(shaderEvent101Strength).putFloat(2.4f)
         }
-        PostEffectRegistry.register(getIdentifier("rainbow") to ::shaderRainbow)
+        PostEffectRegistry.registerNlf2("rainbow" to ::shaderRainbow)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("RainbowConfig", getIdentifier("rainbow")), {putFloat().putFloat()}) {
             putFloat(shaderRainbowHue).putFloat(shaderRainbowStrength)
         }
+        PostEffectRegistry.registerNlf2("border_lag" to ::shaderBorderLag)
+        PostEffectRegistry.registerNlf2("border_end" to ::shaderBorderEnd)
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.2")
