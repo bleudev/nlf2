@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 
 
@@ -30,6 +29,8 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     var currMus: StrangeJukeboxBlock.SelectedMus? = null
     var t: Int = 0
     var duration: Int = 100000
+
+    val rainbowedPlayers: ArrayList<String> = ArrayList()
 
     internal fun tick(level: Level, pos: BlockPos, state: BlockState) {
         val on = state.getValue(ON)
@@ -51,18 +52,23 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         }
 
         if (mus == StrangeJukeboxBlock.SelectedMus.EASTER_EGG) {
-            var pac: StrangeJukeboxRainbowControl? = null
-            if (t == ((180.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(true)
-            if (t == ((633.toFloat()/650)*duration).toInt()) pac = StrangeJukeboxRainbowControl(false)
-
-            if (pac != null) level.server?.sendToEveryone {
-                if (it.distanceToSqr(Vec3.atCenterOf(pos)) <= 15*15) arrayOf(pac)
-                else arrayOf()
+            val startTime = ((180.toFloat()/650)*duration).toInt()
+            val endTime = ((633.toFloat()/650)*duration).toInt()
+            if (t == startTime) rainbowedPlayers.clear()
+            if (t in startTime..endTime) {
+                level.server?.sendToEveryone {
+                    val name = it.gameProfile.name.lowercase()
+                    if (it.distanceToSqr(Vec3.atCenterOf(pos)) <= 15*15 && name !in rainbowedPlayers) {
+                        rainbowedPlayers.add(name)
+                        arrayOf(StrangeJukeboxRainbowControl(true))
+                    } else arrayOf()
+                }
             }
+            if (t == endTime) level.server?.sendToEveryone { arrayOf(StrangeJukeboxRainbowControl(false)) }
         }
     }
 
-    internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
+    internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player): InteractionResult {
         if (!player.abilities.mayBuild) return InteractionResult.PASS
         if (state.getValue(ON) && state.getValue(MUS) == StrangeJukeboxBlock.SelectedMus.EASTER_EGG
             && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.TRY_WITH_EMPTY_HAND

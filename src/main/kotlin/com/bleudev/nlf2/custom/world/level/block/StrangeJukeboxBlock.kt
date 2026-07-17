@@ -46,7 +46,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         player: Player,
         hitResult: BlockHitResult
     ): InteractionResult = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity)
-        ?.use(state, level, pos, player, hitResult) ?: InteractionResult.PASS // Wrapper
+        ?.use(state, level, pos, player) ?: InteractionResult.PASS // Wrapper
 
     companion object {
         val ON = BooleanProperty.create("on")
