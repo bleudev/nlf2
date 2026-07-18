@@ -3,6 +3,7 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nine_lifes.util.sendPacket
+import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.custom.data.saved.nlf2data
@@ -10,6 +11,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
+import com.bleudev.nlf2.util.actorNickname
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.sendToEveryone
 import com.bleudev.nlf2.util.transform
@@ -86,7 +88,8 @@ class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, 2, "manual_2_in
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
-        server.playerList.getPlayer(EVENT101_NICKNAME)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
+        val nickname = if (DEV_EVENT_101) server.actorNickname else EVENT101_NICKNAME
+        server.playerList.getPlayer(nickname)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
         server.nlf2data::loreData.transform {
             it.event101 = true
             it

@@ -24,6 +24,8 @@ object DebugEntrypoint {
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {
         LOGGER.info("Caused nlf2:{} debug", names[id])
-        return debugs[id]?.cause(causedBy, args) == null
+        val ev = debugs[id] ?: return false
+        ev.cause(causedBy, args)
+        return true
     }
 }

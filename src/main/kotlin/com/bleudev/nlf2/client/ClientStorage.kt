@@ -2,8 +2,8 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.client.util.isEvent101Char
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.Minecraft
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
@@ -88,7 +88,7 @@ val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSynce
 val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
 val shaderLabOverlay: Boolean get() = dataSyncedLabOverlayState == 1 || labOverlayTransTicks > 0
 //val shaderEvent101: Boolean get() = true
-val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && Minecraft.getInstance().gameProfile.name == EVENT101_NICKNAME
+val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && isEvent101Char(false)
 val shaderRainbow: Boolean get() = rainbowTicks != -1
 
 // Nine lifes shaders uniforms
@@ -131,6 +131,7 @@ class TheirData {
         this.size = size
     }
 
+    @Suppress("KotlinPrintToLogpoint")
     @Throws(NumberFormatException::class)
     private fun causeCheckScreen(): Int {
         println("CAUSE CHECK SCREEN")

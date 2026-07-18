@@ -1,13 +1,11 @@
 package com.bleudev.nlf2.client.sys.actor
 
-import com.bleudev.nlf2.DEV_EVENT_101
-import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
-import com.bleudev.nlf2.client.dataSyncedEvent101
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
 import com.bleudev.nlf2.client.sys.actor.chars.res.*
+import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.getIdentifier
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.rendertype.RenderType
@@ -40,6 +38,10 @@ object ActorCharEntrypoint {
         chars["event101"] = Event101Char()
     }
 
+    fun tick() {
+        for (i in chars.values) i.tick()
+    }
+
     private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)
     private fun prepare(client: String, entity: String): PrepareData {
         var client = client.lowercase()
@@ -47,18 +49,11 @@ object ActorCharEntrypoint {
         val actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
 
-        // Try event 101
-        if (!dataSyncedEvent101) {
-            @Suppress("SimplifyBooleanWithConstants")
-            if ((DEV_EVENT_101 && entity == actor) || (!DEV_EVENT_101 && entity == EVENT101_NICKNAME)) {
-                return PrepareData(client, entity, chars["event101"])
-            }
-        }
-
         if (client == actor) client = "bleugame"
 
-        if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])
+        if (isEvent101Char(entity)) return PrepareData(client, entity, chars["event101"])
         // Other event specific chars...
+        if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])
         return PrepareData(client, entity, null)
     }
 

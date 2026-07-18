@@ -86,6 +86,9 @@ class Nlf2Client : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
             putFloat(shaderEvent101Strength).putFloat(2.4f)
         }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomBitsConfig", getIdentifier("event101")), {putFloat()}) {
+            putFloat(shaderEvent101Strength)
+        }
         PostEffectRegistry.registerNlf2("rainbow" to ::shaderRainbow)
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("RainbowConfig", getIdentifier("rainbow")), {putFloat().putFloat()}) {
             putFloat(shaderRainbowHue).putFloat(shaderRainbowStrength)
@@ -101,6 +104,7 @@ class Nlf2Client : ClientModInitializer {
             tryHideMod()
             pause_screen_ticks++
             noise_tick++
+            ActorCharEntrypoint.tick()
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++

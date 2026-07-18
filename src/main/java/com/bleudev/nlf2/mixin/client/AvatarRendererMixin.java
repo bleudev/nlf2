@@ -31,7 +31,7 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void addEyesLayer(EntityRendererProvider.Context context, boolean slimSteve, CallbackInfo ci) {
+    private void addOverlayLayers(EntityRendererProvider.Context context, boolean slimSteve, CallbackInfo ci) {
         this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::overlay));
         this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::eyes));
     }
