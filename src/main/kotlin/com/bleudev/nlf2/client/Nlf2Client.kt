@@ -40,7 +40,6 @@ import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
 import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
-import kotlin.math.max
 
 class Nlf2Client : ClientModInitializer {
     override fun onInitializeClient() {
@@ -114,8 +113,6 @@ class Nlf2Client : ClientModInitializer {
             if (beforeMeetTransTicks > 0) beforeMeetTransTicks--
             if (labOverlayTransTicks > 0) labOverlayTransTicks--
 
-            shaderRedMajUniformStrength = max(join_blackness, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION)
-
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
 
@@ -183,7 +180,7 @@ class Nlf2Client : ClientModInitializer {
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layer.BORDER_NOISE) { graphics, _ ->
             graphics.nlf2noise()
             graphics.nlf2event101()
-            graphics.overlayWithColor(manualUpdateEffectOverlay, 1f, 0f, 0f)
+            if (manualUpdateOwner) graphics.overlayWithColor(manualUpdateEffectAmount / 2, 1f, 0f, 0f)
         }
         HudElementRegistry.attachElementAfter(VanillaHudElements.SLEEP, Layer.OVERLAY_FIX) { graphics, _ ->
             val mc = Minecraft.getInstance()
@@ -255,7 +252,8 @@ class Nlf2Client : ClientModInitializer {
             if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION)
                 borderBlackFogStarting = false
         }
-        registerPacketReceiver(ManualUpdateEffect) {
+        registerPacketReceiver(ManualUpdateEffect) { payload ->
+            manualUpdateOwner = payload.owner
             manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
         }
         registerPacketReceiver(Event101ScreenEffectClear) {

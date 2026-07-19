@@ -6,10 +6,11 @@ import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
-import com.bleudev.nlf2.custom.packet.payload.unit.ManualUpdateEffect
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.actorNickname
 import com.bleudev.nlf2.util.isActor
@@ -77,8 +78,9 @@ open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: Str
             it
         }
         if (manualId == 0) return
-        val owner = (args[0] as? ServerPlayer?) ?: return
-        owner.sendPacket(ManualUpdateEffect.INSTANCE)
+        for (player in server.playerList.players) {
+            player.sendPacket(ManualUpdateEffect(player.inventory.any { it.`is`(Nlf2Items.MANUAL) }))
+        }
     }
 }
 

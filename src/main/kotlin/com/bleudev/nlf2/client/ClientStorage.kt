@@ -28,8 +28,9 @@ var join_blackness: Float = 1f
 var noise_tick: Int = 0
 var noise_amount: Float = .0f
 // Manual
+var manualUpdateOwner: Boolean = true
 var manualUpdateTicks: Int = 0
-val manualUpdateEffectOverlay: Float get() = manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION / 2
+val manualUpdateEffectAmount: Float get() = manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION
 // Event 101
 var event101screenEffectClearTicks: Int = 0
 // Earthquake
@@ -37,7 +38,7 @@ private val earthquakeProp: Float get() =
     max(if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
             (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 1.25f
         else noise_amount,
-        manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION / 2
+        manualUpdateEffectAmount / 2,
     )
 val earthquakeStrength: Float get() = earthquakeProp / 8
 val earthquakeSpeed: Float get() = earthquakeProp * 2
@@ -95,12 +96,14 @@ val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffect
 val shaderRainbow: Boolean get() = rainbowTicks != -1
 
 // Nine lifes shaders uniforms
-@JvmField
-var shaderRedMajUniformStrength: Float = 0f
+val shaderRedMajUniformStrength: Float get() = max(
+    join_blackness,
+    if (manualUpdateOwner) manualUpdateEffectAmount else 0f,
+)
 var shaderAnaglyphUniformX: Float = 0f
-    get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.01f)
+    get() = max(field, manualUpdateEffectAmount * 0.01f)
 var shaderAnaglyphUniformY: Float = 0f
-    get() = max(field, manualUpdateTicks.toFloat() / MANUAL_UPDATE_EFFECT_DURATION * 0.005f)
+    get() = max(field, manualUpdateEffectAmount * 0.005f)
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength
 val shaderBeforeMeetCopyStrength: Float get() = beforeMeetAmount.lerp(0f, .15f) * beforeMeetStrength

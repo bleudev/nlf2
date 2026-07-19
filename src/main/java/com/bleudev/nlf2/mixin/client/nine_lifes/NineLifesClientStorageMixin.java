@@ -22,7 +22,7 @@ public class NineLifesClientStorageMixin {
     }
     @ModifyReturnValue(method = "getShaderRedMajStrength", at = @At("RETURN"))
     private static float modifyShaderRedMajStrength(float original) {
-        return Math.max(original, shaderRedMajUniformStrength);
+        return Math.max(original, getShaderRedMajUniformStrength());
     }
     // Shake
     @ModifyReturnValue(method = "getShakeStrength", at = @At("RETURN"))
