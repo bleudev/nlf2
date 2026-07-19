@@ -84,7 +84,7 @@ class Nlf2 : ModInitializer {
             }
             // Manuals
             fun shouldUpdate(item: Item): Boolean =
-                server.playerList.players.any { player -> player.inventory.any { (!it.isEmpty) && it.`is`(item) } }
+                server.playerList.players.any { player -> !player.isActor && player.inventory.any { (!it.isEmpty) && it.`is`(item) } }
             val owner = server.playerList.players.firstOrNull { player -> player.inventory.any { it.`is`(Nlf2Items.MANUAL) } }
 
             if (shouldUpdate(Items.DEBUG_STICK) && server.nlf2data.loreData.manualId == 0)
