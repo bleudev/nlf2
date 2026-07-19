@@ -1,8 +1,12 @@
+@file:Environment(EnvType.CLIENT)
+
 package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.isEvent101Char
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
@@ -80,9 +84,6 @@ val labOverlayAmount: Float get() = if (labOverlayPreAmount <= 0.5) (labOverlayP
 var labOverlayTransTicks: Int = 0
 val labOverlayStrength: Float get() = (labOverlayTransTicks.toFloat() / LAB_OVERLAY_TRANS_DURATION)
     .let { if (dataSyncedLabOverlayState == 0) it else 1f - it }
-// Shader effects
-@JvmField
-var shaderLostVesselControl: Boolean = false
 @JvmField
 var shaderBorderLag: Boolean = false
 @JvmField
@@ -90,7 +91,6 @@ var shaderBorderEnd: Boolean = false
 val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSyncedMeetState == 3 && beforeMeetTransTicks > 0)
 val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
 val shaderLabOverlay: Boolean get() = dataSyncedLabOverlayState == 1 || labOverlayTransTicks > 0
-//val shaderEvent101: Boolean get() = true
 val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && isEvent101Char()
 val shaderRainbow: Boolean get() = rainbowTicks != -1
 

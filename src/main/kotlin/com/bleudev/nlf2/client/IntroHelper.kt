@@ -1,3 +1,5 @@
+@file:Environment(EnvType.CLIENT)
+
 package com.bleudev.nlf2.client
 
 import com.bleudev.nlf2.INTRO_ENABLED
@@ -7,6 +9,8 @@ import com.bleudev.nlf2.client.util.Animation
 import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.blitAnim
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.ConnectScreen
