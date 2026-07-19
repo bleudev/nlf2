@@ -13,6 +13,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
+import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -170,7 +171,9 @@ class Nlf2Client : ClientModInitializer {
         ClientRespawnEvents.RESPAWN.register { killedTimes++ }
         ClientPlayConnectionEvents.JOIN.register { _, s, mc ->
             s.sendPacket(JoinSendVersion(FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString))
-            mc.soundManager.play(BorderAmbientSoundInstance())
+            val snd = mc.soundManager
+            snd.play(BorderAmbientSoundInstance())
+            snd.play(Event101NoiseSoundInstance())
         }
         ClientPlayConnectionEvents.DISCONNECT.register { _, mc ->
             mc.soundManager.stop(Nlf2Sounds.BORDER_AMBIENT.location, SoundSource.AMBIENT)
@@ -229,10 +232,12 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(StrangeJukeboxRainbowControl) { payload ->
             rainbowTicks = if (payload.start) 0 else -1
         }
-        registerPacketReceiver(WorldBorderNoisePayload) { payload ->
+        registerPacketReceiver(DistanceUpdatePayload) { payload ->
             val maxBlocks = 50.0
             val maxNoise = .5f
-            noise_amount = (1f - ((payload.distance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
+            noise_amount = (1f - ((payload.borderDistance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
+
+            event101_distance = payload.event101Distance
         }
         registerPacketReceiver(CrashClientPayload) {
             throw ROHJEN67SW51("\nYOU...\nREACHED...\n\nTHE END")

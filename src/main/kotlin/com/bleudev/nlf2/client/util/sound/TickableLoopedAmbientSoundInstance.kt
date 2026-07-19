@@ -14,11 +14,14 @@ abstract class TickableLoopedAmbientSoundInstance(soundEvent: SoundEvent, soundS
         this.delay = 0
         this.looping = true
         this.volume = 1f
+        this.pitch = 1f
     }
 
     override fun tick() {
-        this.volume = getNewVolume()
+        this.volume = vol()
+        this.pitch = pit()
     }
 
-    abstract fun getNewVolume(): Float
+    open fun vol(): Float = 1f
+    open fun pit(): Float = 1f
 }

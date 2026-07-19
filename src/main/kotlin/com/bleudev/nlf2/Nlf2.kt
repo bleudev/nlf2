@@ -6,8 +6,8 @@ import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.packet.payload.DistanceUpdatePayload
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
-import com.bleudev.nlf2.custom.packet.payload.WorldBorderNoisePayload
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
@@ -15,6 +15,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
+import com.bleudev.nlf2.util.actor
 import com.bleudev.nlf2.util.hurtUnknown
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.sendToEveryone
@@ -58,9 +59,16 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            server.sendToEveryone { player -> arrayOf(
-                WorldBorderNoisePayload(player.level().worldBorder.getDistanceToBorder(player))
-            ) }
+            server.sendToEveryone { player ->
+                var ev101d = 999.0
+                if (!server.nlf2data.loreData.event101) {
+                    val ev101 = if (DEV_EVENT_101) server.actor else server.playerList.getPlayer(EVENT101_NICKNAME)
+                    if (ev101 != null) ev101d = ev101.distanceToSqr(player)
+                }
+                arrayOf(DistanceUpdatePayload(
+                    player.level().worldBorder.getDistanceToBorder(player),
+                    ev101d,
+                )) }
             ticks++
             if (ticks % 20 == 0) {
                 server.playerList.players.forEach { player ->

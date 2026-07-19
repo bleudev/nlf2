@@ -13,7 +13,7 @@ object Nlf2Packets {
     val OPEN_MANUAL = getIdentifier("packet/open_manual")
     val OPEN_PUZZLE = getIdentifier("packet/open_puzzle")
     val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
-    val WORLD_BORDER_NOISE = getIdentifier("packet/world_border_noise")
+    val DISTANCE_UPDATE = getIdentifier("packet/distance_update")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
 
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
@@ -35,7 +35,7 @@ object Nlf2Packets {
         s2c.register(OpenManual)
         s2c.register(OpenPuzzle)
         s2c.register(StrangeJukeboxRainbowControl)
-        s2c.register(WorldBorderNoisePayload)
+        s2c.register(DistanceUpdatePayload)
         // Unit
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)

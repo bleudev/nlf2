@@ -62,6 +62,9 @@ var pause_screen_red_screen_effect: Boolean = false
 var should_not_play_any_sound: Boolean = false
 @JvmField
 var pause_screen_ticks: Int = 0
+// Event 101
+var event101_distance: Double = 999.0
+// SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
 // Before meet effect
@@ -88,7 +91,7 @@ val shaderBeforeMeetOrangeOverlay get() = dataSyncedMeetState == 2 || (dataSynce
 val shaderBeforeMeet: Boolean get() = dataSyncedMeetState in listOf(0, 2) || beforeMeetTransTicks > 0
 val shaderLabOverlay: Boolean get() = dataSyncedLabOverlayState == 1 || labOverlayTransTicks > 0
 //val shaderEvent101: Boolean get() = true
-val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && isEvent101Char(false)
+val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffectClearTicks > 0) && isEvent101Char()
 val shaderRainbow: Boolean get() = rainbowTicks != -1
 
 // Nine lifes shaders uniforms

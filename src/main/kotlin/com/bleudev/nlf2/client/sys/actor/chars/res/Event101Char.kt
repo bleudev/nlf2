@@ -1,7 +1,6 @@
 package com.bleudev.nlf2.client.sys.actor.chars.res
 
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
-import kotlin.random.Random
 
 class Event101Char : ActorChar {
     private val overlays: List<String> = listOf(
@@ -21,7 +20,8 @@ class Event101Char : ActorChar {
         if (ticks >= maxTicks) {
             overlay = if (overlay == null) overlays.random() else null
             ticks = 0
-            maxTicks = if (overlay == null) Random.nextInt(10, 50) else Random.nextInt(5, 15)
+            maxTicks = 1
+//            maxTicks = if (overlay == null) Random.nextInt(1, 3) else Random.nextInt(1, 5)
         }
         ticks++
     }
