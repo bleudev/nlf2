@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +44,15 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
 
     @Inject(method = "extractRenderState*", at = @At("TAIL"))
     private void setStateNickname(AvatarLike entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
-        if (entity instanceof Player player) {
+        String nickname = null;
+        if (entity instanceof Player player)
+            nickname = player.getGameProfile().name();
+        if (entity instanceof Mannequin mannequin)
+            nickname = mannequin.getProfile().name().orElse(null);
+
+        if (nickname != null) {
+            nickname = nickname.toLowerCase();
             IAvatarRenderState renderState = (IAvatarRenderState) state;
-            final var nickname = player.getGameProfile().name().toLowerCase();
             renderState.nlf2$setNickname(nickname);
 
             var ch = current(nickname);

@@ -22,6 +22,7 @@ public class AvatarOverlayLayer extends RenderLayer<@NotNull AvatarRenderState, 
     @Override
     public void submit(@NotNull PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, @NotNull AvatarRenderState state, float yRot, float xRot) {
         String nickname = ((IAvatarRenderState) state).nlf2$getNickname();
+        if (nickname == null) return;
         submitNodeCollector.order(1).submitModel(this.getParentModel(), state, poseStack, renderTypeSupplier.supply(nickname), lightCoords, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
     }
 
