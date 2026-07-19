@@ -2,7 +2,7 @@ package com.bleudev.nlf2
 
 import net.minecraft.world.phys.Vec3
 
-const val SERVER_ADDRESS: String = "white.fnode.me:25623"
+const val SERVER_ADDRESS: String = "pink.fnode.me:19164"
 
 @JvmField
 val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "samivarence")
