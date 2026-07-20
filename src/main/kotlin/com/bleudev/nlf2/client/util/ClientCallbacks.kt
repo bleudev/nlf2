@@ -18,7 +18,7 @@ val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy
 
 val isHoldingCompass: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
-    return !(pl.gameMode()?.isSurvival ?: false) || pl.isHolding(Items.COMPASS) || !isCompassCrazy
+    return (!(pl.gameMode()?.isSurvival ?: false) || pl.isHolding(Items.COMPASS)) && !isCompassCrazy
 }
 
 val canOpenChat: Boolean get() {
