@@ -7,6 +7,7 @@ import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDelta
+import com.bleudev.nlf2.util.reverseDeltaIf
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
@@ -37,8 +38,9 @@ val manualUpdateEffectAmount: Float get() = manualUpdateTicks.toFloat() / MANUAL
 var event101screenEffectClearTicks: Int = 0
 // Earthquake
 private val earthquakeProp: Float get() =
-    max(if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-            (1f - (borderBlackFogTicks) / BORDER_BLACK_FOG_KILL_TRANS_DURATION) * 1.25f
+    max(
+        if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+            (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION).reverseDelta() * 1.25f
         else noise_amount,
         manualUpdateEffectAmount / 2,
     )
@@ -52,16 +54,8 @@ var borderBlackFog: Float = 0f
 var deathScreenBlackFogEffect: Boolean = false
 @JvmField
 var borderLagTicks: Int = 0
-val blackFogEffect: Float
-    get() {
-        if (dataSyncedBorderState != 2) return 0f
-        return borderBlackFog
-    }
-val cloudAlphaDelta: Float
-    get() {
-        if (dataSyncedBorderState != 2) return 1f
-        return 1f - borderBlackFog
-    }
+val blackFogEffect: Float get() = borderBlackFog.onlyIf(dataSyncedBorderState == 2)
+val cloudAlphaDelta: Float get() = borderBlackFog.onlyIf(dataSyncedBorderState == 2).reverseDelta()
 // Pause screen cutscene
 @JvmField
 var pause_screen_red_screen_effect: Boolean = false
@@ -89,7 +83,7 @@ private val labOverlayPreAmount: Float get() = (labOverlayTick % LAB_OVERLAY_EFF
 val labOverlayAmount: Float get() = if (labOverlayPreAmount <= 0.5) (labOverlayPreAmount * 2) else (-2 * labOverlayPreAmount + 2)
 var labOverlayTransTicks: Int = 0
 val labOverlayStrength: Float get() = (labOverlayTransTicks.toFloat() / LAB_OVERLAY_TRANS_DURATION)
-    .let { if (dataSyncedLabOverlayState == 0) it else 1f - it }
+    .reverseDeltaIf(dataSyncedLabOverlayState > 0)
 @JvmField
 var shaderBorderLag: Boolean = false
 @JvmField
@@ -126,8 +120,9 @@ val shaderBeforeMeetAnaglyphX: Float get() = beforeMeetAmount.lerp(.001f, .0025f
 val shaderLabOverlayConvolveStrength: Float get() = labOverlayAmount.lerp(.4f, .6f) * labOverlayStrength
 val shaderLabOverlayConvolveSaturation: Float get() = labOverlayAmount.lerp(.9f, .4f) * labOverlayStrength
 val shaderLabOverlayBitsStrength: Float get() = labOverlayAmount.lerp(.5f, .8f) * labOverlayStrength
-val shaderEvent101Strength: Float get() = if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION else 1f
-val shaderRainbowStrength: Float get() = (rainbowTicks.toFloat() / RAINBOW_START_TICKS).coerceAtMost(1f)/4
+val shaderEvent101Strength: Float get() = (event101screenEffectClearTicks.toFloat() / EVENT101_SCREEN_EFFECT_CLEAR_DURATION)
+    .onlyIf(event101screenEffectClearTicks > 0, 1f)
+val shaderRainbowStrength: Float get() = (rainbowTicks.toFloat() / RAINBOW_START_TICKS).coerceAtMost(1f) / 4
 val shaderRainbowHue: Float get() = (rainbowTicks % RAINBOW_HUE_TICKS).toFloat() / RAINBOW_HUE_TICKS
 
 private val theirPath: Path

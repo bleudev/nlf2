@@ -53,4 +53,5 @@ fun <T> List<T>.with(vararg values: T): List<T> {
     return cp.toList()
 }
 fun Float.reverseDelta(max: Float = 1f): Float = max - this
-fun Float.onlyIf(condition: Boolean): Float = if (condition) this else 0f
+fun Float.reverseDeltaIf(condition: Boolean, max: Float = 1f): Float = if (condition) reverseDelta(max) else this
+fun Float.onlyIf(condition: Boolean, default: Float = 0f): Float = if (condition) this else default
