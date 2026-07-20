@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
+import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.DistanceUpdatePayload
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
@@ -28,6 +29,9 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
+import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
@@ -40,8 +44,45 @@ fun getIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MO
 val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
+    data class BorderLoseHeartsInfo(var ticksBeforeLose: Int, var ticksAfterLose: Int)
+
     private var ticks = 0
+    private var borderLoseHeartsInfos: HashMap<String, BorderLoseHeartsInfo> = HashMap()
     private lateinit var serverVersion: String
+
+    private fun borderLoseHeartsTick(player: ServerPlayer) {
+        if (player.level().server.nlf2data.loreData.borderState != BorderStates.STANDARD_LOSE_HEARTS) return
+
+        val nickname = player.gameProfile.name.lowercase()
+        val should = player.gameMode.isSurvival && !player.isActor &&
+            player.level().worldBorder.getDistanceToBorder(player) <= BORDER_LOSE_HEARTS_DISTANCE
+        if (!borderLoseHeartsInfos.containsKey(nickname)) borderLoseHeartsInfos[nickname] = BorderLoseHeartsInfo(-1, -1)
+        val info = borderLoseHeartsInfos[nickname]!!
+        if (should) {
+            if (info.ticksAfterLose == -1) {
+                if (info.ticksBeforeLose == -1) info.ticksBeforeLose = BORDER_LOSE_HEARTS_BEFORE_DURATION
+                else if (info.ticksBeforeLose > 0) info.ticksBeforeLose--
+                if (info.ticksBeforeLose == 0) {
+                    info.ticksBeforeLose = -1
+                    info.ticksAfterLose = BORDER_LOSE_HEARTS_AFTER_DURATION
+                    player.hurtUnknown(2f)
+                    player.getAttribute(Attributes.MAX_HEALTH)?.let {
+                        val mdf = AttributeModifier(MOD_BORDER_LOSE_HEARTS, -2.0, AttributeModifier.Operation.ADD_VALUE)
+                        it.removeModifier(mdf)
+                        it.addPermanentModifier(mdf)
+                    }
+                }
+            }
+            else if (info.ticksAfterLose > 0) info.ticksAfterLose--
+        } else if (info.ticksAfterLose > 0) info.ticksAfterLose--
+
+        if (info.ticksAfterLose == 0) {
+            info.ticksBeforeLose = -1
+            info.ticksAfterLose = -1
+            player.getAttribute(Attributes.MAX_HEALTH)?.removeModifier(MOD_BORDER_LOSE_HEARTS)
+        }
+        borderLoseHeartsInfos[nickname] = info
+    }
 
     override fun onInitialize() {
         Nlf2Commands.initialize()
@@ -92,6 +133,7 @@ class Nlf2 : ModInitializer {
                 val wpm = it.level().waypointManager
                 if (it.isActor) wpm.untrackWaypoint(it)
                 else wpm.trackWaypoint(it)
+                borderLoseHeartsTick(it)
             }
         }
 

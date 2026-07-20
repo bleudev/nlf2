@@ -86,8 +86,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
 
 object BorderStates {
     const val STANDARD = 0
-    @Deprecated("Use standard instead")
-    const val STANDARD_X_DEPRECATED = 1
+    const val STANDARD_LOSE_HEARTS = 1
     const val BLACK_FOG_KILL = 2
 }
 

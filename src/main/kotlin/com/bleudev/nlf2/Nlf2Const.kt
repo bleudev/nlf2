@@ -1,9 +1,15 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.world.phys.Vec3
 
 const val SERVER_ADDRESS: String = "pink.fnode.me:19164"
 
+// Identifiers
+/// Modificators
+val MOD_BORDER_LOSE_HEARTS = createIdentifier("border_lose_hearts_modify")
+
+// Other
 @JvmField
 val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "samivarence")
 val TELEPORT_LOCATIONS = mapOf(
@@ -11,6 +17,10 @@ val TELEPORT_LOCATIONS = mapOf(
     "crockomd" to Vec3(-543.0, 73.0, 235.0),
 )
 const val EVENT101_NICKNAME = "Samivarence"
+
+const val BORDER_LOSE_HEARTS_BEFORE_DURATION = 200
+const val BORDER_LOSE_HEARTS_AFTER_DURATION = 80
+const val BORDER_LOSE_HEARTS_DISTANCE = 10
 
 const val BORDER_BLACK_FOG_DURATION = 60
 const val BORDER_BLACK_FOG_KILL_TRANS_DELAY = 40
