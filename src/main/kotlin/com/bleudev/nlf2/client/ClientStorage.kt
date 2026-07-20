@@ -5,6 +5,8 @@ package com.bleudev.nlf2.client
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.isEvent101Char
+import com.bleudev.nlf2.util.onlyIf
+import com.bleudev.nlf2.util.reverseDelta
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
@@ -69,6 +71,9 @@ var should_not_play_any_sound: Boolean = false
 var pause_screen_ticks: Int = 0
 // Event 101
 var event101_distance: Float = 999f
+val event101_noise_amount: Float get() =
+    ((event101_distance.coerceAtMost(EVENT101_NOISE_MAX_DISTANCE.toFloat()) / EVENT101_NOISE_MAX_DISTANCE)).reverseDelta()
+    .onlyIf(!isEvent101Char())
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -96,14 +101,23 @@ val shaderEvent101: Boolean get() = (!dataSyncedEvent101 || event101screenEffect
 val shaderRainbow: Boolean get() = rainbowTicks != -1
 
 // Nine lifes shaders uniforms
-val shaderRedMajUniformStrength: Float get() = max(
+val shaderRedMajUniformStrength: Float get() = listOf(
     join_blackness,
-    if (manualUpdateOwner) manualUpdateEffectAmount else 0f,
-)
+    manualUpdateEffectAmount.onlyIf(manualUpdateOwner),
+    event101_noise_amount,
+).max()
 var shaderAnaglyphUniformX: Float = 0f
-    get() = max(field, manualUpdateEffectAmount * 0.01f)
+    get() = listOf(
+        field,
+        manualUpdateEffectAmount * 0.01f,
+        event101_noise_amount * 0.01f,
+    ).max()
 var shaderAnaglyphUniformY: Float = 0f
-    get() = max(field, manualUpdateEffectAmount * 0.005f)
+    get() = listOf(
+        field,
+        manualUpdateEffectAmount * 0.005f,
+        event101_noise_amount * 0.005f,
+    ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength
 val shaderBeforeMeetCopyStrength: Float get() = beforeMeetAmount.lerp(0f, .15f) * beforeMeetStrength

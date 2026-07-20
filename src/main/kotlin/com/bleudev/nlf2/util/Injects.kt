@@ -52,3 +52,5 @@ fun <T> List<T>.with(vararg values: T): List<T> {
     cp.addAll(values)
     return cp.toList()
 }
+fun Float.reverseDelta(max: Float = 1f): Float = max - this
+fun Float.onlyIf(condition: Boolean): Float = if (condition) this else 0f
