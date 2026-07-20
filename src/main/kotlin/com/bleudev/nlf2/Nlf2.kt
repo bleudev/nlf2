@@ -60,10 +60,10 @@ class Nlf2 : ModInitializer {
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             server.sendToEveryone { player ->
-                var ev101d = 999.0
+                var ev101d = 999f
                 if (!server.nlf2data.loreData.event101) {
                     val ev101 = if (DEV_EVENT_101) server.actor else server.playerList.getPlayer(EVENT101_NICKNAME)
-                    if (ev101 != null) ev101d = ev101.distanceToSqr(player)
+                    if (ev101 != null) ev101d = ev101.distanceTo(player)
                 }
                 arrayOf(DistanceUpdatePayload(
                     player.level().worldBorder.getDistanceToBorder(player),

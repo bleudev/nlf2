@@ -68,7 +68,7 @@ var should_not_play_any_sound: Boolean = false
 @JvmField
 var pause_screen_ticks: Int = 0
 // Event 101
-var event101_distance: Double = 999.0
+var event101_distance: Float = 999f
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

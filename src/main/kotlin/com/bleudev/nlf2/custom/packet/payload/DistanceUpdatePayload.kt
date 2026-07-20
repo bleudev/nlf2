@@ -7,12 +7,12 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class DistanceUpdatePayload(val borderDistance: Double, val event101Distance: Double) : CustomPacketPayload {
+class DistanceUpdatePayload(val borderDistance: Double, val event101Distance: Float) : CustomPacketPayload {
     companion object : PacketPayloadCompanion<DistanceUpdatePayload> {
         override val identifier = Nlf2Packets.DISTANCE_UPDATE
         override val codec: StreamCodec<RegistryFriendlyByteBuf, DistanceUpdatePayload> = StreamCodec.composite(
             ByteBufCodecs.DOUBLE, DistanceUpdatePayload::borderDistance,
-            ByteBufCodecs.DOUBLE, DistanceUpdatePayload::event101Distance,
+            ByteBufCodecs.FLOAT, DistanceUpdatePayload::event101Distance,
             ::DistanceUpdatePayload
         )
     }
