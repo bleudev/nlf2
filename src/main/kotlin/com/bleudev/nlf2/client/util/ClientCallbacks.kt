@@ -3,9 +3,11 @@
 package com.bleudev.nlf2.client.util
 
 import com.bleudev.nlf2.DEV_EVENT_101
+import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedCompassCrazy
+import com.bleudev.nlf2.client.event101_distance
 import com.bleudev.nlf2.client.noise_amount
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -14,7 +16,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
 
-val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy
+val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy || event101_distance <= EVENT101_COMPASS_CRAZY_DISTANCE
 
 val isHoldingCompass: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
