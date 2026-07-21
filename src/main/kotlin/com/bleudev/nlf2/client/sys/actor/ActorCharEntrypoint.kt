@@ -32,9 +32,10 @@ object ActorCharEntrypoint {
         chars["inv"] = InvChar()
         // Mask
         chars["mask_bleugame"] = MaskBleugameChar()
-        chars["mask_crockomd"] = MaskCrockoMDChar()
-        chars["mask_waflla_kek"] = MaskWafllaKekChar()
-        chars["mask_boberobo7"] = MaskBoberobo7Char()
+        chars["mask_crocko"] = MaskCrockoMDChar()
+        chars["mask_waflla"] = MaskWafllaKekChar()
+        chars["mask_sam"] = MaskSamivarenceChar()
+        chars["mask_boberobo"] = MaskBoberobo7Char()
         // Event 101
         chars["event101"] = Event101Char()
     }
