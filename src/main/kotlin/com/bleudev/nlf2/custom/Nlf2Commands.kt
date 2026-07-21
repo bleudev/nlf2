@@ -35,6 +35,16 @@ object Nlf2Commands {
                                     it
                                 }
                                 return@executes ctx.source.sendSuccess(Component.literal("Actor was set"))
+                            })
+                        .then(Commands
+                            .literal("reset")
+                            .executes { ctx ->
+                                ctx.source.server.nlf2data::loreData.transform {
+                                    it.actor = "null"
+                                    it.actorChar = "null"
+                                    it
+                                }
+                                return@executes ctx.source.sendSuccess(Component.literal("Actor was reset"))
                             }))
                     .then(Commands
                         .literal("actorChar")
