@@ -13,9 +13,13 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.*
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.network.chat.Component
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 abstract class Nlf2Event(protected val server: MinecraftServer, val name: String) {
     abstract fun cause(causedBy: ServerPlayer?, vararg args: Any?)
@@ -144,12 +148,32 @@ class ForceJukeboxNull(server: MinecraftServer) : FI_ForceJukeboxMus(server, Str
 class ForceJukeboxStrangeNoise(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.STRANGE_NOISE)
 class ForceJukeboxMilkichAppears(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.MILKICH_APPEARS)
 
-class RedDisappearsSpectacularly(server: MinecraftServer) : Nlf2Event(server, "red_disappears_spectacularly") {
+open class FI_RedSpectacularEffect(server: MinecraftServer, appearsName: String) : Nlf2Event(server, "red_${appearsName}_spectacularly") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         val actor = server.actor ?: return
         val level = actor.level()
         level.sendParticles(ParticleTypes.LARGE_SMOKE, actor.x, actor.y, actor.z, 200, 0.0, 0.5, 0.0, 0.03)
         level.sendParticles(ParticleTypes.LARGE_SMOKE, actor.x, actor.y+1, actor.z, 200, 0.0, 0.5, 0.0, 0.03)
+    }
+}
+
+class RedAppearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEffect(server, "appears") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.actorChar = "rouge"
+            it.labOverlayState = 1
+            it
+        }
+        val stack = ItemStack(Items.DEBUG_STICK)
+        stack.set(DataComponents.CUSTOM_NAME, Component.literal("HAVE FUN"))
+        server.actor?.inventory?.add(stack)
+    }
+}
+
+class RedDisappearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEffect(server, "disappears") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.actorChar = "inv"
             it.labOverlayState = 0
