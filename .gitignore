@@ -123,5 +123,5 @@ runs/
 
 src/main/generated/
 
-ost/vid/
-/ost/
+/ost
+/server_backup
