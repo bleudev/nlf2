@@ -135,6 +135,8 @@ class Nlf2 : ModInitializer {
                 else wpm.trackWaypoint(it)
                 borderLoseHeartsTick(it)
             }
+            // Events
+            EventEntrypoint.tick()
         }
 
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->

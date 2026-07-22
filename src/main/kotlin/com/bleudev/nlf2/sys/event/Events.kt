@@ -22,8 +22,15 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
 abstract class Nlf2Event(protected val server: MinecraftServer, val name: String) {
-    abstract fun cause(causedBy: ServerPlayer?, vararg args: Any?)
+    protected var ticks: Int = -1
+
+    open fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        ticks = 0
+    }
     operator fun invoke(causedBy: ServerPlayer?, vararg args: Any?) = cause(causedBy, args)
+    open fun tick() {
+        if (ticks >= 0) ticks++
+    }
 }
 
 class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_teleport_on_first_join_internal") {
@@ -31,6 +38,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
         causedBy: ServerPlayer?,
         vararg args: Any?
     ) {
+        super.cause(causedBy, *args)
         for (name in server.nlf2data.getPlayers().filter { !it.teleported }.map { it.name }) {
             val lc = name.lowercase()
             if (lc in TELEPORT_LOCATIONS) {
@@ -49,6 +57,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
 
 class ResetTeleportsOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "reset_teleports_on_first_join") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         for (name in server.nlf2data.getPlayers().map { it.name }) {
             server.nlf2data.changePlayerData(name) {
                 it.teleported = false
@@ -60,6 +69,7 @@ class ResetTeleportsOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "re
 
 open class FI_MeetStateChange(server: MinecraftServer, val meetState: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.meetState = meetState
             if (meetState == 2) it.event101 = false
@@ -75,6 +85,7 @@ class MeetAfterWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 3, "
 
 open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.manualId = manualId
             it
@@ -92,6 +103,7 @@ class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, 2, "manual_2_in
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         val nickname = if (DEV_EVENT_101) server.actorNickname else EVENT101_NICKNAME
         server.playerList.getPlayer(nickname)?.sendPacket(Event101ScreenEffectClear.INSTANCE)
         server.nlf2data::loreData.transform {
@@ -103,6 +115,7 @@ class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "oran
 
 open class FI_LabOverlayChange(server: MinecraftServer, val labOverlayState: Int) : Nlf2Event(server, "lab_overlay_$labOverlayState") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.labOverlayState = labOverlayState
             it.compassCrazy = labOverlayState == 1
@@ -116,6 +129,7 @@ class LabOverlay1(server: MinecraftServer) : FI_LabOverlayChange(server, 1)
 
 class EndSerieCrash(server: MinecraftServer) : Nlf2Event(server, "end_serie_crash") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.sendToEveryone { player ->
             if (player.isActor) return@sendToEveryone arrayOf()
             return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
@@ -125,6 +139,7 @@ class EndSerieCrash(server: MinecraftServer) : Nlf2Event(server, "end_serie_cras
 
 open class FI_CompassCrazy(server: MinecraftServer, val crazy: Boolean) : Nlf2Event(server, "compass_crazy_$crazy") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.compassCrazy = crazy
             it
@@ -137,6 +152,7 @@ class CompassCrazyFalse(server: MinecraftServer) : FI_CompassCrazy(server, false
 
 open class FI_ForceJukeboxMus(server: MinecraftServer, val mus: StrangeJukeboxBlock.SelectedMus) : Nlf2Event(server, "force_jukebox_mus_${mus.mus_name}") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.forceJukeboxMus = mus
             it
@@ -150,6 +166,7 @@ class ForceJukeboxMilkichAppears(server: MinecraftServer) : FI_ForceJukeboxMus(s
 
 open class FI_RedSpectacularEffect(server: MinecraftServer, appearsName: String) : Nlf2Event(server, "red_${appearsName}_spectacularly") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
         val actor = server.actor ?: return
         val level = actor.level()
         level.sendParticles(ParticleTypes.LARGE_SMOKE, actor.x, actor.y, actor.z, 200, 0.0, 0.5, 0.0, 0.03)
@@ -161,13 +178,23 @@ class RedAppearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEffect
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
-            it.actorChar = "rouge"
             it.labOverlayState = 1
             it
         }
         val stack = ItemStack(Items.DEBUG_STICK)
         stack.set(DataComponents.CUSTOM_NAME, Component.literal("HAVE FUN"))
         server.actor?.inventory?.add(stack)
+    }
+
+    override fun tick() {
+        super.tick()
+        if (ticks == 10) {
+            server.nlf2data::loreData.transform {
+                it.actorChar = "rouge"
+                it
+            }
+            ticks = -1
+        }
     }
 }
 

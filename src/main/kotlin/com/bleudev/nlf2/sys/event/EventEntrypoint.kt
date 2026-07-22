@@ -46,4 +46,8 @@ object EventEntrypoint {
         ev.cause(causedBy, args)
         return true
     }
+
+    fun tick() {
+        events.values.toList().forEach(Nlf2Event::tick)
+    }
 }
