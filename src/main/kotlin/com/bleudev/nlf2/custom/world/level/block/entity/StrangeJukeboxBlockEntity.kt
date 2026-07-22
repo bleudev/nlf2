@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3
 
 class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Nlf2BlockEntities.STRANGE_JUKEBOX_ENTITY, pos, state) {
     override fun preRemoveSideEffects(pos: BlockPos, state: BlockState) {
-        level?.let { updatePlayer(it, false, StrangeJukeboxBlock.SelectedMus.JUKEBOX) }
+        level?.let { updatePlayer(it, false, StrangeJukeboxBlock.SelectedMus.NULL) }
     }
 
     var currOn: Boolean? = null
