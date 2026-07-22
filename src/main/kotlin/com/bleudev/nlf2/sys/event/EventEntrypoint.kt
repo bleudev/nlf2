@@ -20,6 +20,7 @@ object EventEntrypoint {
 
         add(34, ::TryTeleportOnFirstJoin)
         add(35, ::ResetTeleportsOnFirstJoin)
+        add(65, ::RedAppearSky)
         add(66, ::RedAppearsSpectacularly)
         add(67, ::RedDisappearsSpectacularly)
         add(80, ::MeetBeforeCrocko)

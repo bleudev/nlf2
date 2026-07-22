@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
+import net.minecraft.util.ARGB
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.level.Level
 import kotlin.reflect.KMutableProperty
@@ -41,6 +42,10 @@ val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
 val ServerPlayer.isActor: Boolean
     get() = gameProfile.name.equals(level().server.actorNickname, true)
+
+// Color
+fun Int.normalize(rgbTarget: Int = 0) =
+    if (ARGB.alphaFloat(this) >= 1f) this else ARGB.srgbLerp(ARGB.alphaFloat(this), ARGB.black(1f), this)
 
 // Lang
 fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {

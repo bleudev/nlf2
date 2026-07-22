@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 class ManualUpdateEffect(val owner: Boolean) : CustomPacketPayload {
     companion object : PacketPayloadCompanion<ManualUpdateEffect> {
-        override val identifier = Nlf2Packets.UNIT_MANUAL_UPDATE_EFFECT
+        override val identifier = Nlf2Packets.MANUAL_UPDATE_EFFECT
         override val codec: StreamCodec<RegistryFriendlyByteBuf, ManualUpdateEffect> = StreamCodec.composite(
             ByteBufCodecs.BOOL, ManualUpdateEffect::owner,
             ::ManualUpdateEffect

@@ -9,6 +9,7 @@ import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
+import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
@@ -171,6 +172,7 @@ open class FI_RedSpectacularEffect(server: MinecraftServer, appearsName: String)
         val level = actor.level()
         level.sendParticles(ParticleTypes.LARGE_SMOKE, actor.x, actor.y, actor.z, 200, 0.0, 0.5, 0.0, 0.03)
         level.sendParticles(ParticleTypes.LARGE_SMOKE, actor.x, actor.y+1, actor.z, 200, 0.0, 0.5, 0.0, 0.03)
+        EventEntrypoint.cause(causedBy, 65)
     }
 }
 
@@ -208,3 +210,14 @@ class RedDisappearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEff
         }
     }
 }
+
+open class FI_SkyColorEffect(server: MinecraftServer, val color: Int, name: String) : Nlf2Event(server, "sky_color_$name") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        for (player in server.playerList.players) {
+            player.sendPacket(SkyColorEffect(5, 100, color))
+        }
+    }
+}
+
+class RedAppearSky(server: MinecraftServer) : FI_SkyColorEffect(server, 0xbbff0000.toInt(), "red_appear_internal")

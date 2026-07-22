@@ -7,7 +7,7 @@ import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.data.saved.nlf2data
-import com.bleudev.nlf2.custom.packet.payload.DistanceUpdatePayload
+import com.bleudev.nlf2.custom.packet.payload.DistanceUpdate
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
@@ -106,7 +106,7 @@ class Nlf2 : ModInitializer {
                     val ev101 = if (DEV_EVENT_101) server.actor else server.playerList.getPlayer(EVENT101_NICKNAME)
                     if (ev101 != null) ev101d = ev101.distanceTo(player)
                 }
-                arrayOf(DistanceUpdatePayload(
+                arrayOf(DistanceUpdate(
                     player.level().worldBorder.getDistanceToBorder(player),
                     ev101d,
                 )) }

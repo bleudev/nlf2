@@ -18,8 +18,12 @@ object DebugEntrypoint {
             names[id] = ev.name
         }
 
-        add(101, ::OrangeSkinOverlay)
         add(34, ::ReTeleportOnFirstJoin)
+        add(55, ::RedSkyTest)
+        add(56, ::GreenSkyTest)
+        add(57, ::BlueSkyTest)
+        add(58, ::WhiteSkyTest)
+        add(101, ::OrangeSkinOverlay)
     }
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {

@@ -68,6 +68,15 @@ var event101_distance: Float = 999f
 val event101_noise_amount: Float get() =
     ((event101_distance.coerceAtMost(EVENT101_NOISE_MAX_DISTANCE.toFloat()) / EVENT101_NOISE_MAX_DISTANCE)).reverseDelta()
     .onlyIf(!isEvent101Char())
+// Sky color effect
+var skyColorEffectTicks: Int = -1
+var skyColorEffectStartDuration: Int = -1
+var skyColorEffectEndDuration: Int = -1
+var skyColorEffectColor: Int = -1
+val skyColorEffectAmount: Float get() = (if (skyColorEffectTicks <= skyColorEffectStartDuration)
+    skyColorEffectTicks.toFloat() / skyColorEffectStartDuration
+    else 1f - ((skyColorEffectTicks - skyColorEffectStartDuration).toFloat() / skyColorEffectEndDuration))
+    .onlyIf(skyColorEffectTicks >= 0)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

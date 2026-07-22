@@ -20,6 +20,7 @@ import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
+import com.bleudev.nlf2.util.normalize
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import net.fabricmc.api.ClientModInitializer
@@ -51,8 +52,16 @@ class Nlf2Client : ClientModInitializer {
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             ARGB.srgbLerp(blackFogEffect, current, ARGB.color(ARGB.alpha(current), 0))
         }
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            if (skyColorEffectTicks <= 0f) return@register current
+            ARGB.srgbLerp(skyColorEffectAmount, current, skyColorEffectColor.normalize())
+        }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
+        }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            if (skyColorEffectAmount <= 0f) return@register current
+            current.lerp(ARGB.vector4fFromARGB32(skyColorEffectColor.normalize()), skyColorEffectAmount)
         }
         ClientEnvironmentSetupEvents.FOG_START.register { original, current ->
             Mth.lerp(blackFogEffect, current, original * .03f)
@@ -112,6 +121,8 @@ class Nlf2Client : ClientModInitializer {
             if (labOverlayTick >= 0) labOverlayTick++
             if (beforeMeetTransTicks > 0) beforeMeetTransTicks--
             if (labOverlayTransTicks > 0) labOverlayTransTicks--
+            if (skyColorEffectTicks in 0..skyColorEffectStartDuration + skyColorEffectEndDuration) skyColorEffectTicks++
+            if (skyColorEffectTicks == skyColorEffectStartDuration + skyColorEffectEndDuration) skyColorEffectTicks = -1
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
@@ -218,6 +229,20 @@ class Nlf2Client : ClientModInitializer {
 
             TIMER_MASK.reset()
         }
+        registerPacketReceiver(DistanceUpdate) { payload ->
+            val maxBlocks = 50.0
+            val maxNoise = .5f
+            noise_amount = (1f - ((payload.borderDistance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
+
+            event101_distance = payload.event101Distance
+        }
+        registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
+            ctx.client().gui.setScreen(JoinDisconnectScreen(payload.client, payload.server))
+        }
+        registerPacketReceiver(ManualUpdateEffect) { payload ->
+            manualUpdateOwner = payload.owner
+            manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
+        }
         registerPacketReceiver(OpenManual) { payload, ctx ->
             ctx.client().gui.setScreen(ManualScreen(payload.manualId))
         }
@@ -226,22 +251,20 @@ class Nlf2Client : ClientModInitializer {
                 ctx.client().gui.setScreen(PuzzleScreen(it))
             }
         }
+        registerPacketReceiver(SkyColorEffect) { payload ->
+            skyColorEffectTicks = 0
+            skyColorEffectStartDuration = payload.startDuration
+            skyColorEffectEndDuration = payload.endDuration
+            skyColorEffectColor = payload.color
+        }
         registerPacketReceiver(StrangeJukeboxRainbowControl) { payload ->
             rainbowTicks = if (payload.start) 0 else -1
         }
-        registerPacketReceiver(DistanceUpdatePayload) { payload ->
-            val maxBlocks = 50.0
-            val maxNoise = .5f
-            noise_amount = (1f - ((payload.borderDistance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
 
-            event101_distance = payload.event101Distance
-        }
         registerPacketReceiver(CrashClientPayload) {
             throw ROHJEN67SW51("\nYOU...\nREACHED...\n\nTHE END")
         }
-        registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
-            ctx.client().gui.setScreen(JoinDisconnectScreen(payload.client, payload.server))
-        }
+
         registerPacketReceiver(BorderBlackFogStart) {
             if (borderBlackFogTicks == -1) {
                 borderBlackFogTicks = BORDER_BLACK_FOG_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY
@@ -252,10 +275,7 @@ class Nlf2Client : ClientModInitializer {
             if (borderBlackFogTicks > BORDER_BLACK_FOG_KILL_TRANS_DURATION)
                 borderBlackFogStarting = false
         }
-        registerPacketReceiver(ManualUpdateEffect) { payload ->
-            manualUpdateOwner = payload.owner
-            manualUpdateTicks = MANUAL_UPDATE_EFFECT_DURATION
-        }
+
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
         }
