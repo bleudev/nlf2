@@ -56,6 +56,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         var manualId: Int = 0,
         var compassCrazy: Boolean = false,
         var forceJukeboxMus: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL,
+        var mobAvoidPlayers: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
@@ -64,10 +65,11 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
                 Codec.INT.fieldOf("meetState").forGetter(LoreData::meetState),
                 Codec.INT.fieldOf("labOverlayState").forGetter(LoreData::labOverlayState),
-                Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // waffla vessel event
+                Codec.BOOL.fieldOf("event101").forGetter(LoreData::event101), // Sam vessel event
                 Codec.INT.fieldOf("manualId").forGetter(LoreData::manualId),
                 Codec.BOOL.fieldOf("compassCrazy").forGetter(LoreData::compassCrazy),
                 StrangeJukeboxBlock.SelectedMus.CODEC.fieldOf("forceJukeboxMus").forGetter(LoreData::forceJukeboxMus),
+                Codec.BOOL.fieldOf("mobAvoidPlayers").forGetter(LoreData::mobAvoidPlayers),
             ).apply(it, ::LoreData) }
         }
     }

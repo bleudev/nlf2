@@ -36,6 +36,8 @@ object EventEntrypoint {
         add(189, ::EndSerieCrash)
         add(200, ::CompassCrazyFalse)
         add(201, ::CompassCrazyTrue)
+        add(300, ::MobAvoidPlayersFalse)
+        add(301, ::MobAvoidPlayersTrue)
         add(340, ::ForceJukeboxNull)
         add(341, ::ForceJukeboxStrangeNoise)
         add(342, ::ForceJukeboxMilkichAppears)

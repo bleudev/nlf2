@@ -148,8 +148,8 @@ open class FI_CompassCrazy(server: MinecraftServer, val crazy: Boolean) : Nlf2Ev
     }
 }
 
-class CompassCrazyTrue(server: MinecraftServer) : FI_CompassCrazy(server, true)
 class CompassCrazyFalse(server: MinecraftServer) : FI_CompassCrazy(server, false)
+class CompassCrazyTrue(server: MinecraftServer) : FI_CompassCrazy(server, true)
 
 open class FI_ForceJukeboxMus(server: MinecraftServer, val mus: StrangeJukeboxBlock.SelectedMus) : Nlf2Event(server, "force_jukebox_mus_${mus.mus_name}") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
@@ -181,6 +181,7 @@ class RedAppearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEffect
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.labOverlayState = 1
+            it.mobAvoidPlayers = true
             it
         }
         val stack = ItemStack(Items.DEBUG_STICK)
@@ -206,6 +207,7 @@ class RedDisappearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEff
         server.nlf2data::loreData.transform {
             it.actorChar = "inv"
             it.labOverlayState = 0
+            it.mobAvoidPlayers = false
             it
         }
     }
@@ -221,3 +223,16 @@ open class FI_SkyColorEffect(server: MinecraftServer, val color: Int, name: Stri
 }
 
 class RedAppearSky(server: MinecraftServer) : FI_SkyColorEffect(server, 0xbbff0000.toInt(), "red_appear_internal")
+
+open class FI_MobAvoidPlayers(server: MinecraftServer, val avoid: Boolean) : Nlf2Event(server, "mob_avoid_players_$avoid") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.mobAvoidPlayers = avoid
+            it
+        }
+    }
+}
+
+class MobAvoidPlayersFalse(server: MinecraftServer) : FI_MobAvoidPlayers(server, false)
+class MobAvoidPlayersTrue(server: MinecraftServer) : FI_MobAvoidPlayers(server, true)
