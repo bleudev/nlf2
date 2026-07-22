@@ -18,13 +18,18 @@ import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket
+import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import kotlin.random.Random
 
 abstract class Nlf2Event(protected val server: MinecraftServer, val name: String) {
     protected var ticks: Int = -1
@@ -222,6 +227,19 @@ open class FI_SkyColorEffect(server: MinecraftServer, val color: Int, name: Stri
         super.cause(causedBy, *args)
         for (player in server.playerList.players) {
             player.sendPacket(SkyColorEffect(5, 100, color))
+
+            player.connection.send(
+                ClientboundSoundPacket(
+                    BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.WEATHER_END_FLASH),
+                    SoundSource.AMBIENT,
+                    player.x,
+                    player.y,
+                    player.z,
+                    1f,
+                    1f,
+                    Random.nextLong()
+                )
+            )
         }
     }
 }
