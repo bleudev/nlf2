@@ -196,6 +196,7 @@ class RedAppearsSpectacularly(server: MinecraftServer) : FI_RedSpectacularEffect
         val stack = ItemStack(Items.DEBUG_STICK)
         stack.set(DataComponents.CUSTOM_NAME, Component.literal("HAVE FUN"))
         server.actor?.inventory?.add(stack)
+        server.actor?.inventory?.add(ItemStack(Nlf2Items.WD_PUZZLE))
     }
 
     override fun tick() {
