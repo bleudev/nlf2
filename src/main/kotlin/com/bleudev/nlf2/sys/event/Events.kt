@@ -246,6 +246,7 @@ class ForcePickManual(server: MinecraftServer) : Nlf2Event(server, "force_pick_m
         super.cause(causedBy, *args)
 
         for (player in server.playerList.players) {
+            if (player.isActor) continue
             val itemStack = player.inventory.find { it.`is`(Nlf2Items.MANUAL) } ?: continue
             tryPickItem(player, itemStack)
         }
