@@ -15,11 +15,14 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.*
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
@@ -237,3 +240,32 @@ open class FI_MobAvoidPlayers(server: MinecraftServer, val avoid: Boolean) : Nlf
 
 class MobAvoidPlayersFalse(server: MinecraftServer) : FI_MobAvoidPlayers(server, false)
 class MobAvoidPlayersTrue(server: MinecraftServer) : FI_MobAvoidPlayers(server, true)
+
+class ForcePickManual(server: MinecraftServer) : Nlf2Event(server, "force_pick_manual") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+
+        for (player in server.playerList.players) {
+            val itemStack = player.inventory.find { it.`is`(Nlf2Items.MANUAL) } ?: continue
+            tryPickItem(player, itemStack)
+        }
+    }
+
+    private fun tryPickItem(player: ServerPlayer, itemStack: ItemStack) {
+        if (itemStack.isItemEnabled(player.level().enabledFeatures())) {
+            val inventory = player.inventory
+            val slotWithExistingItem = inventory.findSlotMatchingItem(itemStack)
+            if (slotWithExistingItem != -1) {
+                if (Inventory.isHotbarSlot(slotWithExistingItem)) {
+                    inventory.selectedSlot = slotWithExistingItem
+                } else {
+                    inventory.pickSlot(slotWithExistingItem)
+                }
+            } else if (player.hasInfiniteMaterials()) {
+                inventory.addAndPickItem(itemStack)
+            }
+            ServerPlayNetworking.getSender(player).sendPacket(ClientboundSetHeldSlotPacket(inventory.selectedSlot))
+            player.inventoryMenu.broadcastChanges()
+        }
+    }
+}

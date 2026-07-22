@@ -23,6 +23,7 @@ object EventEntrypoint {
         add(65, ::RedAppearSky)
         add(66, ::RedAppearsSpectacularly)
         add(67, ::RedDisappearsSpectacularly)
+        add(68, ::ForcePickManual)
         add(80, ::MeetBeforeCrocko)
         add(81, ::MeetAfterCrocko)
         add(82, ::MeetBeforeWaflla)
