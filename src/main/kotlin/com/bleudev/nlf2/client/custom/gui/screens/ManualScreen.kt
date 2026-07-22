@@ -69,13 +69,13 @@ class ManualScreen(val manualId: ManualId, val playTurnSound: Boolean = true) : 
 }
 
 enum class ManualId(val id: Int, val pages: List<Int>) {
-    BEFORE_STICK(0, listOf(0, 1)),
-    AFTER_DEBUG_STICK(1, listOf(0, 1, 2)),
-    AFTER_AMETHYST_STICK(2, listOf(0, 1, 3));
+    DEFAULT(0, listOf(0, 1, 4)),
+    AFTER_DEBUG_STICK(1, listOf(0, 1, 2, 4)),
+    AFTER_AMETHYST_STICK(2, listOf(0, 1, 3, 4));
 
     companion object {
         fun fromId(id: Int): ManualId = when (id) {
-            0 -> BEFORE_STICK
+            0 -> DEFAULT
             1 -> AFTER_DEBUG_STICK
             2 -> AFTER_AMETHYST_STICK
             else -> throw MatchException(null, null)

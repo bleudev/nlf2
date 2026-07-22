@@ -6,6 +6,7 @@ import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
+import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
@@ -98,9 +99,9 @@ open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: Str
     }
 }
 
-class Manual0(server: MinecraftServer) : FI_ManualUpdate(server, 0, "manual_0_reset")
-class Manual1(server: MinecraftServer) : FI_ManualUpdate(server, 1, "manual_1_internal")
-class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, 2, "manual_2_internal")
+class Manual0(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.DEFAULT.id, "manual_0_reset")
+class Manual1(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_DEBUG_STICK.id, "manual_1_internal")
+class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_STICK.id, "manual_2_internal")
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
