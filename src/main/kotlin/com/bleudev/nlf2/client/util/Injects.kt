@@ -23,4 +23,5 @@ fun GuiGraphicsExtractor.blitAnim(animation: Animation, n: Int, x: Int = 0, y: I
     blit(RenderPipelines.GUI_TEXTURED, animation.getIdentifier(n), x, y, 0f, 0f, w, h, w, h, color)
 }
 
-fun PostEffectRegistry.Companion.registerNlf2(info: Pair<String, EmptyPredicate>) = PostEffectRegistry.register(getIdentifier(info.first) to info.second)
+fun PostEffectRegistry.Companion.registerNlf2(postEffectPath: String, renderPredicate: EmptyPredicate) =
+    PostEffectRegistry.register(getIdentifier(postEffectPath), renderPredicate)

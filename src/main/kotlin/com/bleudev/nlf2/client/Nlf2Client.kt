@@ -2,7 +2,6 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
-import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.*
@@ -70,40 +69,40 @@ class Nlf2Client : ClientModInitializer {
             Mth.lerp(blackFogEffect, current, original * .03f)
         }
 
-        PostEffectRegistry.registerNlf2("before_meet_orange_overlay" to ::shaderBeforeMeetOrangeOverlay)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("before_meet_orange_overlay")), {putFloat().putFloat()}) {
-            putFloat(shaderBeforeMeetOrangeOverlayStrength).putFloat(5.4f)
-        }
-        PostEffectRegistry.registerNlf2("lab_overlay" to ::shaderLabOverlay)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("lab_overlay")), {putFloat().putFloat()}) {
-            putFloat(shaderLabOverlayConvolveStrength).putFloat(shaderLabOverlayConvolveSaturation)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomBitsConfig", getIdentifier("lab_overlay")), {putFloat()}) {
-            putFloat(shaderLabOverlayBitsStrength)
-        }
-        PostEffectRegistry.registerNlf2("before_meet" to ::shaderBeforeMeet)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CopyConfig", getIdentifier("before_meet")), {putVec2().putFloat()}) {
-            putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", getIdentifier("before_meet")), {putVec3().putFloat()}) {
-            putVec3(1f, 0f, 0f).putFloat(shaderBeforeMeetRedmajStrength)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", getIdentifier("before_meet")), {putVec2()}) {
-            putVec2(shaderBeforeMeetAnaglyphX, 0f)
-        }
-        PostEffectRegistry.registerNlf2("event101" to ::shaderEvent101)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomConvolveConfig", getIdentifier("event101")), {putFloat().putFloat()}) {
-            putFloat(shaderEvent101Strength).putFloat(2.4f)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("CustomBitsConfig", getIdentifier("event101")), {putFloat()}) {
-            putFloat(shaderEvent101Strength)
-        }
-        PostEffectRegistry.registerNlf2("rainbow" to ::shaderRainbow)
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("RainbowConfig", getIdentifier("rainbow")), {putFloat().putFloat()}) {
-            putFloat(shaderRainbowHue).putFloat(shaderRainbowStrength)
-        }
-        PostEffectRegistry.registerNlf2("border_lag" to ::shaderBorderLag)
-        PostEffectRegistry.registerNlf2("border_end" to ::shaderBorderEnd)
+        PostEffectRegistry.registerNlf2("before_meet", ::shaderBeforeMeet)
+            .uniform("CopyConfig") {
+                putVec2(shaderBeforeMeetCopySize, shaderBeforeMeetCopySize).putFloat(shaderBeforeMeetCopyStrength)
+            }
+            .uniform("ChmajConfig") {
+                putVec3(1f, 0f, 0f).putFloat(shaderBeforeMeetRedmajStrength)
+            }
+            .uniform("AnaglyphConfig") {
+                putVec2(shaderBeforeMeetAnaglyphX, 0f)
+            }
+        PostEffectRegistry.registerNlf2("before_meet_orange_overlay", ::shaderBeforeMeetOrangeOverlay)
+            .uniform("CustomConvolveConfig") {
+                putFloat(shaderBeforeMeetOrangeOverlayStrength).putFloat(5.4f)
+            }
+        PostEffectRegistry.registerNlf2("event101", ::shaderEvent101)
+            .uniform("CustomConvolveConfig") {
+                putFloat(shaderEvent101Strength).putFloat(2.4f)
+            }
+            .uniform("CustomBitsConfig") {
+                putFloat(shaderEvent101Strength)
+            }
+        PostEffectRegistry.registerNlf2("lab_overlay", ::shaderLabOverlay)
+            .uniform("CustomConvolveConfig") {
+                putFloat(shaderLabOverlayConvolveStrength).putFloat(shaderLabOverlayConvolveSaturation)
+            }
+            .uniform("CustomBitsConfig") {
+                putFloat(shaderLabOverlayBitsStrength)
+            }
+        PostEffectRegistry.registerNlf2("rainbow", ::shaderRainbow)
+            .uniform("RainbowConfig") {
+                putFloat(shaderRainbowHue).putFloat(shaderRainbowStrength)
+            }
+        PostEffectRegistry.registerNlf2("border_lag", ::shaderBorderLag)
+        PostEffectRegistry.registerNlf2("border_end", ::shaderBorderEnd)
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
             mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.2")
