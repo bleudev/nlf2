@@ -90,8 +90,8 @@ open class FI_MeetStateChange(server: MinecraftServer, val meetState: Int, name:
 
 class MeetBeforeCrocko(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_crocko")
 class MeetAfterCrocko(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_crocko")
-class MeetBeforeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 2, "meet_before_waflla")
-class MeetAfterWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 3, "meet_after_waflla")
+class MeetBeforeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 2, "meet_before_sam")
+class MeetAfterWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 3, "meet_after_sam")
 
 open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
