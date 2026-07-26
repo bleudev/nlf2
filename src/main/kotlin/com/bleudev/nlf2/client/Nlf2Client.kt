@@ -222,8 +222,11 @@ class Nlf2Client : ClientModInitializer {
 
             val oldMeetState = dataSyncedMeetState
             dataSyncedMeetState = payload.meetState
-            if (oldMeetState != dataSyncedMeetState && oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
-                beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
+            if (oldMeetState != dataSyncedMeetState) {
+                if (oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
+                    beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
+                AdjustVolumeList.update()
+            }
 
             val oldLabOverlayState = dataSyncedLabOverlayState
             dataSyncedLabOverlayState = payload.labOverlayState

@@ -5,10 +5,7 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.client.dataSyncedActor
-import com.bleudev.nlf2.client.dataSyncedCompassCrazy
-import com.bleudev.nlf2.client.event101_distance
-import com.bleudev.nlf2.client.noise_amount
+import com.bleudev.nlf2.client.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
@@ -30,7 +27,10 @@ val canOpenChat: Boolean get() {
 
 fun renderHitboxes(entity: Entity): Boolean =
     !(entity is Player && dataSyncedActor.equals(entity.gameProfile.name, true))
-fun renderPlayerInVoiceChat(name: String): Boolean = !name.equals(dataSyncedActor, true)
+fun renderPlayerInTab(name: String): Boolean =
+    if (dataSyncedMeetState % 2 == 0) name.equals(Minecraft.getInstance().gameProfile.name, true)
+    else !name.equals(dataSyncedActor, true)
+fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME
 fun isEvent101Char(nickname: String): Boolean = nickname.equals(CURRENT_EVENT101_NICKNAME, true)
