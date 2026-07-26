@@ -17,6 +17,10 @@ val SUPPORTED_NICKNAMES = listOf(
     "samivarence",
     "milkich22397",
 )
+val SLIM_SKINS = listOf(
+    "samivarence",
+    "waflla_kek",
+)
 val TELEPORT_LOCATIONS = mapOf(
     "bleugame" to Vec3(587.0, 65.0, 706.0),
     "crockomd" to Vec3(601.0, 65.0, 818.0),

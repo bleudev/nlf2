@@ -4,17 +4,17 @@ import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.dataSyncedEvent101
-import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
-import com.bleudev.nlf2.client.sys.actor.chars.InvisibleForOnePlayerMask
-import com.bleudev.nlf2.client.sys.actor.chars.PlayerMaskChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.*
+import com.bleudev.nlf2.client.sys.actor.chars.*
+import com.bleudev.nlf2.client.sys.actor.chars.res.Event101Char
+import com.bleudev.nlf2.client.sys.actor.chars.res.GhostChar
+import com.bleudev.nlf2.client.sys.actor.chars.res.InvChar
+import com.bleudev.nlf2.client.sys.actor.chars.res.RougeEyesBleugame
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.getIdentifier
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.client.renderer.rendertype.RenderTypes
 import net.minecraft.core.ClientAsset
-import net.minecraft.world.entity.player.PlayerModelType
 import net.minecraft.world.entity.player.PlayerSkin
 
 object ActorCharEntrypoint {
@@ -22,16 +22,14 @@ object ActorCharEntrypoint {
 
     private val chars: HashMap<String, ActorChar> = HashMap()
 
-    private val SLIM_SKINS = listOf("waflla_kek")
-
     fun initialize() {
-        chars["rouge"] = RougeChar()
-        chars["vert"] = VertChar()
-        chars["vessel"] = VesselChar()
-        chars["ghost"] = GhostChar()
-        chars["rouge_eyes"] = RougeEyesChar()
-        chars["vert_eyes"] = VertEyesChar()
-        chars["inv"] = InvChar()
+        // Vessel like
+        chars["rouge"] = VesselLikeChar("rouge")
+        chars["vert"] = VesselLikeChar("vert")
+        chars["vessel"] = VesselLikeChar(null)
+        // Only eyes
+        chars["rouge_eyes"] = OnlyEyesLikeChar("rouge")
+        chars["vert_eyes"] = OnlyEyesLikeChar("vert")
         // Mask
         chars["mask_bleugame"] = PlayerMaskChar("bleugame")
         chars["mask_crocko"] = PlayerMaskChar("crockomd")
@@ -39,14 +37,18 @@ object ActorCharEntrypoint {
         chars["mask_sam"] = PlayerMaskChar("samivarence")
         chars["mask_milkich"] = PlayerMaskChar("milkich22397")
         chars["mask_boberobo"] = PlayerMaskChar("boberobo7")
-        // Event 101
-        chars["event101"] = Event101Char()
         // Visible only for bleugame
         chars["rouge_eyes_bleugame"] = RougeEyesBleugame()
         // Masks invisible for target
         chars["copy_bleugame"] = InvisibleForOnePlayerMask("bleugame")
         chars["copy_crocko"] = InvisibleForOnePlayerMask("crockomd")
         chars["copy_sam"] = InvisibleForOnePlayerMask("samivarence")
+        chars["copy_milkich"] = InvisibleForOnePlayerMask("milkich22397")
+
+        // Other
+        chars["inv"] = InvChar()
+        chars["ghost"] = GhostChar()
+        chars["event101"] = Event101Char()
     }
 
     fun tick() {
@@ -74,8 +76,9 @@ object ActorCharEntrypoint {
 
     fun skin(client: String, entity: String): PlayerSkin? {
         val pr = prepare(client, entity)
-        val txt = getIdentifier(pr.char?.skin(pr.client) ?: return null)
-        val modelType = if (pr.client in SLIM_SKINS) PlayerModelType.SLIM else PlayerModelType.WIDE
+        val ch = pr.char ?: return null
+        val txt = getIdentifier(ch.skin(pr.client) ?: return null)
+        val modelType = ch.skinModel(pr.client)
         return PlayerSkin(ClientAsset.ResourceTexture(txt), null, null, modelType, true)
     }
     @JvmStatic

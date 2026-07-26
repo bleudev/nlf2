@@ -1,8 +1,11 @@
 package com.bleudev.nlf2.client.sys.actor.chars
 
+import net.minecraft.world.entity.player.PlayerModelType
+
 interface ActorChar {
     fun tick() {}
     fun skin(client: String): String? = null
+    fun skinModel(client: String): PlayerModelType = PlayerModelType.WIDE
     fun eyes(client: String): String = EMPTY_TEXTURE
     fun overlay(client: String): String = EMPTY_TEXTURE
 
