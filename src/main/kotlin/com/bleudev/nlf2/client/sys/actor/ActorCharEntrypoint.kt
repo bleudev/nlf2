@@ -38,6 +38,8 @@ object ActorCharEntrypoint {
         chars["mask_boberobo"] = MaskBoberobo7Char()
         // Event 101
         chars["event101"] = Event101Char()
+        // Visible only for bleugame
+        chars["rouge_eyes_bleugame"] = RougeEyesBleugame()
     }
 
     fun tick() {
