@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
@@ -50,6 +51,14 @@ object Nlf2Commands {
                         .literal("actorChar")
                         .then(Commands
                             .argument("actorChar", StringArgumentType.word())
+                            .suggests { _, builder ->
+                                for (name in ActorCharEntrypoint.getAllCharsNames()) {
+                                    if (name.startsWith(builder.remainingLowerCase)) {
+                                        builder.suggest(name)
+                                    }
+                                }
+                                builder.buildFuture()
+                            }
                             .executes { ctx ->
                                 val char = StringArgumentType.getString(ctx, "actorChar")
                                 ctx.source.server.nlf2data::loreData.transform {
@@ -74,13 +83,7 @@ object Nlf2Commands {
                     .literal("event")
                     .then(integer("id", 1)
                         .suggests { _, builder ->
-                            val eventId = builder.input.let {
-                                if (it.startsWith("/nlf2 event ", true))
-                                    return@let it.replaceFirst("/nlf2 event ", "", true)
-                                else return@let it
-                            }
-
-                            eventId.toIntOrNull()?.let {
+                            builder.remainingLowerCase.toIntOrNull()?.let {
                                 if (it in EventEntrypoint.names) {
                                     builder.suggest(EventEntrypoint.names[it]!!)
                                 }
@@ -101,13 +104,7 @@ object Nlf2Commands {
                     .literal("debug")
                     .then(integer("di", 1)
                         .suggests { _, builder ->
-                            val debugId = builder.input.let {
-                                if (it.startsWith("/nlf2 debug ", true))
-                                    return@let it.replaceFirst("/nlf2 debug ", "", true)
-                                else return@let it
-                            }
-
-                            debugId.toIntOrNull()?.let {
+                            builder.remainingLowerCase.toIntOrNull()?.let {
                                 if (it in DebugEntrypoint.names) {
                                     builder.suggest(DebugEntrypoint.names[it]!!)
                                 }

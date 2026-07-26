@@ -22,6 +22,8 @@ object ActorCharEntrypoint {
 
     private val chars: HashMap<String, ActorChar> = HashMap()
 
+    fun getAllCharsNames(): List<String> = chars.keys.toList()
+
     fun initialize() {
         // Vessel like
         chars["rouge"] = VesselLikeChar("rouge")
