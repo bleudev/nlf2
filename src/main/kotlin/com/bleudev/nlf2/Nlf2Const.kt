@@ -44,4 +44,4 @@ const val RAINBOW_HUE_TICKS = 100
 
 const val INTRO_ENABLED = false
 
-const val DEV_EVENT_101 = true
+const val DEV_EVENT_101 = false

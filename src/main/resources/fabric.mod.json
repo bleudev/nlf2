@@ -26,11 +26,12 @@
         "nlf2.mixins.json"
     ],
     "depends": {
+        "minecraft": "26.2",
         "fabricloader": ">=${loader_version}",
         "fabric-language-kotlin": ">=${kotlin_loader_version}",
+        "nine_lifes": "${nl_version}",
         "fabric-api": ">=${fabric_version}",
         "modmenu": ">=${modmenu_version}",
-        "nine_lifes": "${nl_version}",
-        "minecraft": "26.2"
+        "voicechat": ">=${voice_chat_version}"
     }
 }

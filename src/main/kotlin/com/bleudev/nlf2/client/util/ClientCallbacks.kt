@@ -30,6 +30,7 @@ val canOpenChat: Boolean get() {
 
 fun renderHitboxes(entity: Entity): Boolean =
     !(entity is Player && dataSyncedActor.equals(entity.gameProfile.name, true))
+fun renderPlayerInVoiceChat(name: String): Boolean = !name.equals(dataSyncedActor, true)
 
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME
 fun isEvent101Char(nickname: String): Boolean = nickname.equals(CURRENT_EVENT101_NICKNAME, true)

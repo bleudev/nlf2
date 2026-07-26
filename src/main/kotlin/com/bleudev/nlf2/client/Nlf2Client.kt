@@ -22,6 +22,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.util.normalize
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -211,17 +212,24 @@ class Nlf2Client : ClientModInitializer {
         }
 
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
+            val oldActor = dataSyncedActor
             dataSyncedActor = payload.actor
+            if (oldActor != dataSyncedActor)
+                AdjustVolumeList.update()
+
             dataSyncedActorLoreChar = payload.actorChar
             dataSyncedBorderState = payload.borderState
+
             val oldMeetState = dataSyncedMeetState
             dataSyncedMeetState = payload.meetState
             if (oldMeetState != dataSyncedMeetState && oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
                 beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
+
             val oldLabOverlayState = dataSyncedLabOverlayState
             dataSyncedLabOverlayState = payload.labOverlayState
             if (oldLabOverlayState != dataSyncedLabOverlayState && oldLabOverlayState != -1)
                 labOverlayTransTicks = LAB_OVERLAY_TRANS_DURATION
+
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
             dataSyncedCompassCrazy = payload.compassCrazy

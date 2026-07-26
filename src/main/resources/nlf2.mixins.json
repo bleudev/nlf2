@@ -43,7 +43,8 @@
     "client.TitleScreenMixin",
     "client.accessor.KeyBindsList$KeyEntryAccessor",
     "client.impl.KeyBindsList$CategoryEntryMixin",
-    "client.nine_lifes.NineLifesClientStorageMixin"
+    "client.nine_lifes.NineLifesClientStorageMixin",
+    "client.voicechat.AdjustVolumeListMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -49,11 +49,12 @@ dependencies {
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
+    implementation("maven.modrinth:nine_lifes:${project.property("nl_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
     implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
     implementation("maven.modrinth:xaeros-world-map:${project.property("xaeros_world_map_version")}")
-    implementation("maven.modrinth:nine_lifes:${project.property("nl_version")}")
+    implementation("maven.modrinth:simple-voice-chat:fabric-${project.property("voice_chat_version")}")
 
     include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)
     include(implementation("com.nativelibs4java:bridj:0.7.0")!!)
@@ -63,9 +64,11 @@ tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("minecraft_version", project.property("minecraft_version"))
     inputs.property("loader_version", project.property("loader_version"))
+    inputs.property("kotlin_loader_version", project.property("kotlin_loader_version"))
+    inputs.property("nl_version", project.property("nl_version"))
     inputs.property("fabric_version", project.property("fabric_version"))
     inputs.property("modmenu_version", project.property("modmenu_version"))
-    inputs.property("nl_version", project.property("nl_version"))
+    inputs.property("voice_chat_version", project.property("voice_chat_version"))
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
@@ -74,9 +77,10 @@ tasks.processResources {
             "minecraft_version" to project.property("minecraft_version")!!,
             "loader_version" to project.property("loader_version")!!,
             "kotlin_loader_version" to project.property("kotlin_loader_version")!!,
+            "nl_version" to project.property("nl_version")!!,
             "fabric_version" to project.property("fabric_version")!!,
             "modmenu_version" to project.property("modmenu_version")!!,
-            "nl_version" to project.property("nl_version")!!,
+            "voice_chat_version" to project.property("voice_chat_version")!!,
         )
     }
 }
