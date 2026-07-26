@@ -5,6 +5,8 @@ import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.dataSyncedEvent101
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
+import com.bleudev.nlf2.client.sys.actor.chars.InvisibleForOnePlayerMask
+import com.bleudev.nlf2.client.sys.actor.chars.PlayerMaskChar
 import com.bleudev.nlf2.client.sys.actor.chars.res.*
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.getIdentifier
@@ -31,15 +33,19 @@ object ActorCharEntrypoint {
         chars["vert_eyes"] = VertEyesChar()
         chars["inv"] = InvChar()
         // Mask
-        chars["mask_bleugame"] = MaskBleugameChar()
-        chars["mask_crocko"] = MaskCrockoMDChar()
-        chars["mask_waflla"] = MaskWafllaKekChar()
-        chars["mask_sam"] = MaskSamivarenceChar()
-        chars["mask_boberobo"] = MaskBoberobo7Char()
+        chars["mask_bleugame"] = PlayerMaskChar("bleugame")
+        chars["mask_crocko"] = PlayerMaskChar("crockomd")
+        chars["mask_waflla"] = PlayerMaskChar("waflla_kek")
+        chars["mask_sam"] = PlayerMaskChar("samivarence")
+        chars["mask_boberobo"] = PlayerMaskChar("boberobo7")
         // Event 101
         chars["event101"] = Event101Char()
         // Visible only for bleugame
         chars["rouge_eyes_bleugame"] = RougeEyesBleugame()
+        // Masks invisible for target
+        chars["copy_bleugame"] = InvisibleForOnePlayerMask("bleugame")
+        chars["copy_crocko"] = InvisibleForOnePlayerMask("crockomd")
+        chars["copy_sam"] = InvisibleForOnePlayerMask("samivarence")
     }
 
     fun tick() {
