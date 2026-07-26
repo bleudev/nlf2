@@ -37,6 +37,7 @@ object ActorCharEntrypoint {
         chars["mask_crocko"] = PlayerMaskChar("crockomd")
         chars["mask_waflla"] = PlayerMaskChar("waflla_kek")
         chars["mask_sam"] = PlayerMaskChar("samivarence")
+        chars["mask_milkich"] = PlayerMaskChar("milkich22397")
         chars["mask_boberobo"] = PlayerMaskChar("boberobo7")
         // Event 101
         chars["event101"] = Event101Char()

@@ -11,7 +11,12 @@ val MOD_BORDER_LOSE_HEARTS = createIdentifier("border_lose_hearts_modify")
 
 // Other
 @JvmField
-val SUPPORTED_NICKNAMES = listOf("bleugame", "crockomd", "samivarence")
+val SUPPORTED_NICKNAMES = listOf(
+    "bleugame",
+    "crockomd",
+    "samivarence",
+    "milkich22397",
+)
 val TELEPORT_LOCATIONS = mapOf(
     "bleugame" to Vec3(587.0, 65.0, 706.0),
     "crockomd" to Vec3(601.0, 65.0, 818.0),
