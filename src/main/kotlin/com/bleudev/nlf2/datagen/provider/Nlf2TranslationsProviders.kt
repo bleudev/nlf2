@@ -15,6 +15,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
         builder.add(Nlf2Items.MANUAL, "Manual")
         builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Strange jukebox")
+        builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Amethyst oxeye daisy")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds
@@ -37,6 +38,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
         builder.add(Nlf2Items.MANUAL, "Руководство")
         builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Странный проигрыватель")
+        builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Аметистовая ромашка")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Sounds

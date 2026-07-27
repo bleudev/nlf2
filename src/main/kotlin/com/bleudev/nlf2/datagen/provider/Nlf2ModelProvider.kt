@@ -12,6 +12,7 @@ import net.minecraft.client.data.models.model.TexturedModel
 class Nlf2ModelProvider(packOutput: FabricPackOutput) : FabricModelProvider(packOutput) {
     override fun generateBlockStateModels(blockModelGenerators: BlockModelGenerators) {
         blockModelGenerators.createTrivialBlock(Nlf2Blocks.STRANGE_JUKEBOX, TexturedModel.CUBE_TOP)
+        blockModelGenerators.createCrossBlockWithDefaultItem(Nlf2Blocks.AMETHYST_OXEYE_DAISY, BlockModelGenerators.PlantType.NOT_TINTED)
     }
 
     override fun generateItemModels(generator: ItemModelGenerators) {

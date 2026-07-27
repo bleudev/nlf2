@@ -11,5 +11,6 @@ class Nlf2BlockLootTableProvider(
 ) : FabricBlockLootSubProvider(dataOutput, registryLookup) {
     override fun generate() {
         dropSelf(Nlf2Blocks.STRANGE_JUKEBOX)
+        dropSelf(Nlf2Blocks.AMETHYST_OXEYE_DAISY)
     }
 }

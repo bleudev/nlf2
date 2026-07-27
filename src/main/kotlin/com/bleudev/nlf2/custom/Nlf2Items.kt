@@ -14,9 +14,10 @@ object Nlf2Items {
             icon { ItemStack(WD_PUZZLE) }
             .title(Component.translatable("creativeModeTab.nlf2.general"))
             .displayItems { _, output ->
-                output.accept(WD_PUZZLE, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY)
-                output.accept(MANUAL, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY)
-                output.accept(Nlf2Blocks.STRANGE_JUKEBOX, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY)
+                output.accept(WD_PUZZLE, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
+                output.accept(MANUAL, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
+                output.accept(Nlf2Blocks.STRANGE_JUKEBOX, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
+                output.accept(Nlf2Blocks.AMETHYST_OXEYE_DAISY, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
             }
         }
 
