@@ -15,7 +15,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
 import net.minecraft.util.ARGB
 import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec3
 import kotlin.reflect.KMutableProperty
 
 fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) {
@@ -25,6 +28,11 @@ fun ServerPlayer.hurtServer(source: (Level) -> DamageSource, damage: Float) = le
     hurtServer(it, source(it), damage)
 }
 fun ServerPlayer.hurtUnknown(damage: Float) = hurtServer(NineLifesDamageTypes::unknown, damage)
+
+fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> DamageSource, explosionInteraction: Level.ExplosionInteraction, source: Entity? = null, fire: Boolean = true) = explode(
+    source, damageSourceSupplier(this), ExplosionDamageCalculator(),
+    pos.x, pos.y, pos.z, strength, fire, explosionInteraction
+)
 
 fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPacketPayload>) {
     for (player in this.playerList.players) player.sendPackets(*generator(player))
