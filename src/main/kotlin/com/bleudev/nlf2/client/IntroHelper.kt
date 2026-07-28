@@ -28,7 +28,7 @@ object IntroHelper {
         // Ticker
         val t = TICKER_INTRO.tick()
         // Connect to server
-        if (t == 400L) {
+        if (t >= 400L) {
             val mc = Minecraft.getInstance()
             join_blackness_delay_ticks = 10
             join_blackness = 1f

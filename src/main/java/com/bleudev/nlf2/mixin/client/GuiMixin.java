@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.InBedChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
@@ -43,7 +44,7 @@ public abstract class GuiMixin {
         } else if (screen.getTitle().equals(Component.translatable("gui.xaero_world_map_screen"))) { // Block Xaero's world map
             if (isHoldingCompass()) return;
             ci.cancel();
-        } else if (screen instanceof ChatScreen) { // Block chat opening
+        } else if (screen instanceof ChatScreen && !(screen instanceof InBedChatScreen)) { // Block chat opening
             if (getCanOpenChat()) return;
             ci.cancel();
         }

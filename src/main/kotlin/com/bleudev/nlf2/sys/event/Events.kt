@@ -89,7 +89,7 @@ open class FI_MeetStateChange(server: MinecraftServer, val meetState: Int, name:
 
 class MeetBeforeCrocko(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_crocko")
 class MeetAfterCrocko(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_crocko")
-class MeetBeforeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 2, "meet_before_sam") {
+class MeetBeforeSam(server: MinecraftServer) : FI_MeetStateChange(server, 2, "meet_before_sam") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
@@ -98,7 +98,7 @@ class MeetBeforeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 2, 
         }
     }
 }
-class MeetAfterWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 3, "meet_after_sam")
+class MeetAfterSam(server: MinecraftServer) : FI_MeetStateChange(server, 3, "meet_after_sam")
 class MeetBeforeMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_milkich") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)

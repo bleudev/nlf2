@@ -18,19 +18,19 @@ import static com.bleudev.nlf2.client.ClientStorageKt.canUseMouse;
 @Mixin(MouseHandler.class)
 public class MouseHandlerMixin {
     @Inject(method = "onMove", at = @At("HEAD"), cancellable = true)
-    private void cancelMove(long l, double d, double e, CallbackInfo ci) {
+    private void cancelMove(long handle, double xpos, double ypos, CallbackInfo ci) {
         if (!canUseMouse) ci.cancel();
     }
     @Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
-    private void cancelScroll(long l, double d, double e, CallbackInfo ci) {
+    private void cancelScroll(long handle, double xoffset, double yoffset, CallbackInfo ci) {
         if (!canUseMouse) ci.cancel();
     }
     @Inject(method = "onButton", at = @At("HEAD"), cancellable = true)
-    private void cancelButton(long l, MouseButtonInfo mouseButtonInfo, int i, CallbackInfo ci) {
+    private void cancelButton(long handle, MouseButtonInfo rawButtonInfo, int action, CallbackInfo ci) {
         if (!canUseMouse) ci.cancel();
     }
     @Inject(method = "onDrop", at = @At("HEAD"), cancellable = true)
-    private void cancelDrop(long l, List<Path> list, int i, CallbackInfo ci) {
+    private void cancelDrop(long handle, List<Path> files, int failedCount, CallbackInfo ci) {
         if (!canUseMouse) ci.cancel();
     }
 }

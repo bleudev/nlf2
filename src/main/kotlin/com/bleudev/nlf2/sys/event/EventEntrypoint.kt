@@ -27,8 +27,8 @@ object EventEntrypoint {
         // Meets
         add(80, ::MeetBeforeCrocko)
         add(81, ::MeetAfterCrocko)
-        add(82, ::MeetBeforeWaflla)
-        add(83, ::MeetAfterWaflla)
+        add(82, ::MeetBeforeSam)
+        add(83, ::MeetAfterSam)
         add(84, ::MeetBeforeMilkich)
         add(85, ::MeetAfterMilkich)
         // Manual updating

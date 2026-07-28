@@ -30,6 +30,7 @@
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
     "client.HumanoidRenderStateMixin",
+    "client.InBedChatScreenMixin",
     "client.KeyboardHandlerMixin",
     "client.LevelLoadingScreenMixin",
     "client.LoadingOverlayMixin",
