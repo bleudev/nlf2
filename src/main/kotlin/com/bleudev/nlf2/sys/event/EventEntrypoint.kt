@@ -24,13 +24,18 @@ object EventEntrypoint {
         add(66, ::RedAppearsSpectacularly)
         add(67, ::RedDisappearsSpectacularly)
         add(68, ::ForcePickManual)
+        // Meets
         add(80, ::MeetBeforeCrocko)
         add(81, ::MeetAfterCrocko)
         add(82, ::MeetBeforeWaflla)
         add(83, ::MeetAfterWaflla)
+        add(84, ::MeetBeforeMilkich)
+        add(85, ::MeetAfterMilkich)
+        // Manual updating
         add(92, ::Manual0)
         add(93, ::Manual1)
         add(94, ::Manual2)
+
         add(101, ::OrangeSkinOverlayRemove)
         add(140, ::LabOverlay0)
         add(141, ::LabOverlay1)
@@ -39,6 +44,7 @@ object EventEntrypoint {
         add(201, ::CompassCrazyTrue)
         add(300, ::MobAvoidPlayersFalse)
         add(301, ::MobAvoidPlayersTrue)
+        // Force jukebox
         add(340, ::ForceJukeboxNull)
         add(341, ::ForceJukeboxStrangeNoise)
         add(342, ::ForceJukeboxMilkichAppears)

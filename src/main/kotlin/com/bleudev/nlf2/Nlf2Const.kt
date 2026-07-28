@@ -1,13 +1,12 @@
 package com.bleudev.nlf2
 
-import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.world.phys.Vec3
 
 const val SERVER_ADDRESS: String = "pink.fnode.me:19164"
 
 // Identifiers
 /// Modificators
-val MOD_BORDER_LOSE_HEARTS = createIdentifier("border_lose_hearts_modify")
+val MOD_BORDER_LOSE_HEARTS = getIdentifier("border_lose_hearts_modify")
 
 // Other
 @JvmField
