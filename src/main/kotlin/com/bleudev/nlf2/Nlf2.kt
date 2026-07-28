@@ -14,6 +14,7 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
+import com.bleudev.nlf2.custom.world.Nlf2MobEffects
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.actor
@@ -21,6 +22,7 @@ import com.bleudev.nlf2.util.hurtUnknown
 import com.bleudev.nlf2.util.isActor
 import com.bleudev.nlf2.util.sendToEveryone
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -32,6 +34,7 @@ import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
@@ -90,6 +93,7 @@ class Nlf2 : ModInitializer {
         Nlf2Packets.initialize()
         Nlf2Blocks.initialize()
         Nlf2BlockEntities.initialize()
+        Nlf2MobEffects.initialize()
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
         ServerLifecycleEvents.SERVER_STARTED.register {
@@ -137,6 +141,9 @@ class Nlf2 : ModInitializer {
             }
             // Events
             EventEntrypoint.tick()
+        }
+        EntityElytraEvents.CUSTOM.register { entity, _ ->
+            entity is Player && entity.hasEffect(Nlf2MobEffects.GLIDING)
         }
 
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->

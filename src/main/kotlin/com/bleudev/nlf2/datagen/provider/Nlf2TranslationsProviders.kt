@@ -2,6 +2,7 @@ package com.bleudev.nlf2.datagen.provider
 
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
+import com.bleudev.nlf2.custom.world.Nlf2MobEffects
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
@@ -18,6 +19,8 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Amethyst oxeye daisy")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
+        // Mob effects
+        builder.add(Nlf2MobEffects.GLIDING.value(), "Gliding")
         // Sounds
         builder.add("sound.nlf2.broke", "Broke")
         builder.add("sound.nlf2.laugh", "Strange laugh")
@@ -41,6 +44,8 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Аметистовая ромашка")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
+        // Mob effects
+        builder.add(Nlf2MobEffects.GLIDING.value(), "Планирование")
         // Sounds
         builder.add("sound.nlf2.broke", "Удар")
         builder.add("sound.nlf2.laugh", "Странный смех")

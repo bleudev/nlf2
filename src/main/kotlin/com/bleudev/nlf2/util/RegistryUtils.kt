@@ -3,11 +3,13 @@ package com.bleudev.nlf2.util
 import com.bleudev.nlf2.getIdentifier
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
+import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.sounds.SoundEvent
+import net.minecraft.world.effect.MobEffect
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
@@ -27,12 +29,12 @@ fun registerCreativeModeTab(name: String, builderTransformer: CreativeModeTab.Bu
     BuiltInRegistries.CREATIVE_MODE_TAB.register(name, builderTransformer(FabricCreativeModeTab.builder()).build())
 fun <T : Item> registerItem(name: String, itemFactory: (Item.Properties) -> T, properties: Item.Properties = Item.Properties()): T = BuiltInRegistries.ITEM
     .register(name, itemFactory(properties.setId(Registries.ITEM.resourceKey(name))))
-fun registerBlock(
+fun <T : Block> registerBlock(
     name: String,
-    blockFactory: (BlockBehaviour.Properties) -> Block,
+    blockFactory: (BlockBehaviour.Properties) -> T,
     properties: BlockBehaviour.Properties,
     shouldRegisterItem: Boolean
-): Block {
+): T {
     val blockKey = Registries.BLOCK.resourceKey(name)
     val block = blockFactory(properties.setId(blockKey))
     if (shouldRegisterItem) {
@@ -48,6 +50,8 @@ fun <T : BlockEntity> registerBlockEntity(
     BuiltInRegistries.BLOCK_ENTITY_TYPE, getIdentifier(name),
     FabricBlockEntityTypeBuilder.create(entityFactory, *blocks).build()
 )
+internal fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
+    Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, getIdentifier(name), effect)
 // Client
 fun registerSound(name: String, range: Float? = null): SoundEvent = BuiltInRegistries.SOUND_EVENT
     .register(name, SoundEvent(getIdentifier(name), Optional.ofNullable(range)))
