@@ -130,8 +130,9 @@ class Nlf2 : ModInitializer {
             // Manuals
             fun shouldUpdate(item: Item): Boolean =
                 server.playerList.players.any { player -> !player.isActor && player.inventory.any { (!it.isEmpty) && it.`is`(item) } }
-            if (shouldUpdate(Items.DEBUG_STICK) && server.nlf2data.loreData.manualId == 0) causeEvent(93)
-            if (shouldUpdate(NineLifesItems.AMETHYST_STICK) && server.nlf2data.loreData.manualId == 1) causeEvent(94)
+            if (server.nlf2data.loreData.manualId < 1 && shouldUpdate(Items.DEBUG_STICK)) causeEvent(93)
+            if (server.nlf2data.loreData.manualId < 2 && shouldUpdate(NineLifesItems.AMETHYST_STICK)) causeEvent(94)
+            if (server.nlf2data.loreData.manualId < 3 && shouldUpdate(Nlf2Blocks.AMETHYST_OXEYE_DAISY.asItem())) causeEvent(95)
 
             server.playerList.players.forEach {
                 val wpm = it.level().waypointManager

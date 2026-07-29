@@ -125,8 +125,7 @@ open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: Str
             it.manualId = manualId
             it
         }
-        if (manualId == 0) return
-        for (player in server.playerList.players) {
+        if (manualId > 0) for (player in server.playerList.players) {
             player.sendPacket(ManualUpdateEffect(player.inventory.any { it.`is`(Nlf2Items.MANUAL) }))
         }
     }
@@ -135,6 +134,7 @@ open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: Str
 class Manual0(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.DEFAULT.id, "manual_0_reset")
 class Manual1(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_DEBUG_STICK.id, "manual_1_internal")
 class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_STICK.id, "manual_2_internal")
+class Manual3(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_OXEYE_DAISY.id, "manual_3_internal")
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
