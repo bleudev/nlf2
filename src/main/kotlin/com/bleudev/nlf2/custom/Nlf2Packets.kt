@@ -9,6 +9,7 @@ import com.bleudev.nlf2.util.register
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 
 object Nlf2Packets {
+    val BEFORE_MEET_WATER_FLUID = getIdentifier("packet/before_meet_water_fluid")
     val CLIENT_NLF2_DATA_SYNC = getIdentifier("packet/client_nlf2_data_sync")
     val DISTANCE_UPDATE = getIdentifier("packet/distance_update")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
@@ -32,6 +33,7 @@ object Nlf2Packets {
         // Client bound
         val s2c = PayloadTypeRegistry.clientboundPlay()
         // Normal
+        s2c.register(BeforeMeetWaterFluid)
         s2c.register(ClientNlf2DataSync)
         s2c.register(DistanceUpdate)
         s2c.register(JoinDisconnectVersion)

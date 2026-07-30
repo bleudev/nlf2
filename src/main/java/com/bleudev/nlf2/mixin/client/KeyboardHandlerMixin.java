@@ -9,13 +9,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.canUseKeyboard;
+import static com.bleudev.nlf2.client.util.ClientCallbacksKt.getCanUseKeyboard;
 
 @Environment(EnvType.CLIENT)
 @Mixin(KeyboardHandler.class)
 public class KeyboardHandlerMixin {
     @Inject(method = "keyPress", at = @At("HEAD"), cancellable = true)
     private void cancelKeyPress(final long handle, final @KeyEvent.Action int action, final KeyEvent event, CallbackInfo ci) {
-        if (!canUseKeyboard) ci.cancel();
+        if (!getCanUseKeyboard()) ci.cancel();
     }
 }

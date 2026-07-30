@@ -5,9 +5,7 @@ package com.bleudev.nlf2.client
 import com.bleudev.nlf2.INTRO_ENABLED
 import com.bleudev.nlf2.SERVER_ADDRESS
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
-import com.bleudev.nlf2.client.util.Animation
-import com.bleudev.nlf2.client.util.TICKER_INTRO
-import com.bleudev.nlf2.client.util.blitAnim
+import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment

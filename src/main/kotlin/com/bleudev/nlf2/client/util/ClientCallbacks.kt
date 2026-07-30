@@ -35,3 +35,17 @@ fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME
 fun isEvent101Char(nickname: String): Boolean = nickname.equals(CURRENT_EVENT101_NICKNAME, true)
 fun isEvent101Char(): Boolean = isEvent101Char(Minecraft.getInstance().gameProfile.name)
+
+
+private val event85var: Boolean get() =
+    beforeMeetWaterFluidAmount < 1f || Minecraft.getInstance().player?.let { it.isDeadOrDying || !(it.gameMode()?.isSurvival ?: false) } ?: true
+var canUseMouse: Boolean = true
+    get() = listOf(
+        event85var,
+        field
+    ).all{it}
+var canUseKeyboard: Boolean = true
+    get() = listOf(
+        event85var,
+        field
+    ).all{it}

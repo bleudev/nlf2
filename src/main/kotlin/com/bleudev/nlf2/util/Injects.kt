@@ -53,7 +53,7 @@ val ServerPlayer.isActor: Boolean
 
 // Color
 fun Int.normalize(rgbTarget: Int = 0) =
-    if (ARGB.alphaFloat(this) >= 1f) this else ARGB.srgbLerp(ARGB.alphaFloat(this), ARGB.black(1f), this)
+    if (ARGB.alphaFloat(this) >= 1f) this else ARGB.srgbLerp(ARGB.alphaFloat(this), ARGB.color(1f, rgbTarget), this)
 
 // Lang
 fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {

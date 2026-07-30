@@ -18,10 +18,6 @@ import java.nio.file.Path
 import kotlin.math.max
 
 @JvmField
-var canUseMouse: Boolean = true
-@JvmField
-var canUseKeyboard: Boolean = true
-@JvmField
 var webcamEnabled: Boolean = false
 
 // Join blackness
@@ -55,7 +51,10 @@ var deathScreenBlackFogEffect: Boolean = false
 @JvmField
 var borderLagTicks: Int = 0
 val blackFogEffect: Float get() = borderBlackFog.onlyIf(dataSyncedBorderState == 2)
-val cloudAlphaDelta: Float get() = borderBlackFog.onlyIf(dataSyncedBorderState == 2).reverseDelta()
+val cloudAlphaDelta: Float get() = listOf(
+    borderBlackFog.onlyIf(dataSyncedBorderState == 2).reverseDelta(),
+    beforeMeetWaterFluidAmount.reverseDelta()
+).min()
 // Pause screen cutscene
 @JvmField
 var pause_screen_red_screen_effect: Boolean = false
@@ -77,6 +76,10 @@ val skyColorEffectAmount: Float get() = (if (skyColorEffectTicks <= skyColorEffe
     skyColorEffectTicks.toFloat() / skyColorEffectStartDuration
     else 1f - ((skyColorEffectTicks - skyColorEffectStartDuration).toFloat() / skyColorEffectEndDuration))
     .onlyIf(skyColorEffectTicks >= 0)
+// Before meet water fluid effect
+var beforeMeetWaterFluidIn: Boolean = false
+var beforeMeetWaterFluidTicks: Int = 0
+val beforeMeetWaterFluidAmount: Float get() = beforeMeetWaterFluidTicks.toFloat() / BEFORE_MEET_WATER_FLUID_TICKS
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -108,6 +111,7 @@ val shaderRedMajUniformStrength: Float get() = listOf(
     join_blackness,
     manualUpdateEffectAmount.onlyIf(manualUpdateOwner),
     event101_noise_amount,
+    beforeMeetWaterFluidAmount,
 ).max()
 var shaderAnaglyphUniformX: Float = 0f
     get() = listOf(

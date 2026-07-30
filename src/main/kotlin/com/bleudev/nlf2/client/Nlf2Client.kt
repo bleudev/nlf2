@@ -57,12 +57,18 @@ class Nlf2Client : ClientModInitializer {
             if (skyColorEffectTicks <= 0f) return@register current
             ARGB.srgbLerp(skyColorEffectAmount, current, skyColorEffectColor.normalize())
         }
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            ARGB.srgbLerp(beforeMeetWaterFluidAmount, current, 0xff000000.toInt())
+        }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
         }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             if (skyColorEffectAmount <= 0f) return@register current
             current.lerp(ARGB.vector4fFromARGB32(skyColorEffectColor.normalize()), skyColorEffectAmount)
+        }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(Vector4f(0f, 0f, 0f, 1f), beforeMeetWaterFluidAmount)
         }
         ClientEnvironmentSetupEvents.FOG_START.register { original, current ->
             Mth.lerp(blackFogEffect, current, original * .03f)
@@ -124,6 +130,9 @@ class Nlf2Client : ClientModInitializer {
             if (labOverlayTransTicks > 0) labOverlayTransTicks--
             if (skyColorEffectTicks in 0..skyColorEffectStartDuration + skyColorEffectEndDuration) skyColorEffectTicks++
             if (skyColorEffectTicks == skyColorEffectStartDuration + skyColorEffectEndDuration) skyColorEffectTicks = -1
+            if (beforeMeetWaterFluidIn) {
+                if (beforeMeetWaterFluidTicks < BEFORE_MEET_WATER_FLUID_TICKS) beforeMeetWaterFluidTicks++
+            } else if (beforeMeetWaterFluidTicks > 0) beforeMeetWaterFluidTicks--
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
@@ -212,6 +221,10 @@ class Nlf2Client : ClientModInitializer {
             }
         }
 
+        // Packets
+        registerPacketReceiver(BeforeMeetWaterFluid) { payload ->
+            beforeMeetWaterFluidIn = payload.isIn
+        }
         registerPacketReceiver(ClientNlf2DataSync) { payload ->
             val oldActor = dataSyncedActor
             dataSyncedActor = payload.actor

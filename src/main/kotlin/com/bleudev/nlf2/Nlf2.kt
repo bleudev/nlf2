@@ -8,6 +8,7 @@ import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.packet.payload.BeforeMeetWaterFluid
 import com.bleudev.nlf2.custom.packet.payload.DistanceUpdate
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -106,6 +107,11 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            server.playerList.getPlayer(EVENT85_NICKNAME)?.run {
+                sendPacket(BeforeMeetWaterFluid(
+                    server.nlf2data.loreData.meetState % 2 == 0 && isInWater
+                ))
+            }
             server.sendToEveryone { player ->
                 var ev101d = 999f
                 if (!server.nlf2data.loreData.event101) {

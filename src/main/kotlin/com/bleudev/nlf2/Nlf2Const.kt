@@ -1,5 +1,6 @@
 package com.bleudev.nlf2
 
+import net.minecraft.client.Minecraft
 import net.minecraft.world.phys.Vec3
 
 const val SERVER_ADDRESS: String = "pink.fnode.me:19164"
@@ -27,6 +28,7 @@ val TELEPORT_LOCATIONS = mapOf(
     "samivarence" to Vec3(564.0, 70.0, 575.0),
 )
 const val EVENT101_NICKNAME = "Samivarence"
+val EVENT85_NICKNAME get() = Minecraft.getInstance().gameProfile.name
 
 const val BORDER_LOSE_HEARTS_BEFORE_DURATION = 200
 const val BORDER_LOSE_HEARTS_AFTER_DURATION = 80
@@ -50,6 +52,8 @@ const val EVENT101_SCREEN_EFFECT_CLEAR_DURATION = 40
 
 const val RAINBOW_START_TICKS = 60
 const val RAINBOW_HUE_TICKS = 100
+
+const val BEFORE_MEET_WATER_FLUID_TICKS = 60
 
 const val INTRO_ENABLED = false
 
