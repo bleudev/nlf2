@@ -3,6 +3,7 @@ package com.bleudev.nlf2
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.BorderStates
@@ -94,6 +95,7 @@ class Nlf2 : ModInitializer {
         Nlf2Blocks.initialize()
         Nlf2BlockEntities.initialize()
         Nlf2MobEffects.initialize()
+        ActorCharEntrypoint.initialize()
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
         ServerLifecycleEvents.SERVER_STARTED.register {

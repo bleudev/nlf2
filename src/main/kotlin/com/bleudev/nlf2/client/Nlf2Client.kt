@@ -10,6 +10,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
@@ -113,7 +114,7 @@ class Nlf2Client : ClientModInitializer {
             tryHideMod()
             pause_screen_ticks++
             noise_tick++
-            ActorCharEntrypoint.tick()
+            ActorCharEntrypointClient.tick()
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++

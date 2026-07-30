@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.mixin.client;
 
 import com.bleudev.nlf2.client.custom.renderer.entity.layers.AvatarOverlayLayer;
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint;
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient;
 import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.current;
+import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AvatarRenderer.class)
@@ -33,8 +33,8 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void addOverlayLayers(EntityRendererProvider.Context context, boolean slimSteve, CallbackInfo ci) {
-        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::overlay));
-        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypoint::eyes));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypointClient::overlay));
+        this.addLayer(new AvatarOverlayLayer(this, ActorCharEntrypointClient::eyes));
     }
 
     @ModifyReturnValue(method = "shouldShowName*", at = @At("RETURN"))
