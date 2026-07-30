@@ -1,13 +1,12 @@
 package com.bleudev.nlf2.custom.data.saved
 
+import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
 import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.getIdentifier
-import com.bleudev.nlf2.util.sendPackets
-import com.bleudev.nlf2.util.sendToEveryone
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.server.MinecraftServer
@@ -18,23 +17,38 @@ import net.minecraft.world.level.saveddata.SavedDataType
 
 
 class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
+    private fun ServerPlayer.sync() {
+        sendPacket(ClientNlf2DataSync(
+            loreData.actor,
+            loreData.actorChar,
+            loreData.borderState,
+            loreData.meetState,
+            loreData.labOverlayState,
+            loreData.event101,
+            loreData.manualId,
+            loreData.compassCrazy,
+            getPlayerData(gameProfile.name)?.simulateNickname ?: "self",
+        ))
+    }
+    private fun MinecraftServer.sync() { for (i in playerList.players) i.sync() }
+
     var loreData: LoreData = loreData
         set(value) {
             value.actor = value.actor.lowercase()
             field = value
             setDirty()
-            if (serverToSync != null) serverToSync!!.sendToEveryone {
-                arrayOf(ClientNlf2DataSync(value.actor, value.actorChar, value.borderState, value.meetState, value.labOverlayState, value.event101, value.manualId, value.compassCrazy))
-            }
+            serverToSync?.sync()
         }
 
     private val players: ArrayList<PlayerData> = ArrayList(playersData)
     fun getPlayers(): List<PlayerData> = players.toList()
+    fun getPlayerData(nickname: String): PlayerData? = players.toList().firstOrNull { it.name == nickname }
     fun setPlayerData(data: PlayerData) {
         val index = players.indexOfFirst { it.name == data.name }
         if (index == -1) players.add(data)
         else players[index] = data
         setDirty()
+        serverToSync?.sync()
     }
     fun changePlayerData(name: String, changer: (PlayerData) -> PlayerData) =
         setPlayerData((getPlayers().find { it.name == name }?: PlayerData(name)).let(changer))
@@ -43,8 +57,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         causeEvent(34)
         val name = player.gameProfile.name
         if (players.none { it.name == name }) players.add(PlayerData(name))
-
-        player.sendPackets(ClientNlf2DataSync(loreData.actor, loreData.actorChar, loreData.borderState, loreData.meetState, loreData.labOverlayState, loreData.event101, loreData.manualId, loreData.compassCrazy))
+        player.sync()
     }
 
     class LoreData(
@@ -74,11 +87,12 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         }
     }
 
-    class PlayerData(var name: String, var teleported: Boolean = false, var curse: Float = 0f) {
+    class PlayerData(var name: String, var teleported: Boolean = false, var simulateNickname: String = "self", var curse: Float = 0f) {
         companion object {
             val CODEC: Codec<PlayerData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
                 Codec.BOOL.fieldOf("teleported").forGetter(PlayerData::teleported),
+                Codec.STRING.fieldOf("simulate").forGetter(PlayerData::simulateNickname),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
             ).apply(it, ::PlayerData)
             }

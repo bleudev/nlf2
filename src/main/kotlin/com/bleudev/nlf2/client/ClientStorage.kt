@@ -253,4 +253,6 @@ var dataSyncedManualId: Int = 0
 @JvmField
 var dataSyncedCompassCrazy: Boolean = false
 @JvmField
+var dataSyncedSimulateNickname: String = "self"
+@JvmField
 var dataFogEventStateSyncTicks: Int = -1

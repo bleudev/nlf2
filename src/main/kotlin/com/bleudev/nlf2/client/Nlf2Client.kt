@@ -236,6 +236,7 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedEvent101 = payload.event101
             dataSyncedManualId = payload.manualId
             dataSyncedCompassCrazy = payload.compassCrazy
+            dataSyncedSimulateNickname = payload.simulateNickname
 
             TIMER_MASK.reset()
         }

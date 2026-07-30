@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
@@ -120,7 +121,30 @@ object Nlf2Commands {
                                 ctx.source.sendFailure(Component.literal("Unknown debug id"))
                                 return@executes -1
                             }
-                        })))
+                        })
+                    .then(Commands
+                        .literal("simulate")
+                        .then(Commands
+                            .argument("player", EntityArgument.player())
+                            .then(Commands
+                                .argument("nickname", StringArgumentType.word())
+                                .suggests { _, builder ->
+                                    for (i in SUPPORTED_NICKNAMES) {
+                                        builder.suggest(i)
+                                    }
+                                    builder.suggest("reset")
+                                    builder.buildFuture()
+                                }
+                                .executes { ctx ->
+                                    val player = EntityArgument.getPlayer(ctx, "player")
+                                    var nickname = StringArgumentType.getString(ctx, "nickname")
+                                    if (nickname == "reset") nickname = "self"
+                                    ctx.source.server.nlf2data.changePlayerData(player.gameProfile.name) {
+                                        it.simulateNickname = nickname
+                                        it
+                                    }
+                                    ctx.source.sendSuccess(Component.literal("Simulation successfully triggered"))
+                                })))))
         }
     }
 

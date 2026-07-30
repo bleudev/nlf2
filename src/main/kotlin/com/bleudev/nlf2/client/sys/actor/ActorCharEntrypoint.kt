@@ -4,6 +4,7 @@ import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.dataSyncedActor
 import com.bleudev.nlf2.client.dataSyncedActorLoreChar
 import com.bleudev.nlf2.client.dataSyncedEvent101
+import com.bleudev.nlf2.client.dataSyncedSimulateNickname
 import com.bleudev.nlf2.client.sys.actor.chars.*
 import com.bleudev.nlf2.client.sys.actor.chars.res.Event101Char
 import com.bleudev.nlf2.client.sys.actor.chars.res.GhostChar
@@ -60,9 +61,17 @@ object ActorCharEntrypoint {
     private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)
     private fun prepare(client: String, entity: String): PrepareData {
         var client = client.lowercase()
-        val entity = entity.lowercase()
-        val actor = dataSyncedActor.lowercase()
+        var entity = entity.lowercase()
+        var actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
+
+        dataSyncedSimulateNickname.lowercase().let {
+            if (it != "self") {
+                if (client == actor) actor = it
+                if (client == entity) entity = it
+                client = it
+            }
+        }
 
         if (client == actor && client !in SUPPORTED_NICKNAMES) client = "bleugame"
 
