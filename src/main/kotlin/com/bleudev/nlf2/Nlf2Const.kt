@@ -15,6 +15,7 @@ val SUPPORTED_NICKNAMES = listOf(
     "crockomd",
     "samivarence",
     "milkich22397",
+    "waflla_kek",
 )
 val SLIM_SKINS = listOf(
     "samivarence",

@@ -64,7 +64,7 @@ object ActorCharEntrypoint {
         val actor = dataSyncedActor.lowercase()
         val char = dataSyncedActorLoreChar
 
-        if (client == actor) client = "bleugame"
+        if (client == actor && client !in SUPPORTED_NICKNAMES) client = "bleugame"
 
         if (!dataSyncedEvent101 && isEvent101Char(entity)) return PrepareData(client, entity, chars["event101"])
         // Other event specific chars...
