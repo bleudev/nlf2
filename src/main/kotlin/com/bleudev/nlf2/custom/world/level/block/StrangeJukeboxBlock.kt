@@ -57,12 +57,12 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         val MUS = EnumProperty.create("mus", SelectedMus::class.java)
     }
 
-    enum class SelectedMus(val mus_name: String, val mus_sound: SoundEvent, val duration: Int, private val min_pitch: Float, private val max_pitch: Float, val loop: Boolean) : StringRepresentable {
-        STRANGE_NOISE("strange_noise", Nlf2Sounds.MUS_STRANGE_NOISE, 20, .9f, 1.1f, true),
-        MILKICH_APPEARS("milkich_appears", Nlf2Sounds.MUS_MILKICH_APPEARS, 790, 1f, 1f, true),
-        JUKEBOX("jukebox", Nlf2Sounds.MUS_JUKEBOX, 1675, 1f, 1f, true),
-        EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, false),
-        NULL("null_cludge", Nlf2Sounds.MUS_JUKEBOX, 0, 1f, 1f, false);
+    enum class SelectedMus(val mus_name: String, val mus_sound: SoundEvent, val duration: Int, private val min_pitch: Float, private val max_pitch: Float, val volume: Float, val loop: Boolean) : StringRepresentable {
+        STRANGE_NOISE("strange_noise", Nlf2Sounds.MUS_STRANGE_NOISE, 20, 1f, 1f, .025f, true),
+        MILKICH_APPEARS("milkich_appears", Nlf2Sounds.MUS_MILKICH_APPEARS, 790, 1f, 1f, .2f, true),
+        JUKEBOX("jukebox", Nlf2Sounds.MUS_JUKEBOX, 1660, 1f, 1f, .7f, true),
+        EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, .5f, false),
+        NULL("null_cludge", Nlf2Sounds.MUS_JUKEBOX, 0, 1f, 1f, 0f, false);
 
         override fun getSerializedName(): String = mus_name
 
@@ -77,14 +77,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
                 return JUKEBOX
             }
 
-            fun fromName(name: String): SelectedMus = when (name) {
-                "strange_noise" -> STRANGE_NOISE
-                "milkich_appears" -> MILKICH_APPEARS
-                "jukebox" -> JUKEBOX
-                "easter_egg" -> EASTER_EGG
-                "null_cludge" -> NULL
-                else -> throw MatchException(null, null)
-            }
+            fun fromName(name: String): SelectedMus = SelectedMus.entries.first { it.mus_name == name }
 
             val CODEC: Codec<SelectedMus> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("name").forGetter(SelectedMus::mus_name),

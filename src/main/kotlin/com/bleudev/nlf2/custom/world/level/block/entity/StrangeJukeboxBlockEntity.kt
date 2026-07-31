@@ -103,7 +103,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             t = 0
             val pitch = mus.pitch
             duration = (mus.duration / pitch).toInt()
-            level.playSound(null, blockPos, mus.mus_sound, SoundSource.RECORDS, 1f, pitch)
+            level.playSound(null, blockPos, mus.mus_sound, SoundSource.RECORDS, mus.volume, pitch)
         } else {
             level.server?.sendToEveryone { arrayOf(
                 StrangeJukeboxRainbowControl(false), StrangeJukeboxMusicStop.INSTANCE
