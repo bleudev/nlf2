@@ -29,6 +29,8 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.storage.LevelData
 import kotlin.random.Random
 
 abstract class Nlf2Event(protected val server: MinecraftServer, val name: String) {
@@ -55,6 +57,9 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
                 server.playerList.getPlayer(name)?.let { pl ->
                     val loc = TELEPORT_LOCATIONS[lc] ?: return@let
                     pl.teleportTo(loc.x, loc.y, loc.z)
+                    pl.setRespawnPosition(ServerPlayer.RespawnConfig(LevelData.RespawnData
+                        .of(Level.OVERWORLD, loc.toBlockPos(), pl.yRot, pl.xRot), true
+                    ), false)
                     server.nlf2data.changePlayerData(name) {
                         it.teleported = true
                         it

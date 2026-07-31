@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.core.BlockPos
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
@@ -54,6 +55,9 @@ val ServerPlayer.isActor: Boolean
 // Color
 fun Int.normalize(rgbTarget: Int = 0) =
     if (ARGB.alphaFloat(this) >= 1f) this else ARGB.srgbLerp(ARGB.alphaFloat(this), ARGB.color(1f, rgbTarget), this)
+
+// Other
+fun Vec3.toBlockPos(): BlockPos = BlockPos(x.toInt(), y.toInt(), z.toInt())
 
 // Lang
 fun <T : Any> KMutableProperty<T>.transform(func: Transformer<T>) {
