@@ -24,6 +24,7 @@ object EventEntrypoint {
         add(66, ::RedAppearsSpectacularly)
         add(67, ::RedDisappearsSpectacularly)
         add(68, ::ForcePickManual)
+        add(69, ::StealStrangeJukebox)
         // Meets
         add(80, ::MeetBeforeCrocko)
         add(81, ::MeetAfterCrocko)

@@ -7,6 +7,7 @@ import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
+import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
@@ -290,6 +291,24 @@ open class FI_MobAvoidPlayers(server: MinecraftServer, val avoid: Boolean) : Nlf
 class MobAvoidPlayersFalse(server: MinecraftServer) : FI_MobAvoidPlayers(server, false)
 class MobAvoidPlayersTrue(server: MinecraftServer) : FI_MobAvoidPlayers(server, true)
 
+private fun tryPickItem(player: ServerPlayer, itemStack: ItemStack) {
+    if (itemStack.isItemEnabled(player.level().enabledFeatures())) {
+        val inventory = player.inventory
+        val slotWithExistingItem = inventory.findSlotMatchingItem(itemStack)
+        if (slotWithExistingItem != -1) {
+            if (Inventory.isHotbarSlot(slotWithExistingItem)) {
+                inventory.selectedSlot = slotWithExistingItem
+            } else {
+                inventory.pickSlot(slotWithExistingItem)
+            }
+        } else if (player.hasInfiniteMaterials()) {
+            inventory.addAndPickItem(itemStack)
+        }
+        ServerPlayNetworking.getSender(player).sendPacket(ClientboundSetHeldSlotPacket(inventory.selectedSlot))
+        player.inventoryMenu.broadcastChanges()
+    }
+}
+
 class ForcePickManual(server: MinecraftServer) : Nlf2Event(server, "force_pick_manual") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
@@ -300,22 +319,23 @@ class ForcePickManual(server: MinecraftServer) : Nlf2Event(server, "force_pick_m
             tryPickItem(player, itemStack)
         }
     }
+}
 
-    private fun tryPickItem(player: ServerPlayer, itemStack: ItemStack) {
-        if (itemStack.isItemEnabled(player.level().enabledFeatures())) {
-            val inventory = player.inventory
-            val slotWithExistingItem = inventory.findSlotMatchingItem(itemStack)
-            if (slotWithExistingItem != -1) {
-                if (Inventory.isHotbarSlot(slotWithExistingItem)) {
-                    inventory.selectedSlot = slotWithExistingItem
-                } else {
-                    inventory.pickSlot(slotWithExistingItem)
-                }
-            } else if (player.hasInfiniteMaterials()) {
-                inventory.addAndPickItem(itemStack)
-            }
-            ServerPlayNetworking.getSender(player).sendPacket(ClientboundSetHeldSlotPacket(inventory.selectedSlot))
-            player.inventoryMenu.broadcastChanges()
+class StealStrangeJukebox(server: MinecraftServer) : Nlf2Event(server, "steal_strange_jukebox") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        var count = 0
+        for (player in server.playerList.players) {
+            if (player.isActor) continue
+            count += player.inventory.clearOrCountMatchingItems({ it.`is`(Nlf2Blocks.STRANGE_JUKEBOX.asItem()) }, -1, player.inventoryMenu.craftSlots)
         }
+        if (causedBy == null || count <= 0) return
+        while (count > 0) {
+            val var1 = count.coerceAtMost(64)
+            causedBy.inventory.add(ItemStack(Nlf2Blocks.STRANGE_JUKEBOX, var1))
+            count -= var1
+        }
+        val itemStack = causedBy.inventory.find { it.`is`(Nlf2Blocks.STRANGE_JUKEBOX.asItem()) } ?: return
+        tryPickItem(causedBy, itemStack)
     }
 }
