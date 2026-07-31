@@ -107,7 +107,8 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            server.playerList.getPlayer(EVENT85_NICKNAME)?.run {
+            val pl = if (DEV_EVENT_85) server.actor else server.playerList.getPlayer(EVENT85_NICKNAME)
+            pl?.run {
                 sendPacket(BeforeMeetWaterFluid(
                     server.nlf2data.loreData.meetState % 2 == 0 && isInWater
                 ))
