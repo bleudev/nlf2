@@ -40,6 +40,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.gamerules.GameRules
 import net.minecraft.world.phys.Vec3
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -161,6 +162,10 @@ class Nlf2 : ModInitializer {
             }
             // Events
             EventEntrypoint.tick()
+            // Don't show advancements
+            if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
+                server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //
+            }
         }
         EntityElytraEvents.CUSTOM.register { entity, _ ->
             entity is Player && entity.hasEffect(Nlf2MobEffects.GLIDING)
