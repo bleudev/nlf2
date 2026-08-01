@@ -9,11 +9,12 @@ object Nlf2Sounds {
     val PAUSE_CUTSCENE_AMBIENT = registerSound("pause_cutscene_ambient")
     val MUS_STRANGE_NOISE = registerSound("mus_strange_noise")
     val MUS_MILKICH_APPEARS = registerSound("mus_milkich_appears")
+    val MUS_JUKEBOX_PUZZLE = registerSound("mus_jukebox_puzzle")
     val MUS_JUKEBOX = registerSound("mus_jukebox")
     val MUS_EASTER_EGG = registerSound("mus_easter_egg")
 
     fun allJukeboxMusic() = listOf(
-        MUS_STRANGE_NOISE, MUS_MILKICH_APPEARS, MUS_JUKEBOX, MUS_EASTER_EGG
+        MUS_STRANGE_NOISE, MUS_MILKICH_APPEARS, MUS_JUKEBOX_PUZZLE, MUS_JUKEBOX, MUS_EASTER_EGG
     )
 
     fun initialize() {}

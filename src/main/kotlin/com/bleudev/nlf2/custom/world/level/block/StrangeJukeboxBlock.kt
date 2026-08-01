@@ -1,7 +1,9 @@
 package com.bleudev.nlf2.custom.world.level.block
 
+import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.world.level.block.entity.StrangeJukeboxBlockEntity
 import com.mojang.serialization.Codec
@@ -11,8 +13,10 @@ import net.minecraft.core.BlockPos
 import net.minecraft.server.MinecraftServer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock
 import net.minecraft.world.level.block.Block
@@ -50,7 +54,26 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         player: Player,
         hitResult: BlockHitResult
     ): InteractionResult = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity)
-        ?.use(state, level, pos, player) ?: InteractionResult.PASS // Wrapper
+        ?.use(state, level, pos, player, false) ?: InteractionResult.PASS // Wrapper
+
+    override fun useItemOn(
+        itemStack: ItemStack,
+        state: BlockState,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
+        hand: InteractionHand,
+        hitResult: BlockHitResult
+    ): InteractionResult {
+        if (itemStack.`is`(Nlf2Items.CARD)) {
+            val entity = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity) ?: return InteractionResult.PASS
+            if (!entity.cardConsumed && !state.getValue(ON)) {
+                player.consumeOneItemInHand(hand)
+                return entity.use(state, level, pos, player, true)
+            }
+        }
+        return useWithoutItem(state, level, pos, player, hitResult)
+    }
 
     companion object {
         val ON = BooleanProperty.create("on")
@@ -60,6 +83,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
     enum class SelectedMus(val mus_name: String, val mus_sound: SoundEvent, val duration: Int, private val min_pitch: Float, private val max_pitch: Float, val volume: Float, val loop: Boolean) : StringRepresentable {
         STRANGE_NOISE("strange_noise", Nlf2Sounds.MUS_STRANGE_NOISE, 20, 1f, 1f, .025f, true),
         MILKICH_APPEARS("milkich_appears", Nlf2Sounds.MUS_MILKICH_APPEARS, 790, 1f, 1f, .2f, true),
+        JUKEBOX_PUZZLE("jukebox_puzzle", Nlf2Sounds.MUS_JUKEBOX_PUZZLE, 900, 1f, 1f, .5f, false),
         JUKEBOX("jukebox", Nlf2Sounds.MUS_JUKEBOX, 1660, 1f, 1f, .7f, true),
         EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, .5f, false),
         NULL("null_cludge", Nlf2Sounds.MUS_JUKEBOX, 0, 1f, 1f, 0f, false);
@@ -69,9 +93,10 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         val pitch: Float get() = if (min_pitch == max_pitch) min_pitch else Random.nextDouble(min_pitch.toDouble(), max_pitch.toDouble()).toFloat()
 
         companion object {
-            fun newMus(server: MinecraftServer): SelectedMus {
+            fun newMus(server: MinecraftServer, card: Boolean = false): SelectedMus {
                 val force = server.nlf2data.loreData.forceJukeboxMus
                 if (force != NULL) return force
+                if (card) return JUKEBOX_PUZZLE
                 val rnd = Random.nextFloat()
                 if (rnd <= .2f) return EASTER_EGG
                 return JUKEBOX

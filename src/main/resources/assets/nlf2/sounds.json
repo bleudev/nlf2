@@ -46,5 +46,11 @@
         "sounds": [
             "nlf2:mus_strange_noise"
         ]
+    },
+    "mus_jukebox_puzzle": {
+        "subtitle": "sound.nlf2.mus_jukebox_puzzle",
+        "sounds": [
+            "nlf2:mus_jukebox_puzzle"
+        ]
     }
 }

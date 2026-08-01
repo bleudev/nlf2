@@ -1,6 +1,8 @@
 package com.bleudev.nlf2.custom.world.level.block.entity
 
+import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.StrangeJukeboxRainbowControl
 import com.bleudev.nlf2.custom.packet.payload.unit.StrangeJukeboxMusicStop
@@ -11,9 +13,11 @@ import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -26,11 +30,13 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         level?.let { updatePlayer(it, false, StrangeJukeboxBlock.SelectedMus.NULL) }
     }
 
-    var currOn: Boolean? = null
-    var currMus: StrangeJukeboxBlock.SelectedMus? = null
-    var currForce: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL
-    var t: Int = 0
-    var duration: Int = 100000
+    private var currOn: Boolean? = null
+    private var currMus: StrangeJukeboxBlock.SelectedMus? = null
+    private var currForce: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL
+    private var t: Int = 0
+    private var duration: Int = 100000
+    var cardConsumed: Boolean = false
+    private var cardOwner: Player? = null
 
     val rainbowedPlayers: ArrayList<String> = ArrayList()
 
@@ -84,14 +90,22 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         }
     }
 
-    internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player): InteractionResult {
+    internal fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, card: Boolean = false): InteractionResult {
         if (!player.abilities.mayBuild) return InteractionResult.PASS
         if (state.getValue(ON) && state.getValue(MUS) == StrangeJukeboxBlock.SelectedMus.EASTER_EGG
             && t >= ((180.toFloat()/650)*duration).toInt()) return InteractionResult.TRY_WITH_EMPTY_HAND
         if (!level.isClientSide) {
             var state = state.setValue(ON, !state.getValue(ON))
-            (level as? ServerLevel)?.let { if (state.getValue(ON))
-                state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus(it.server))
+            (level as? ServerLevel)?.let {
+                if (state.getValue(ON)) {
+                    state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus(it.server, card))
+                    if (card) {
+                        cardConsumed = true
+                        cardOwner = player
+                    }
+                } else {
+                    tryReturnCard(player)
+                }
             }
             level.setBlockAndUpdate(pos, state)
         }
@@ -108,6 +122,21 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             level.server?.sendToEveryone { arrayOf(
                 StrangeJukeboxRainbowControl(false), StrangeJukeboxMusicStop.INSTANCE
             ) }
+            tryReturnCard()
+        }
+    }
+
+    private fun tryReturnCard(player: Player? = null) {
+        val player = player ?: cardOwner
+        if (cardConsumed) {
+            cardConsumed = false
+            if (player == null) return
+            if (player.gameMode()?.isSurvival ?: true) {
+                player.sound(SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
+                    0.2f,
+                    ((player.random.nextFloat() - player.random.nextFloat()) * 0.7f + 1.0f) * 2.0f)
+                player.inventory.addAndPickItem(ItemStack(Nlf2Items.CARD))
+            }
         }
     }
 

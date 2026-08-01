@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.custom
 
+import com.bleudev.nlf2.custom.world.item.CardItem
 import com.bleudev.nlf2.custom.world.item.ManualItem
 import com.bleudev.nlf2.custom.world.item.WDPuzzleItem
 import com.bleudev.nlf2.util.registerCreativeModeTab
@@ -7,6 +8,7 @@ import com.bleudev.nlf2.util.registerItem
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.ItemLike
 
 object Nlf2Items {
     object Groups {
@@ -14,10 +16,17 @@ object Nlf2Items {
             icon { ItemStack(WD_PUZZLE) }
             .title(Component.translatable("creativeModeTab.nlf2.general"))
             .displayItems { _, output ->
-                output.accept(WD_PUZZLE, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
-                output.accept(MANUAL, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
-                output.accept(Nlf2Blocks.STRANGE_JUKEBOX, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
-                output.accept(Nlf2Blocks.AMETHYST_OXEYE_DAISY, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
+                val var1 = listOf<ItemLike>(
+                    WD_PUZZLE,
+                    MANUAL,
+                    CARD,
+                    Nlf2Blocks.STRANGE_JUKEBOX,
+                    Nlf2Blocks.AMETHYST_OXEYE_DAISY,
+                )
+
+                for (var2 in var1) {
+                    output.accept(var2, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)
+                }
             }
         }
 
@@ -26,6 +35,7 @@ object Nlf2Items {
 
     val WD_PUZZLE = registerItem("wd_puzzle", ::WDPuzzleItem)
     val MANUAL = registerItem("manual", ::ManualItem)
+    val CARD = registerItem("card", ::CardItem)
 
     fun initialize() {
         Groups.initialize()

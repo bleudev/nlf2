@@ -7,6 +7,7 @@ import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
+import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
@@ -19,10 +20,8 @@ import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket
-import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
@@ -32,7 +31,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.storage.LevelData
-import kotlin.random.Random
 
 abstract class Nlf2Event(protected val server: MinecraftServer, val name: String) {
     protected var ticks: Int = -1
@@ -260,18 +258,7 @@ open class FI_SkyColorEffect(server: MinecraftServer, val color: Int, name: Stri
         for (player in server.playerList.players) {
             player.sendPacket(SkyColorEffect(5, 100, color))
 
-            player.connection.send(
-                ClientboundSoundPacket(
-                    BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.WEATHER_END_FLASH),
-                    SoundSource.AMBIENT,
-                    player.x,
-                    player.y,
-                    player.z,
-                    1f,
-                    1f,
-                    Random.nextLong()
-                )
-            )
+            player.sound(SoundEvents.WEATHER_END_FLASH, SoundSource.AMBIENT)
         }
     }
 }

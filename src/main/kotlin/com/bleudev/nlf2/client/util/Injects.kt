@@ -6,7 +6,14 @@ import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nlf2.getIdentifier
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundEvent
+import net.minecraft.sounds.SoundSource
+import net.minecraft.world.entity.player.Player
+import kotlin.random.Random
 
 fun GuiGraphicsExtractor.black(alpha: Float) = overlayWithColor(alpha, 0f, 0f, 0f)
 fun GuiGraphicsExtractor.black() = black(1f)
@@ -25,3 +32,19 @@ fun GuiGraphicsExtractor.blitAnim(animation: Animation, n: Int, x: Int = 0, y: I
 
 fun PostEffectRegistry.Companion.registerNlf2(postEffectPath: String, renderPredicate: EmptyPredicate) =
     PostEffectRegistry.register(getIdentifier(postEffectPath), renderPredicate)
+
+fun Player.sound(sound: SoundEvent, source: SoundSource, volume: Float = 1f, pitch: Float = 1f) {
+    if (this is ServerPlayer) {
+        connection.send(
+            ClientboundSoundPacket(
+                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(sound),
+                source,
+                x, y, z,
+                volume, pitch,
+                Random.nextLong()
+            )
+        )
+    } else {
+        playSound(sound, volume, pitch)
+    }
+}
