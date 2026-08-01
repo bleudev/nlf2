@@ -32,6 +32,7 @@ val TELEPORT_LOCATIONS = mapOf(
     "bleugame" to Vec3(587.0, 65.0, 706.0),
     "crockomd" to Vec3(601.0, 65.0, 818.0),
     "samivarence" to Vec3(564.0, 70.0, 575.0),
+    "milkich22397" to Vec3(530.0, 127.0, 865.0),
 )
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
@@ -66,4 +67,4 @@ const val AMETHYST_DAISY_DISTANCE = 3
 const val INTRO_ENABLED = true
 
 const val DEV_EVENT_101 = false
-const val DEV_EVENT_85 = true
+const val DEV_EVENT_85 = false
