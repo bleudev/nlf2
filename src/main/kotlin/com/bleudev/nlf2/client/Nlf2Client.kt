@@ -260,6 +260,7 @@ class Nlf2Client : ClientModInitializer {
             noise_amount = (1f - ((payload.borderDistance.coerceAtMost(maxBlocks)) / maxBlocks)).toFloat() * maxNoise
 
             event101_distance = payload.event101Distance
+            amethyst_daisy_distance = payload.amethystDaisyDistance
         }
         registerPacketReceiver(JoinDisconnectVersion) { payload, ctx ->
             ctx.client().gui.setScreen(JoinDisconnectScreen(payload.client, payload.server))

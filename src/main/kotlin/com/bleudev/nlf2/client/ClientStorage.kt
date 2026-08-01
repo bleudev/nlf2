@@ -80,6 +80,11 @@ val skyColorEffectAmount: Float get() = (if (skyColorEffectTicks <= skyColorEffe
 var beforeMeetWaterFluidIn: Boolean = false
 var beforeMeetWaterFluidTicks: Int = 0
 val beforeMeetWaterFluidAmount: Float get() = beforeMeetWaterFluidTicks.toFloat() / BEFORE_MEET_WATER_FLUID_TICKS
+// Amethyst oxeye daisy
+var amethyst_daisy_distance: Double = 999.0
+val amethyst_daisy_amount: Float get() =
+    ((amethyst_daisy_distance.coerceAtMost(AMETHYST_DAISY_DISTANCE.toDouble()) / AMETHYST_DAISY_DISTANCE)).toFloat()
+    .reverseDelta()
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -112,18 +117,21 @@ val shaderRedMajUniformStrength: Float get() = listOf(
     manualUpdateEffectAmount.onlyIf(manualUpdateOwner),
     event101_noise_amount,
     beforeMeetWaterFluidAmount,
+    amethyst_daisy_amount,
 ).max()
 var shaderAnaglyphUniformX: Float = 0f
     get() = listOf(
         field,
         manualUpdateEffectAmount * 0.01f,
         event101_noise_amount * 0.01f,
+        amethyst_daisy_amount * 0.004f,
     ).max()
 var shaderAnaglyphUniformY: Float = 0f
     get() = listOf(
         field,
         manualUpdateEffectAmount * 0.005f,
         event101_noise_amount * 0.005f,
+        amethyst_daisy_amount * 0.002f,
     ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength

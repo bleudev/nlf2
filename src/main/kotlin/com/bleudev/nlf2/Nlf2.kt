@@ -40,8 +40,10 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
+import net.minecraft.world.phys.Vec3
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.math.min
 
 
 const val MODID = "nlf2"
@@ -119,9 +121,17 @@ class Nlf2 : ModInitializer {
                     val ev101 = if (DEV_EVENT_101) server.actor else server.playerList.getPlayer(EVENT101_NICKNAME)
                     if (ev101 != null) ev101d = ev101.distanceTo(player)
                 }
+                var daisyd = 999.0
+                for (x in -3..3) for (y in -3..3) for (z in -3..3) {
+                    val p = player.blockPosition().offset(x, y, z)
+                    if (player.level().getBlockState(p).`is`(Nlf2Blocks.AMETHYST_OXEYE_DAISY)) {
+                        daisyd = min(daisyd, player.position().distanceTo(Vec3(p)))
+                    }
+                }
                 arrayOf(DistanceUpdate(
                     player.level().worldBorder.getDistanceToBorder(player),
                     ev101d,
+                    daisyd,
                 )) }
             ticks++
             if (ticks % 20 == 0) {
