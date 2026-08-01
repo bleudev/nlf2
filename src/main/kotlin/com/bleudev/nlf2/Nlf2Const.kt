@@ -1,8 +1,15 @@
 package com.bleudev.nlf2
 
+import net.minecraft.client.Minecraft
 import net.minecraft.world.phys.Vec3
 
-const val SERVER_ADDRESS: String = "pink.fnode.me:19164"
+private const val SERVER_OUT_ADDRESS: String = "pink.fnode.me:19164"
+private const val SERVER_IN_ADDRESS: String = "pink.in.fnode.me:19164"
+private val IN_ADDRESS_NICKNAMES = listOf(
+    "crockomd",
+)
+val SERVER_ADDRESS: String get() = Minecraft.getInstance().gameProfile.name.lowercase()
+    .let { if (it in IN_ADDRESS_NICKNAMES) SERVER_IN_ADDRESS else SERVER_OUT_ADDRESS }
 
 // Identifiers
 /// Modificators
@@ -56,7 +63,7 @@ const val BEFORE_MEET_WATER_FLUID_TICKS = 60
 
 const val AMETHYST_DAISY_DISTANCE = 3
 
-const val INTRO_ENABLED = false
+const val INTRO_ENABLED = true
 
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = true
