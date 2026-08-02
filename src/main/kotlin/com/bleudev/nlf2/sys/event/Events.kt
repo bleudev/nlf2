@@ -108,6 +108,7 @@ class MeetBeforeMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 0,
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.forceJukeboxMus = StrangeJukeboxBlock.SelectedMus.STRANGE_NOISE
+            it.mobAvoidPlayers = true
             it
         }
     }
@@ -117,6 +118,7 @@ class MeetAfterMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.forceJukeboxMus = StrangeJukeboxBlock.SelectedMus.MILKICH_APPEARS
+            it.mobAvoidPlayers = false
             it
         }
     }
