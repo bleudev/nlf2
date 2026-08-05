@@ -85,6 +85,8 @@ var amethyst_daisy_distance: Double = 999.0
 val amethyst_daisy_amount: Float get() =
     ((amethyst_daisy_distance.coerceAtMost(AMETHYST_DAISY_DISTANCE.toDouble()) / AMETHYST_DAISY_DISTANCE)).toFloat()
     .reverseDelta()
+// Story
+var shouldRenderStory: Boolean = false
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

@@ -1,8 +1,12 @@
 package com.bleudev.nlf2.mixin.client;
 
+import com.bleudev.nlf2.client.sys.anim.StoryAnimation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.InBedChatScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -48,5 +52,10 @@ public abstract class GuiMixin {
             if (getCanOpenChat()) return;
             ci.cancel();
         }
+    }
+
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void extractExtras(DeltaTracker deltaTracker, boolean shouldRenderLevel, boolean resourcesLoaded, CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
+        StoryAnimation.INSTANCE.render(graphics);
     }
 }

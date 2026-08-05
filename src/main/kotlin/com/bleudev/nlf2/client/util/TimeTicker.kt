@@ -23,6 +23,7 @@ class TimeTicker : Ticker() {
 }
 
 val TICKER_INTRO = TimeTicker()
+val TICKER_STORY = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()
