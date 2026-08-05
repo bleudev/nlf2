@@ -14,16 +14,20 @@ object StoryAnimation {
         val t = TICKER_STORY.tick().toInt()
         graphics.black()
 
-        val seq = TextBoxSequence()
-        seq.tick(t)
-        seq.extractor(graphics)
-        seq.speed(2)
-        seq.add("Давным-давно в мире жили", 100)
-        seq.add("Три различных личности", 95)
-        seq.add("Три различных образа", 90)
-        seq.add("Три различных характеров", 100)
-        seq.speed(6)
-        seq.add("Три СОСУДА....", 150)
+        val seq1 = TextBoxSequence()
+        seq1.tick(t)
+        seq1.extractor(graphics)
+        seq1.speed(4)
+        seq1.add("Давным-Давно...", 20)
+        seq1.speed(3)
+        seq1.add("В Мире жили", 20)
+        seq1.add("ТРИ различных Личности", 20)
+        seq1.add("ТРИ различных Образа", 20)
+        seq1.add("ТРИ различных Характера", 20)
+        seq1.speed(7)
+        val seq2 = seq1.sub(42)
+        seq1.add("ТРИ...", 62)
+        seq2.add("&СОСУДА", 20)
     }
 
     private class TextBoxSequence {
@@ -36,12 +40,21 @@ object StoryAnimation {
 
         private var start: Int = 0
 
-        fun add(text: String, duration: Int) {
-            internalExtractor!!.textbox(internalTick, text, internalSpeed, start, start + duration)
-            start += duration
+        fun add(text: String, wait: Int) {
+            val end = start + text.replace("&", "").length * internalSpeed + wait
+            internalExtractor!!.textbox(internalTick, text, internalSpeed, start, end)
+            start = end
         }
         fun wait(duration: Int) {
             start += duration
+        }
+        fun sub(delay: Int): TextBoxSequence {
+            val mega = TextBoxSequence()
+            mega.tick(internalTick)
+            mega.extractor(internalExtractor!!)
+            mega.speed(internalSpeed)
+            mega.wait(start + delay)
+            return mega
         }
     }
 
@@ -49,7 +62,7 @@ object StoryAnimation {
     private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int) {
         if (curr >= end) return
         pose().pushMatrix()
-        pose().translate(80f, 200f)
+        pose().translate(90f, 200f)
         pose().scale(1.7f)
 
         var remain = (curr - start) / speed
