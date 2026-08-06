@@ -231,6 +231,7 @@ object StoryAnimation {
             graphics.anim(Sprite.VESSEL_OUTLINE_UNI, rougeOutline, 0xff0000, 20f, -5f)
             graphics.anim(Sprite.VESSEL_UNI, rouge, 0xff0000, 20f, -5f)
             graphics.anim(Sprite.SOUL_UNI, rougeSoul, 0xff0000, 23.5f, 1.5f, .5f)
+            graphics.anim(Sprite.SMILE, rougeGradient, 0xffffff, 23f, -4.6f, .17f)
         }
         graphics.pose().popMatrix()
 
@@ -381,5 +382,6 @@ object StoryAnimation {
         NOISE_0("noise_0", 1920, 1080),
         NOISE_1("noise_1", 1920, 1080),
         NOISE_2("noise_2", 1920, 1080),
+        SMILE("smile", 28, 27),
     }
 }
