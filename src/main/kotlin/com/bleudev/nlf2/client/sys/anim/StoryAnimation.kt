@@ -10,6 +10,8 @@ import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
+import de.maxhenkel.voicechat.VoicechatClient
+import de.maxhenkel.voicechat.voice.client.ClientManager
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
@@ -25,6 +27,8 @@ object StoryAnimation {
     private var playedMusStory = false
     private var playedBroke = false
     private var playedMusWeirdStory = false
+    private var preSavedHideIcons = false
+    private var preSavedDisabled = false
     internal var endTick = 99999
 
     @JvmStatic
@@ -37,10 +41,17 @@ object StoryAnimation {
     }
 
     fun render(graphics: GuiGraphicsExtractor) {
-        // DEBUG
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
         graphics.black(otherVolume.reverseDelta())
+        if (t == endTick - 60) {
+            if (VoicechatClient.CLIENT_CONFIG.hideIcons.get() != preSavedHideIcons) {
+                VoicechatClient.CLIENT_CONFIG.hideIcons.set(preSavedHideIcons).save()
+            }
+            if (ClientManager.getPlayerStateManager().isDisabled != preSavedDisabled) {
+                ClientManager.getPlayerStateManager().isDisabled = preSavedDisabled
+            }
+        }
         if (t >= endTick + 5) {
             TICKER_STORY.reset()
             return
@@ -62,10 +73,20 @@ object StoryAnimation {
             canUseKeyboard = true
             return
         }
+        if (t == 10) {
+            preSavedHideIcons = VoicechatClient.CLIENT_CONFIG.hideIcons.get()
+            preSavedDisabled = ClientManager.getPlayerStateManager().isDisabled
+        }
         if (t >= 10) {
             canUseMouse = false
             canUseKeyboard = false
             Minecraft.getInstance().gui.setScreen(null)
+            if (!VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
+                VoicechatClient.CLIENT_CONFIG.hideIcons.set(true).save()
+            }
+            if (!ClientManager.getPlayerStateManager().isDisabled) {
+                ClientManager.getPlayerStateManager().isDisabled = true
+            }
         }
 
         val seq = TextBoxSequence()
