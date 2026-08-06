@@ -27,14 +27,20 @@ object StoryAnimation {
     private var playedMusWeirdStory = false
     internal var endTick = 99999
 
+    @JvmStatic
+    val otherVolume: Float get() {
+        val t = TICKER_STORY.ticks
+        return min(
+            ((t.toFloat()) / 30).coerceIn(0f, 1f),
+            ((t - endTick + 60).toFloat() / 60).coerceIn(0f, 1f).reverseDelta(),
+        ).reverseDelta()
+    }
+
     fun render(graphics: GuiGraphicsExtractor) {
         // DEBUG
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
-        graphics.black(min(
-            ((t.toFloat()) / 30).coerceIn(0f, 1f),
-            ((t - endTick).toFloat() / 60).coerceIn(0f, 1f).reverseDelta(),
-        ))
+        graphics.black(otherVolume.reverseDelta())
         if (t >= endTick + 5) {
             TICKER_STORY.reset()
             return
@@ -51,9 +57,15 @@ object StoryAnimation {
             sm.stop(Nlf2Sounds.BROKE.location, SoundSource.AMBIENT)
             return
         }
+        if (t >= endTick - 60) {
+            canUseMouse = true
+            canUseKeyboard = true
+            return
+        }
         if (t >= 10) {
             canUseMouse = false
             canUseKeyboard = false
+            Minecraft.getInstance().gui.setScreen(null)
         }
 
         val seq = TextBoxSequence()
@@ -258,7 +270,7 @@ object StoryAnimation {
             }
         }
         // Other
-        if (endTick == 99999) endTick = end + 60
+        if (endTick == 99999) endTick = end + 120
     }
 
     private class TextBoxSequence {
