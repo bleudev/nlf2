@@ -3,8 +3,10 @@ package com.bleudev.nlf2.client.sys.anim
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.util.TICKER_STORY
 import com.bleudev.nlf2.client.util.black
+import com.bleudev.nlf2.custom.Nlf2RenderPipelines
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
+import com.mojang.blaze3d.pipeline.RenderPipeline
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
@@ -13,6 +15,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
+import kotlin.random.Random
 
 object StoryAnimation {
     fun render(graphics: GuiGraphicsExtractor) {
@@ -56,6 +59,7 @@ object StoryAnimation {
         seq.add("И в порыве&Зависти и Гнева", 10)
         seq.add("Лишь Одна Цель&Его волновала...", 20)
         seq.speed(3)
+        val ruler3 = seq.start
         seq.add("МЕСТЬ", 30)
         seq.add("Ведь...", 10)
         seq.speed(2)
@@ -74,6 +78,7 @@ object StoryAnimation {
         var rougeInCenter = false
         var rougeCrown = 1f
         var rougeGradient = 0f
+        var noise = 0f
 
         if (t <= appear1 + 80) {
             rouge = ((t - appear1).toFloat() / 40).coerceIn(0f, 1f)
@@ -143,9 +148,26 @@ object StoryAnimation {
         if (t >= ruler2) {
             rougeGradient = ((t - ruler2).toFloat() / 100).coerceIn(0f, 1f)
         }
+        if (t >= ruler3) {
+            noise = ((t - ruler3).toFloat() / 120).coerceIn(0f, 1f)
+        }
+
+        val noisePipeline = if (Random.nextFloat() <= .3f) Nlf2RenderPipelines.GUI_TEXTURED_ANAGLYPH else RenderPipelines.GUI_TEXTURED
+        graphics.anim(
+            listOf(Sprite.NOISE_0, Sprite.NOISE_1, Sprite.NOISE_2).random(),
+            noise * .3f,
+            listOf(0xffffff, 0xff0000, 0x00ff00, 0x0000ff).random(),
+            0f,
+            0f,
+            pipeline = noisePipeline
+        )
 
         graphics.pose().pushMatrix()
         graphics.pose().translate(120f, 60f)
+        graphics.pose().translate(
+            Random.nextDouble(-3.0, 3.0).toFloat() * noise,
+            Random.nextDouble(-3.0, 3.0).toFloat() * noise
+        )
         graphics.pose().scale(3.5f)
 
         graphics.pose().pushMatrix()
@@ -268,12 +290,12 @@ object StoryAnimation {
         pose().popMatrix()
     }
 
-    private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f) {
+    private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f, pipeline: RenderPipeline = RenderPipelines.GUI_TEXTURED) {
         pose().pushMatrix()
         pose().translate(x, y)
         pose().scale(size)
         blit(
-            RenderPipelines.GUI_TEXTURED,
+            pipeline,
             getIdentifier("textures/anim/story/${sprite.filename}.png"),
             0, 0, 0f, 0f,
             sprite.width, sprite.height, sprite.width, sprite.height,
@@ -287,5 +309,8 @@ object StoryAnimation {
         SOUL_UNI("soul_uni", 9, 9),
         VESSEL_OUTLINE_UNI("vessel_outline_uni", 11, 20),
         VESSEL_UNI("vessel_uni", 11, 20),
+        NOISE_0("noise_0", 1920, 1080),
+        NOISE_1("noise_1", 1920, 1080),
+        NOISE_2("noise_2", 1920, 1080),
     }
 }
