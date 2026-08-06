@@ -52,5 +52,11 @@
         "sounds": [
             "nlf2:mus_jukebox_puzzle"
         ]
+    },
+    "mus_story": {
+        "subtitle": "sound.nlf2.mus_story",
+        "sounds": [
+            "nlf2:mus_story"
+        ]
     }
 }

@@ -306,8 +306,8 @@ class Nlf2Client : ClientModInitializer {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
         }
         registerPacketReceiver(StoryStart) {
-            shouldRenderStory = true
             TICKER_STORY.reset()
+            shouldRenderStory = true
         }
         registerPacketReceiver(StrangeJukeboxMusicStop) {
             val sm = Minecraft.getInstance().soundManager

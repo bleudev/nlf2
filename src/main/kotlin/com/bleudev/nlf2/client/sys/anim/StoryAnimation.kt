@@ -1,8 +1,11 @@
 package com.bleudev.nlf2.client.sys.anim
 
+import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.util.TICKER_STORY
 import com.bleudev.nlf2.client.util.black
+import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
+import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.custom.Nlf2RenderPipelines
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
@@ -18,11 +21,27 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 object StoryAnimation {
+    private var playedMusStory = false
+    private var playedBroke = false
+    private var playedMusWeirdStory = false
+    private var endTick = 99999
+
     fun render(graphics: GuiGraphicsExtractor) {
         // DEBUG
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
-        graphics.black()
+        graphics.black(min(
+            ((t.toFloat()) / 30).coerceIn(0f, 1f),
+            ((t - endTick).toFloat() / 60).coerceIn(0f, 1f).reverseDelta(),
+        ))
+        if (t >= endTick) {
+            TICKER_STORY.reset()
+            shouldRenderStory = false
+            playedMusStory = false
+            playedBroke = false
+            playedMusWeirdStory = false
+            return
+        }
 
         val seq = TextBoxSequence()
         seq.tick(t)
@@ -132,7 +151,6 @@ object StoryAnimation {
             vertOutline = rouge
         }
         if (t >= soul6) {
-            // TODO: Sound on rouge appear
             rougeInCenter = true
             rouge = 1f
             rougeOutline = 1f
@@ -155,7 +173,7 @@ object StoryAnimation {
         val noisePipeline = if (Random.nextFloat() <= .3f) Nlf2RenderPipelines.GUI_TEXTURED_ANAGLYPH else RenderPipelines.GUI_TEXTURED
         graphics.anim(
             listOf(Sprite.NOISE_0, Sprite.NOISE_1, Sprite.NOISE_2).random(),
-            noise * .3f,
+            noise * .25f,
             listOf(0xffffff, 0xff0000, 0x00ff00, 0x0000ff).random(),
             0f,
             0f,
@@ -165,8 +183,8 @@ object StoryAnimation {
         graphics.pose().pushMatrix()
         graphics.pose().translate(120f, 60f)
         graphics.pose().translate(
-            Random.nextDouble(-3.0, 3.0).toFloat() * noise,
-            Random.nextDouble(-3.0, 3.0).toFloat() * noise
+            Random.nextDouble(-2.5, 2.5).toFloat() * noise,
+            Random.nextDouble(-2.5, 2.5).toFloat() * noise
         )
         graphics.pose().scale(3.5f)
 
@@ -187,7 +205,7 @@ object StoryAnimation {
         graphics.anim(Sprite.VESSEL_UNI, bleu, 0x3622ff, 20f, -5f)
         graphics.anim(Sprite.SOUL_UNI, bleuSoul, 0x3622ff, 23.5f, 1.5f, .5f)
         if (rougeInCenter) {
-            graphics.anim(Sprite.CROWN_UNI, rougeCrown, 0xff0000, 20f, -8.25f, .5f)
+            graphics.anim(Sprite.CROWN_UNI, rougeCrown, 0xff0000, 20f, -7.5f, .5f)
             graphics.anim(Sprite.VESSEL_OUTLINE_UNI, rougeOutline, 0xff0000, 20f, -5f)
             graphics.anim(Sprite.VESSEL_UNI, rouge, 0xff0000, 20f, -5f)
             graphics.anim(Sprite.SOUL_UNI, rougeSoul, 0xff0000, 23.5f, 1.5f, .5f)
@@ -212,6 +230,25 @@ object StoryAnimation {
             in end+60..end+8000 -> 1f // idk how to do that normal way
             else -> 0f
         })
+
+        // Music + sounds
+        val sm = Minecraft.getInstance().soundManager
+        if (t == 5 && !playedMusStory) {
+            sm.play(MusStoryInstance(soul6))
+            playedMusStory = true
+        }
+        if (t == soul6) {
+            if (!playedBroke) {
+                sm.play(RelativeSoundInstance(Nlf2Sounds.BROKE))
+                playedBroke = true
+            }
+            if (!playedMusWeirdStory) {
+                sm.play(MusWeirdStoryInstance(end + 60))
+                playedMusWeirdStory = true
+            }
+        }
+        // Other
+        endTick = end + 60
     }
 
     private class TextBoxSequence {
@@ -243,6 +280,16 @@ object StoryAnimation {
         }
     }
 
+    private class MusStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {
+        override fun vol(): Float =
+            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
+        override fun pit(): Float = 1f
+    }
+    private class MusWeirdStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {
+        override fun vol(): Float =
+            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
+        override fun pit(): Float = .7f
+    }
 
     private fun Int.circlex(duration: Int, offset: Int): Float {
         val angle = (((this + offset) % duration).toFloat() / duration) * 2 * PI
@@ -253,7 +300,7 @@ object StoryAnimation {
         return sin(angle).toFloat() * .3f
     }
 
-    fun Float.hueToTriple(): Triple<Float, Float, Float> {
+    private fun Float.hueToTriple(): Triple<Float, Float, Float> {
         var h = this % 1f
         if (h < 0) h += 1f
 

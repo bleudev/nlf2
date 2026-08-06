@@ -12,6 +12,7 @@ object Nlf2Sounds {
     val MUS_JUKEBOX_PUZZLE = registerSound("mus_jukebox_puzzle")
     val MUS_JUKEBOX = registerSound("mus_jukebox")
     val MUS_EASTER_EGG = registerSound("mus_easter_egg")
+    val MUS_STORY = registerSound("mus_story")
 
     fun allJukeboxMusic() = listOf(
         MUS_STRANGE_NOISE, MUS_MILKICH_APPEARS, MUS_JUKEBOX_PUZZLE, MUS_JUKEBOX, MUS_EASTER_EGG
