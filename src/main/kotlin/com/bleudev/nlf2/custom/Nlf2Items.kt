@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.world.item.CardItem
+import com.bleudev.nlf2.custom.world.item.ChargedManualItem
 import com.bleudev.nlf2.custom.world.item.ManualItem
 import com.bleudev.nlf2.custom.world.item.WDPuzzleItem
 import com.bleudev.nlf2.util.registerCreativeModeTab
@@ -20,6 +21,7 @@ object Nlf2Items {
                     WD_PUZZLE,
                     MANUAL,
                     CARD,
+                    CHARGED_MANUAL,
                     Nlf2Blocks.STRANGE_JUKEBOX,
                     Nlf2Blocks.AMETHYST_OXEYE_DAISY,
                 )
@@ -36,6 +38,7 @@ object Nlf2Items {
     val WD_PUZZLE = registerItem("wd_puzzle", ::WDPuzzleItem)
     val MANUAL = registerItem("manual", ::ManualItem)
     val CARD = registerItem("card", ::CardItem)
+    val CHARGED_MANUAL = registerItem("charged_manual", ::ChargedManualItem)
 
     fun initialize() {
         Groups.initialize()

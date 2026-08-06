@@ -4,6 +4,8 @@ import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.util.TICKER_STORY
 import com.bleudev.nlf2.client.util.black
+import com.bleudev.nlf2.client.util.canUseKeyboard
+import com.bleudev.nlf2.client.util.canUseMouse
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.custom.Nlf2RenderPipelines
@@ -13,6 +15,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 import kotlin.math.PI
 import kotlin.math.cos
@@ -24,7 +27,7 @@ object StoryAnimation {
     private var playedMusStory = false
     private var playedBroke = false
     private var playedMusWeirdStory = false
-    private var endTick = 99999
+    internal var endTick = 99999
 
     fun render(graphics: GuiGraphicsExtractor) {
         // DEBUG
@@ -34,13 +37,25 @@ object StoryAnimation {
             ((t.toFloat()) / 30).coerceIn(0f, 1f),
             ((t - endTick).toFloat() / 60).coerceIn(0f, 1f).reverseDelta(),
         ))
-        if (t >= endTick) {
+        if (t >= endTick + 5) {
             TICKER_STORY.reset()
+            return
+        }
+        if (t >= endTick) {
             shouldRenderStory = false
             playedMusStory = false
             playedBroke = false
             playedMusWeirdStory = false
+            canUseMouse = true
+            canUseKeyboard = true
+            val sm = Minecraft.getInstance().soundManager
+            sm.stop(Nlf2Sounds.MUS_STORY.location, SoundSource.AMBIENT)
+            sm.stop(Nlf2Sounds.BROKE.location, SoundSource.AMBIENT)
             return
+        }
+        if (t >= 10) {
+            canUseMouse = false
+            canUseKeyboard = false
         }
 
         val seq = TextBoxSequence()
@@ -173,7 +188,7 @@ object StoryAnimation {
         val noisePipeline = if (Random.nextFloat() <= .3f) Nlf2RenderPipelines.GUI_TEXTURED_ANAGLYPH else RenderPipelines.GUI_TEXTURED
         graphics.anim(
             listOf(Sprite.NOISE_0, Sprite.NOISE_1, Sprite.NOISE_2).random(),
-            noise * .25f,
+            noise * .15f,
             listOf(0xffffff, 0xff0000, 0x00ff00, 0x0000ff).random(),
             0f,
             0f,
@@ -248,7 +263,7 @@ object StoryAnimation {
             }
         }
         // Other
-        endTick = end + 60
+        if (endTick == 99999) endTick = end + 60
     }
 
     private class TextBoxSequence {

@@ -1,5 +1,7 @@
 package com.bleudev.nlf2.client.util
 
+import com.bleudev.nlf2.client.sys.anim.StoryAnimation
+
 abstract class Ticker {
     var ticks: Long = 0L
         protected set
@@ -9,7 +11,7 @@ abstract class Ticker {
     }
 }
 
-class TimeTicker : Ticker() {
+open class TimeTicker : Ticker() {
     private var start: Long = System.currentTimeMillis()
 
     override fun tick(): Long {
@@ -23,7 +25,12 @@ class TimeTicker : Ticker() {
 }
 
 val TICKER_INTRO = TimeTicker()
-val TICKER_STORY = TimeTicker()
+val TICKER_STORY = object : TimeTicker() {
+    override fun tick(): Long {
+        if (ticks >= StoryAnimation.endTick + 5) return ticks
+        return super.tick()
+    }
+}
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()
