@@ -5,6 +5,7 @@ package com.bleudev.nlf2.sys.event
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_NICKNAME
+import com.bleudev.nlf2.Nlf2
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
@@ -15,6 +16,7 @@ import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
 import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
+import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -326,5 +328,16 @@ class StealStrangeJukebox(server: MinecraftServer) : Nlf2Event(server, "steal_st
         }
         val itemStack = causedBy.inventory.find { it.`is`(Nlf2Blocks.STRANGE_JUKEBOX.asItem()) } ?: return
         tryPickItem(causedBy, itemStack)
+    }
+}
+
+class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        server.playerList.players.forEach {
+            if (!it.isActor) {
+                it.sendPacket(StoryStart.INSTANCE)
+            }
+        }
+        Nlf2.storyStarted(server)
     }
 }

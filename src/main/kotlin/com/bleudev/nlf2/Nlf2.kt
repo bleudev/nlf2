@@ -33,6 +33,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -52,6 +53,38 @@ fun getIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MO
 val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
+    companion object {
+        private var storyTicks = -1
+        private var scheduledEvents: ArrayList<ScheduledEvent> = ArrayList()
+
+        fun storyStarted(server: MinecraftServer) {
+            storyTicks = 0
+            scheduledEvents.add(ScheduledEvent(30) {
+                for (player in server.playerList.players) {
+                    if (!player.isActor) {
+                        player.setGameMode(GameType.SPECTATOR)
+                    }
+                }
+            })
+            scheduledEvents.add(ScheduledEvent(1459) {
+                for (player in server.playerList.players) {
+                    if (!player.isActor) {
+                        player.setGameMode(GameType.SURVIVAL)
+                    }
+                }
+            })
+        }
+    }
+
+    data class ScheduledEvent(var remainingTicks: Int, val runnable: Runnable) {
+        fun tick() {
+            if (remainingTicks <= 0) return
+            remainingTicks--
+            if (remainingTicks <= 0) {
+                runnable.run()
+            }
+        }
+    }
     data class BorderLoseHeartsInfo(var ticksBeforeLose: Int, var ticksAfterLose: Int)
 
     private var ticks = 0
@@ -162,6 +195,9 @@ class Nlf2 : ModInitializer {
             }
             // Events
             EventEntrypoint.tick()
+            // Scheduled
+            scheduledEvents.forEach(ScheduledEvent::tick)
+            scheduledEvents.removeAll { it.remainingTicks <= 0 }
             // Don't show advancements
             if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
                 server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //

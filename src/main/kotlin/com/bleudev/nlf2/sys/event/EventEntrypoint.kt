@@ -44,6 +44,7 @@ object EventEntrypoint {
         add(189, ::EndSerieCrash)
         add(200, ::CompassCrazyFalse)
         add(201, ::CompassCrazyTrue)
+        add(228, ::StoryStart)
         add(300, ::MobAvoidPlayersFalse)
         add(301, ::MobAvoidPlayersTrue)
         // Force jukebox
