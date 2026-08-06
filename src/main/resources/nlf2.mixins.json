@@ -41,7 +41,6 @@
     "client.PanoramaMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
-    "client.RenderPipelinesMixin",
     "client.TitleScreenMixin",
     "client.accessor.KeyBindsList$KeyEntryAccessor",
     "client.impl.KeyBindsList$CategoryEntryMixin",

@@ -8,10 +8,8 @@ import com.bleudev.nlf2.client.util.canUseKeyboard
 import com.bleudev.nlf2.client.util.canUseMouse
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
-import com.bleudev.nlf2.custom.Nlf2RenderPipelines
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
-import com.mojang.blaze3d.pipeline.RenderPipeline
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
@@ -185,14 +183,11 @@ object StoryAnimation {
             noise = ((t - ruler3).toFloat() / 120).coerceIn(0f, 1f)
         }
 
-        val noisePipeline = if (Random.nextFloat() <= .3f) Nlf2RenderPipelines.GUI_TEXTURED_ANAGLYPH else RenderPipelines.GUI_TEXTURED
         graphics.anim(
             listOf(Sprite.NOISE_0, Sprite.NOISE_1, Sprite.NOISE_2).random(),
             noise * .15f,
             listOf(0xffffff, 0xff0000, 0x00ff00, 0x0000ff).random(),
-            0f,
-            0f,
-            pipeline = noisePipeline
+            0f, 0f
         )
 
         graphics.pose().pushMatrix()
@@ -352,12 +347,12 @@ object StoryAnimation {
         pose().popMatrix()
     }
 
-    private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f, pipeline: RenderPipeline = RenderPipelines.GUI_TEXTURED) {
+    private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f) {
         pose().pushMatrix()
         pose().translate(x, y)
         pose().scale(size)
         blit(
-            pipeline,
+            RenderPipelines.GUI_TEXTURED,
             getIdentifier("textures/anim/story/${sprite.filename}.png"),
             0, 0, 0f, 0f,
             sprite.width, sprite.height, sprite.width, sprite.height,
