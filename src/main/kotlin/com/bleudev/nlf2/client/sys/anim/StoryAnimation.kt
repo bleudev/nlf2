@@ -14,20 +14,43 @@ object StoryAnimation {
         val t = TICKER_STORY.tick().toInt()
         graphics.black()
 
-        val seq1 = TextBoxSequence()
-        seq1.tick(t)
-        seq1.extractor(graphics)
-        seq1.speed(4)
-        seq1.add("Давным-Давно...", 20)
-        seq1.speed(3)
-        seq1.add("В Мире жили", 20)
-        seq1.add("ТРИ различных Личности", 20)
-        seq1.add("ТРИ различных Образа", 20)
-        seq1.add("ТРИ различных Характера", 20)
-        seq1.speed(7)
-        val seq2 = seq1.sub(42)
-        seq1.add("ТРИ...", 62)
-        seq2.add("&СОСУДА", 20)
+        val seq = TextBoxSequence()
+        seq.tick(t)
+        seq.extractor(graphics)
+        seq.speed(2)
+        seq.add("Давным-Давно...", 20)
+        seq.add("В Мире жили&ТРИ различных Личности", 10)
+        seq.add("ТРИ различных Образа&ТРИ различных Характера", 20)
+        seq.speed(5)
+        seq.add("ТРИ...   &СОСУДА", 20)
+        seq.wait(10)
+        seq.speed(2)
+        seq.add("Они жили в Мире,&В Гармонии.", 20)
+        seq.add("И с годами&Меняясь местами...", 20)
+        seq.add("ДУША переходила   &Из одного Сосуда&В другой", 30)
+        seq.add("Так продолжалось&До Одного Момента...", 20)
+        seq.add("Один из Сосудов&Покинул это Место", 20)
+        seq.add("Навстречу Приключениям&Навстречу Новому Миру&Навстречу УСПЕХУ", 20)
+        seq.add("Оставив Остальных &Навечно Вдвоём...", 20)
+        seq.add("Но Один Сосуд&Не пал Духом", 20)
+        seq.speed(5)
+        seq.add("Нет...", 20)
+        seq.speed(2)
+        seq.add("Он стал&Властителем Всего Мира", 30)
+        seq.add("И в порыве&Зависти и Гнева", 20)
+        seq.add("Лишь Одна Цель&Его волновала...", 30)
+        seq.speed(4)
+        seq.add("МЕСТЬ", 30)
+        seq.add("Ведь...", 30)
+        seq.speed(2)
+        seq.add("Почему&Именно&ОН?", 80)
+        val vanya = seq.start - 80
+        graphics.black(when (t) {
+            in vanya..<vanya+20 -> .25f
+            in vanya+20..<vanya+40 -> .5f
+            in vanya+60..<vanya+80 -> .75f
+            else -> 0f
+        })
     }
 
     private class TextBoxSequence {
@@ -38,7 +61,8 @@ object StoryAnimation {
         fun extractor(new: GuiGraphicsExtractor) { internalExtractor = new }
         fun speed(new: Int) { internalSpeed = new }
 
-        private var start: Int = 0
+        var start: Int = 0
+            private set
 
         fun add(text: String, wait: Int) {
             val end = start + text.replace("&", "").length * internalSpeed + wait
