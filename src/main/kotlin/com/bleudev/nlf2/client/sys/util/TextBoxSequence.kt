@@ -5,21 +5,23 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import kotlin.math.min
 
 class TextBoxSequence {
-    private data class TextBoxInfo(val curr: Int, val text: String, val speed: Int, val start: Int, val end: Int)
+    private data class TextBoxInfo(val curr: Int, val text: String, val speed: Int, val start: Int, val end: Int, val color: Int)
 
     private val lines: ArrayList<TextBoxInfo> = ArrayList()
 
     private var internalTick: Int = -1
     private var internalSpeed: Int = 2
+    private var internalColor: Int = 0xffffffff.toInt()
     fun tick(new: Int) { internalTick = new }
     fun speed(new: Int) { internalSpeed = new }
+    fun color(new: Int) { internalColor = new }
 
     var start: Int = 0
         private set
 
     fun add(text: String, wait: Int) {
         val end = start + text.replace("&", "").length * internalSpeed + wait
-        lines.add(TextBoxInfo(internalTick, text, internalSpeed, start, end))
+        lines.add(TextBoxInfo(internalTick, text, internalSpeed, start, end, internalColor))
         start = end
     }
     fun wait(duration: Int) {
@@ -34,13 +36,13 @@ class TextBoxSequence {
     }
 
     fun extractRenderState(guiGraphicsExtractor: GuiGraphicsExtractor) {
-        for ((curr, text, speed, start, end) in lines) {
-            guiGraphicsExtractor.textbox(curr, text, speed, start, end)
+        for ((curr, text, speed, start, end, color) in lines) {
+            guiGraphicsExtractor.textbox(curr, text, speed, start, end, color)
         }
     }
 }
 
-private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int) {
+private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int, color: Int) {
     if (curr >= end) return
     pose().pushMatrix()
     pose().translate(90f, 200f)
@@ -53,10 +55,15 @@ private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, st
         val line = split[i]
         if (remain > 0) {
             val render = line.substring(0, min(remain, line.length))
-            text(font, render, 0, 10 * i, 0xffffffff.toInt(), false)
+            text(font, render, 0, 10 * i, color, false)
             remain -= render.length
         } else break
     }
 
     pose().popMatrix()
+}
+
+object TextColorConstants {
+    val DEFAULT: Int = 0xffffffff.toInt()
+    val VERT: Int = 0xa09dff70.toInt()
 }
