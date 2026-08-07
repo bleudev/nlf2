@@ -1,6 +1,5 @@
 package com.bleudev.nlf2.mixin.client;
 
-import com.bleudev.nlf2.client.custom.Nlf2Sounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.sounds.Sound;
@@ -17,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static com.bleudev.nlf2.client.ClientStorageKt.getShouldRenderStory;
+import static com.bleudev.nlf2.client.custom.Nlf2Sounds.storySounds;
 import static com.bleudev.nlf2.client.sys.anim.StoryAnimation.getOtherVolume;
 
 @Environment(EnvType.CLIENT)
@@ -47,8 +46,7 @@ public abstract class SoundEngineMixin {
         final Sound sound = instance.getSound();
         boolean bl = getShouldRenderStory();
         if (sound != null) {
-            if (Stream.of(Nlf2Sounds.MUS_STORY, Nlf2Sounds.BROKE)
-                    .map(SoundEvent::location).toList().contains(sound.getLocation())) {
+            if (storySounds().stream().map(SoundEvent::location).toList().contains(sound.getLocation())) {
                 bl = false;
             }
         }

@@ -31,6 +31,10 @@ object Nlf2Sounds {
     fun allJukeboxMusic() = listOf(
         MUS_STRANGE_NOISE, MUS_MILKICH_APPEARS, MUS_JUKEBOX_PUZZLE, MUS_JUKEBOX, MUS_EASTER_EGG
     )
+    @JvmStatic
+    fun storySounds() = listOf(
+        MUS_STORY, MUS_RED_WIND, NOISE
+    )
 
     fun initialize() {}
 }

@@ -2,6 +2,7 @@
 
 package com.bleudev.nlf2.client.sys.anim
 
+import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.sys.util.TextBoxSequence
@@ -35,6 +36,7 @@ object StoryAnimation {
     private var preSavedHideIcons = false
     private var preSavedDisabled = false
     internal var endTick = 99999
+    private var ruler3Tick = 99999
 
     @JvmStatic
     val otherVolume: Float get() {
@@ -308,6 +310,7 @@ object StoryAnimation {
         }
         // Other
         if (endTick == 99999) endTick = end + 120
+        if (ruler3Tick == 99999) ruler3Tick = ruler3
     }
 
     private class MusStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {
@@ -318,11 +321,11 @@ object StoryAnimation {
     private class MusRedWindInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_RED_WIND) {
         override fun tick() {
             super.tick()
-            println("DEBUG TICK RED WIND ${vol()} ${pit()}")
         }
         override fun vol(): Float =
-            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta()
-        override fun pit(): Float = 1f
+            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() * 0.75f
+        override fun pit(): Float =
+            ((TICKER_STORY.ticks - ruler3Tick).toFloat() / 200).coerceIn(0f, 1f).lerp(1f, 2f)
     }
 
     private fun Int.circlex(duration: Int, offset: Int): Float {
