@@ -37,6 +37,7 @@ object EventEntrypoint {
         add(93, ::Manual1)
         add(94, ::Manual2)
         add(95, ::Manual3)
+        add(96, ::Manual4)
 
         add(101, ::OrangeSkinOverlayRemove)
         add(140, ::LabOverlay0)

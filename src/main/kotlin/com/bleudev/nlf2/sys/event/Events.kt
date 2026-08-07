@@ -8,11 +8,13 @@ import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.Nlf2
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
+import com.bleudev.nlf2.client.sys.util.TextColorConstants
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
+import com.bleudev.nlf2.custom.packet.payload.OpenTextBox
 import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
@@ -143,6 +145,14 @@ class Manual0(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.DEFAUL
 class Manual1(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_DEBUG_STICK.id, "manual_1_internal")
 class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_STICK.id, "manual_2_internal")
 class Manual3(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_OXEYE_DAISY.id, "manual_3_internal")
+class Manual4(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.BEFORE_CHARGED_MANUAL.id, "manual_4") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        server.sendToEveryone {
+            arrayOf(OpenTextBox("Руководство...", TextColorConstants.VERT, 6, 40))
+        }
+        super.cause(causedBy, *args)
+    }
+}
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
