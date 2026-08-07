@@ -2,6 +2,7 @@ package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
+import com.bleudev.nlf2.client.sys.util.TextBoxSequence
 import com.bleudev.nlf2.client.util.TICKER_STORY
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.canUseKeyboard
@@ -91,7 +92,6 @@ object StoryAnimation {
 
         val seq = TextBoxSequence()
         seq.tick(t)
-        seq.extractor(graphics)
         seq.speed(2)
         seq.add("Давным-Давно...", 20)
         val appear1 = seq.start
@@ -224,11 +224,17 @@ object StoryAnimation {
         )
 
         graphics.pose().pushMatrix()
-        graphics.pose().translate(120f, 60f)
         graphics.pose().translate(
             Random.nextDouble(-2.5, 2.5).toFloat() * noise,
             Random.nextDouble(-2.5, 2.5).toFloat() * noise
         )
+        graphics.pose().pushMatrix()
+        if (!rougeInCenter) {
+            graphics.pose().translate(t.circlex(60, 30)/3, t.circley(60, 30)/3)
+        }
+        seq.extractRenderState(graphics)
+        graphics.pose().popMatrix()
+        graphics.pose().translate(120f, 60f)
         graphics.pose().scale(3.5f)
 
         graphics.pose().pushMatrix()
@@ -295,35 +301,6 @@ object StoryAnimation {
         if (endTick == 99999) endTick = end + 120
     }
 
-    private class TextBoxSequence {
-        private var internalTick: Int = -1
-        private var internalExtractor: GuiGraphicsExtractor? = null
-        private var internalSpeed: Int = 2
-        fun tick(new: Int) { internalTick = new }
-        fun extractor(new: GuiGraphicsExtractor) { internalExtractor = new }
-        fun speed(new: Int) { internalSpeed = new }
-
-        var start: Int = 0
-            private set
-
-        fun add(text: String, wait: Int) {
-            val end = start + text.replace("&", "").length * internalSpeed + wait
-            internalExtractor!!.textbox(internalTick, text, internalSpeed, start, end)
-            start = end
-        }
-        fun wait(duration: Int) {
-            start += duration
-        }
-        fun sub(delay: Int): TextBoxSequence {
-            val mega = TextBoxSequence()
-            mega.tick(internalTick)
-            mega.extractor(internalExtractor!!)
-            mega.speed(internalSpeed)
-            mega.wait(start + delay)
-            return mega
-        }
-    }
-
     private class MusStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {
         override fun vol(): Float =
             ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
@@ -358,27 +335,6 @@ object StoryAnimation {
         }
 
         return Triple(rgb[0], rgb[1], rgb[2])
-    }
-
-    private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int) {
-        if (curr >= end) return
-        pose().pushMatrix()
-        pose().translate(90f, 200f)
-        pose().scale(1.7f)
-
-        var remain = (curr - start) / speed
-        val font = Minecraft.getInstance().font
-        val split = text.split("&")
-        for (i in split.indices) {
-            val line = split[i]
-            if (remain > 0) {
-                val render = line.substring(0, min(remain, line.length))
-                text(font, render, 0, 10 * i, 0xffffffff.toInt(), false)
-                remain -= render.length
-            } else break
-        }
-
-        pose().popMatrix()
     }
 
     private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f) {
