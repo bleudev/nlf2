@@ -58,5 +58,17 @@
         "sounds": [
             "nlf2:mus_story"
         ]
+    },
+    "mus_red_wind": {
+        "subtitle": "sound.nlf2.mus_red_wind",
+        "sounds": [
+            "nlf2:mus_red_wind"
+        ]
+    },
+    "noise": {
+        "subtitle": "sound.nlf2.noise",
+        "sounds": [
+            "nlf2:noise"
+        ]
     }
 }

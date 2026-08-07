@@ -30,8 +30,8 @@ import kotlin.random.Random
 
 object StoryAnimation {
     private var playedMusStory = false
-    private var playedBroke = false
-    private var playedMusWeirdStory = false
+    private var playedNoise = false
+    private var playedMusRedWind = false
     private var preSavedHideIcons = false
     private var preSavedDisabled = false
     internal var endTick = 99999
@@ -64,13 +64,14 @@ object StoryAnimation {
         if (t >= endTick) {
             shouldRenderStory = false
             playedMusStory = false
-            playedBroke = false
-            playedMusWeirdStory = false
+            playedNoise = false
+            playedMusRedWind = false
             canUseMouse = true
             canUseKeyboard = true
             val sm = Minecraft.getInstance().soundManager
             sm.stop(Nlf2Sounds.MUS_STORY.location, SoundSource.AMBIENT)
-            sm.stop(Nlf2Sounds.BROKE.location, SoundSource.AMBIENT)
+            sm.stop(Nlf2Sounds.MUS_RED_WIND.location, SoundSource.AMBIENT)
+            sm.stop(Nlf2Sounds.NOISE.location, SoundSource.AMBIENT)
             return
         }
         if (t >= endTick - 60) {
@@ -287,18 +288,22 @@ object StoryAnimation {
 
         // Music + sounds
         val sm = Minecraft.getInstance().soundManager
-        if (t == 5 && !playedMusStory) {
+        if (t in 5..25 && !playedMusStory) {
             sm.play(MusStoryInstance(soul6))
             playedMusStory = true
         }
-        if (t == soul6) {
-            if (!playedBroke) {
-                sm.play(RelativeSoundInstance(Nlf2Sounds.BROKE))
-                playedBroke = true
+        if (t in soul6..soul6+20) {
+            if (!playedNoise) {
+                sm.play(object : RelativeSoundInstance(Nlf2Sounds.NOISE) {
+                    init {
+                        this.volume = .5f
+                    }
+                })
+                playedNoise = true
             }
-            if (!playedMusWeirdStory) {
-                sm.play(MusWeirdStoryInstance(end + 60))
-                playedMusWeirdStory = true
+            if (!playedMusRedWind) {
+                sm.play(MusRedWindInstance(end + 60))
+                playedMusRedWind = true
             }
         }
         // Other
@@ -310,10 +315,14 @@ object StoryAnimation {
             ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
         override fun pit(): Float = 1f
     }
-    private class MusWeirdStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {
+    private class MusRedWindInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_RED_WIND) {
+        override fun tick() {
+            super.tick()
+            println("DEBUG TICK RED WIND ${vol()} ${pit()}")
+        }
         override fun vol(): Float =
-            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
-        override fun pit(): Float = .7f
+            ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta()
+        override fun pit(): Float = 1f
     }
 
     private fun Int.circlex(duration: Int, offset: Int): Float {
