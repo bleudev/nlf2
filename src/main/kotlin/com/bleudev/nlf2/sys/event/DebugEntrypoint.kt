@@ -24,6 +24,7 @@ object DebugEntrypoint {
         add(57, ::BlueSkyTest)
         add(58, ::WhiteSkyTest)
         add(101, ::OrangeSkinOverlay)
+        add(200, ::OpenManualHint)
     }
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {

@@ -1,3 +1,5 @@
+@file:Environment(EnvType.CLIENT)
+
 package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
@@ -13,6 +15,8 @@ import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
 import de.maxhenkel.voicechat.VoicechatClient
 import de.maxhenkel.voicechat.voice.client.ClientManager
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines

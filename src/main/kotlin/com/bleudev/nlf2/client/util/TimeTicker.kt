@@ -31,6 +31,7 @@ val TICKER_STORY = object : TimeTicker() {
         return super.tick()
     }
 }
+val TICKER_TEXT_BOX = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()

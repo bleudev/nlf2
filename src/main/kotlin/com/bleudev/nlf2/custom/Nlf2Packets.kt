@@ -16,6 +16,7 @@ object Nlf2Packets {
     val MANUAL_UPDATE_EFFECT = getIdentifier("packet/manual_update_effect")
     val OPEN_MANUAL = getIdentifier("packet/open_manual")
     val OPEN_PUZZLE = getIdentifier("packet/open_puzzle")
+    val OPEN_TEXT_BOX = getIdentifier("packet/open_text_box")
     val SKY_COLOR_EFFECT = getIdentifier("packet/sky_color_effect")
     val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
 
@@ -41,6 +42,7 @@ object Nlf2Packets {
         s2c.register(ManualUpdateEffect)
         s2c.register(OpenManual)
         s2c.register(OpenPuzzle)
+        s2c.register(OpenTextBox)
         s2c.register(SkyColorEffect)
         s2c.register(StrangeJukeboxRainbowControl)
         // Unit

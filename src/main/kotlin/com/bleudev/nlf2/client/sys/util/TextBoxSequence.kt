@@ -1,5 +1,9 @@
+@file:Environment(EnvType.CLIENT)
+
 package com.bleudev.nlf2.client.sys.util
 
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import kotlin.math.min
@@ -61,9 +65,4 @@ private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, st
     }
 
     pose().popMatrix()
-}
-
-object TextColorConstants {
-    val DEFAULT: Int = 0xffffffff.toInt()
-    val VERT: Int = 0xa09dff70.toInt()
 }

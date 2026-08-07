@@ -87,6 +87,12 @@ val amethyst_daisy_amount: Float get() =
     .reverseDelta()
 // Story
 var shouldRenderStory: Boolean = false
+// Text boxes
+var shouldRenderTextBox: Boolean = false
+var textBoxText: String = ""
+var textBoxColor: Int = -1
+var textBoxSpeed: Int = 1
+var textBoxWait: Int = 0
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

@@ -11,6 +11,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient
+import com.bleudev.nlf2.client.sys.util.TextBoxSequence
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
@@ -21,6 +22,7 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.util.normalize
+import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList
@@ -44,6 +46,8 @@ import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
 
 class Nlf2Client : ClientModInitializer {
+    private var textBoxEnd: Int = -1
+
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         ActorCharEntrypoint.initialize()
@@ -220,6 +224,31 @@ class Nlf2Client : ClientModInitializer {
                 graphics.overlayWithColor(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f)
             }
         }
+        HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
+            if (shouldRenderTextBox) {
+                val t = TICKER_TEXT_BOX.tick().toInt()
+                val seq = TextBoxSequence()
+                seq.tick(t)
+                seq.wait(1)
+                seq.speed(textBoxSpeed)
+                var alpha = ((t - textBoxEnd + textBoxWait).toFloat() / textBoxWait).coerceIn(0f, 1f).reverseDelta()
+                if (textBoxEnd == -1) alpha = 1f
+                seq.color(ARGB.color(alpha * ARGB.alphaFloat(textBoxColor), textBoxColor))
+                seq.add(textBoxText, textBoxWait)
+                if (t >= seq.start) {
+                    shouldRenderTextBox = false
+                    TICKER_TEXT_BOX.reset()
+                    textBoxText = ""
+                    textBoxColor = -1
+                    textBoxSpeed = 1
+                    textBoxWait = 0
+                    textBoxEnd = -1
+                    return@addLast
+                }
+                seq.extractRenderState(graphics)
+                if (textBoxEnd == -1) textBoxEnd = seq.start
+            }
+        }
 
         // Packets
         registerPacketReceiver(BeforeMeetWaterFluid) { payload ->
@@ -276,6 +305,14 @@ class Nlf2Client : ClientModInitializer {
             payload.packetPuzzle?.let {
                 ctx.client().gui.setScreen(PuzzleScreen(it))
             }
+        }
+        registerPacketReceiver(OpenTextBox) { payload ->
+            TICKER_TEXT_BOX.reset()
+            shouldRenderTextBox = true
+            textBoxText = payload.text
+            textBoxColor = payload.color
+            textBoxSpeed = payload.speed
+            textBoxWait = payload.wait
         }
         registerPacketReceiver(SkyColorEffect) { payload ->
             skyColorEffectTicks = 0
@@ -344,6 +381,7 @@ class Nlf2Client : ClientModInitializer {
         val BORDER_NOISE: Identifier = getIdentifier("layer/border/noise")
         val OVERLAY_FIX: Identifier = getIdentifier("layer/overlay/fix")
         val OVERLAY_PAUSE_SCREEN: Identifier = getIdentifier("layer/overlay/pause_screen")
+        val OVERLAY_TEXT_BOX: Identifier = getIdentifier("layer/overlay/text_box")
     }
 
     object Sprite {
