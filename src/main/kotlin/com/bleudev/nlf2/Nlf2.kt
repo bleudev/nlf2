@@ -1,6 +1,11 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesItems
+import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
+import com.bleudev.nine_lifes.util.alwaysTrue
+import com.bleudev.nine_lifes.util.entityIn
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
@@ -35,6 +40,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.player.Player
@@ -201,6 +207,27 @@ class Nlf2 : ModInitializer {
             // Don't show advancements
             if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
                 server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //
+            }
+            if (server.gameRules.get(GameRules.PLAYERS_SLEEPING_PERCENTAGE) != 1) {
+                server.gameRules.set(GameRules.PLAYERS_SLEEPING_PERCENTAGE, 1, server)
+            }
+            // Charge manual
+            val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
+            for (level in server.allLevels) {
+                for (lightningBolt in level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue())) {
+                    for (itemEntity in level.getEntities(EntityTypes.ITEM, entityIn(lightningBolt.position(), LIGHTNING_CHARGING_RADIUS))) {
+                        if (itemEntity.item.`is`(Nlf2Items.MANUAL)) {
+                            itemEntity.item = itemEntity.item.transmuteCopy(Nlf2Items.CHARGED_MANUAL)
+                        }
+                        level.players().forEach { player ->
+                            val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
+                                .coerceAtLeast(.0)
+                            NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
+                            val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
+                            player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
+                        }
+                    }
+                }
             }
         }
         EntityElytraEvents.CUSTOM.register { entity, _ ->

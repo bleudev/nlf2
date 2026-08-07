@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.util
 
 import com.bleudev.nine_lifes.api.Transformer
+import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.BlockPos
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
@@ -17,6 +19,8 @@ import net.minecraft.server.permissions.Permissions
 import net.minecraft.util.ARGB
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.component.DamageResistant
 import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
@@ -37,6 +41,10 @@ fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> D
 
 fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPacketPayload>) {
     for (player in this.playerList.players) player.sendPackets(*generator(player))
+}
+
+fun Item.Properties.lightningAndFireResistant(): Item.Properties = delayedComponent(DataComponents.DAMAGE_RESISTANT) {
+    DamageResistant(it.getOrThrow(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE))
 }
 
 fun <T : CustomPacketPayload> PayloadTypeRegistry<RegistryFriendlyByteBuf>.register(packet: PacketPayloadCompanion<T>): CustomPacketPayload.TypeAndCodec<in RegistryFriendlyByteBuf, T> =
