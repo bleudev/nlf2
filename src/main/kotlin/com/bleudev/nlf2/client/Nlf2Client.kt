@@ -11,7 +11,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient
-import com.bleudev.nlf2.client.sys.util.TextBoxSequence
+import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
@@ -21,6 +21,7 @@ import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
+import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
@@ -46,8 +47,6 @@ import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
 
 class Nlf2Client : ClientModInitializer {
-    private var textBoxEnd: Int = -1
-
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         ActorCharEntrypoint.initialize()
@@ -227,26 +226,17 @@ class Nlf2Client : ClientModInitializer {
         HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
-                val seq = TextBoxSequence()
+                val seq = GuiTextBoxSequence(textBoxSequence)
                 seq.tick(t)
-                seq.wait(1)
-                seq.speed(textBoxSpeed)
-                var alpha = ((t - textBoxEnd + textBoxWait).toFloat() / textBoxWait).coerceIn(0f, 1f).reverseDelta()
-                if (textBoxEnd == -1) alpha = 1f
-                seq.color(ARGB.color(alpha * ARGB.alphaFloat(textBoxColor), textBoxColor))
-                seq.add(textBoxText, textBoxWait)
                 if (t >= seq.start) {
                     shouldRenderTextBox = false
                     TICKER_TEXT_BOX.reset()
-                    textBoxText = ""
-                    textBoxColor = -1
-                    textBoxSpeed = 1
-                    textBoxWait = 0
-                    textBoxEnd = -1
+                    textBoxSequence = TextBoxSequence()
+                    textBoxFadeOut = 0
                     return@addLast
                 }
-                seq.extractRenderState(graphics)
-                if (textBoxEnd == -1) textBoxEnd = seq.start
+                val alpha = ((t - seq.start + textBoxFadeOut).toFloat() / textBoxFadeOut).coerceIn(0f, 1f).reverseDelta()
+                seq.extractRenderState(graphics, alpha)
             }
         }
 
@@ -309,10 +299,8 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(OpenTextBox) { payload ->
             TICKER_TEXT_BOX.reset()
             shouldRenderTextBox = true
-            textBoxText = payload.text
-            textBoxColor = payload.color
-            textBoxSpeed = payload.speed
-            textBoxWait = payload.wait
+            textBoxSequence = payload.sequence
+            textBoxFadeOut = payload.fadeOut
         }
         registerPacketReceiver(SkyColorEffect) { payload ->
             skyColorEffectTicks = 0

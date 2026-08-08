@@ -5,6 +5,7 @@ package com.bleudev.nlf2.client
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.isEvent101Char
+import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDelta
 import com.bleudev.nlf2.util.reverseDeltaIf
@@ -89,10 +90,8 @@ val amethyst_daisy_amount: Float get() =
 var shouldRenderStory: Boolean = false
 // Text boxes
 var shouldRenderTextBox: Boolean = false
-var textBoxText: String = ""
-var textBoxColor: Int = -1
-var textBoxSpeed: Int = 1
-var textBoxWait: Int = 0
+var textBoxSequence: TextBoxSequence = TextBoxSequence()
+var textBoxFadeOut: Int = 0
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

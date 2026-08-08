@@ -5,7 +5,7 @@ package com.bleudev.nlf2.client.sys.anim
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
-import com.bleudev.nlf2.client.sys.util.TextBoxSequence
+import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.TICKER_STORY
 import com.bleudev.nlf2.client.util.black
 import com.bleudev.nlf2.client.util.canUseKeyboard
@@ -97,7 +97,7 @@ object StoryAnimation {
             }
         }
 
-        val seq = TextBoxSequence()
+        val seq = GuiTextBoxSequence()
         seq.tick(t)
         seq.speed(2)
         seq.add("Давным-Давно...", 20)

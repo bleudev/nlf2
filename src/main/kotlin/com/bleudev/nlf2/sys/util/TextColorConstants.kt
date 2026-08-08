@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.sys.util
+package com.bleudev.nlf2.sys.util
 
 object TextColorConstants {
     val DEFAULT: Int = 0xffffffff.toInt()

@@ -8,7 +8,6 @@ import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.Nlf2
 import com.bleudev.nlf2.TELEPORT_LOCATIONS
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
-import com.bleudev.nlf2.client.sys.util.TextColorConstants
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
@@ -20,6 +19,8 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
+import com.bleudev.nlf2.sys.util.TextBoxSequence
+import com.bleudev.nlf2.sys.util.TextColorConstants
 import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.component.DataComponents
@@ -147,9 +148,12 @@ class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_
 class Manual3(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_OXEYE_DAISY.id, "manual_3_internal")
 class Manual4(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.BEFORE_CHARGED_MANUAL.id, "manual_4") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
-        server.sendToEveryone {
-            arrayOf(OpenTextBox("Руководство...", TextColorConstants.VERT, 6, 40))
-        }
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.VERT)
+        seq.speed(6)
+        seq.add("Руководство...", 40)
+        val packet = OpenTextBox(seq, 40)
+        server.sendToEveryone { arrayOf(packet) }
         super.cause(causedBy, *args)
     }
 }
@@ -349,5 +353,19 @@ class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip")
             }
         }
         Nlf2.storyStarted(server)
+    }
+}
+
+// Debug Like
+class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (internal)") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.VERT)
+        seq.speed(4)
+        seq.add("ПРИВЕТ", 20)
+        seq.add("КУ", 60)
+        val packet = OpenTextBox(seq, 20)
+        server.sendToEveryone { arrayOf(packet) }
     }
 }
