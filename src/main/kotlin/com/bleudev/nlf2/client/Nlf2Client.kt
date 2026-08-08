@@ -226,7 +226,7 @@ class Nlf2Client : ClientModInitializer {
         }
         HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
             if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
-            if (ripVertEventEnabled && TICKER_RIP_VERT.ticks >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_DURATION)
+            if (ripVertEventEnabled && TICKER_RIP_VERT.ticks >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN)
                 ripVertEventEnabled = false
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
@@ -257,7 +257,7 @@ class Nlf2Client : ClientModInitializer {
             }
             // RIP Vert noise
             if (ripVertEventEnabled) {
-                val noiseForce = ((TICKER_RIP_VERT.ticks - ripVertEventLagStartTick).toFloat() / RIP_VERT_EVENT_LAG_DURATION).coerceIn(0f, 1f)
+                val noiseForce = ((TICKER_RIP_VERT.ticks - ripVertEventLagStartTick).toFloat() / RIP_VERT_EVENT_LAG_FADE_IN).coerceIn(0f, 1f)
                 graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, 0xffffff))
             }
         }

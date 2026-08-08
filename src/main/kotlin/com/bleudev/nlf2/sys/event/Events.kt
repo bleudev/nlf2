@@ -3,10 +3,7 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nlf2.DEV_EVENT_101
-import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.Nlf2
-import com.bleudev.nlf2.TELEPORT_LOCATIONS
+import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
@@ -359,6 +356,8 @@ class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip")
 
 // Debug Like
 class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (internal)") {
+    private var endTick: Int = 99999
+
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         val seq = TextBoxSequence()
@@ -391,5 +390,22 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
             RIPVertEvent(shakeStart, lagStart)
         )
         server.sendToEveryone { packets }
+        endTick = lagStart + RIP_VERT_EVENT_LAG_FADE_IN
+    }
+
+    override fun tick() {
+        super.tick()
+        if (ticks == endTick) {
+            for (player in server.playerList.players) {
+                player.advancedClear(
+                    Nlf2Items.MANUAL,
+                    Nlf2Items.WD_PUZZLE,
+                    Nlf2Items.CARD,
+                    Nlf2Items.CHARGED_MANUAL,
+                    Nlf2Blocks.STRANGE_JUKEBOX,
+                    Nlf2Blocks.AMETHYST_OXEYE_DAISY
+                )
+            }
+        }
     }
 }
