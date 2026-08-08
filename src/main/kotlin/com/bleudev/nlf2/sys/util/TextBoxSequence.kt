@@ -5,7 +5,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 
 open class TextBoxSequence(lines: List<TextBoxInfo> = listOf()) {
-    data class TextBoxInfo(val text: String, val speed: Int, val start: Int, val end: Int, val color: Int) {
+    data class TextBoxInfo(val text: String, val speed: Int, val start: Int, val end: Int, val color: Int, val full: Boolean) {
         companion object {
             val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, TextBoxInfo> = StreamCodec.composite(
                 ByteBufCodecs.STRING_UTF8, TextBoxInfo::text,
@@ -13,6 +13,7 @@ open class TextBoxSequence(lines: List<TextBoxInfo> = listOf()) {
                 ByteBufCodecs.INT, TextBoxInfo::start,
                 ByteBufCodecs.INT, TextBoxInfo::end,
                 ByteBufCodecs.INT, TextBoxInfo::color,
+                ByteBufCodecs.BOOL, TextBoxInfo::full,
                 ::TextBoxInfo
             )
         }
@@ -22,15 +23,18 @@ open class TextBoxSequence(lines: List<TextBoxInfo> = listOf()) {
 
     protected var internalSpeed: Int = lines.lastOrNull()?.speed ?: 1
     protected var internalColor: Int = lines.lastOrNull()?.color ?: TextColorConstants.DEFAULT
-    fun speed(new: Int) { internalSpeed = new }
+    protected var internalFull: Boolean = lines.lastOrNull()?.full ?: false
+    fun speed(new: Int) { internalSpeed = new.coerceAtLeast(1) }
     fun color(new: Int) { internalColor = new }
+    fun full(new: Boolean) { internalFull = new }
 
     var start: Int = lines.lastOrNull()?.end ?: 0
         private set
 
     fun add(text: String, wait: Int) {
-        val end = start + text.replace("&", "").length * internalSpeed + wait
-        lines.add(TextBoxInfo(text, internalSpeed, start, end, internalColor))
+        var end = start + wait
+        if (!internalFull) end += text.replace("&", "").length * internalSpeed
+        lines.add(TextBoxInfo(text, internalSpeed, start, end, internalColor, internalFull))
         start = end
     }
     fun wait(duration: Int) {

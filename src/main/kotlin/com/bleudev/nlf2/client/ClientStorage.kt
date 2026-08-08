@@ -92,6 +92,10 @@ var shouldRenderStory: Boolean = false
 var shouldRenderTextBox: Boolean = false
 var textBoxSequence: TextBoxSequence = TextBoxSequence()
 var textBoxFadeOut: Int = 0
+// RIP VERT Event
+var ripVertEventEnabled: Boolean = false
+var ripVertEventShakeStartTick: Int = -1
+var ripVertEventLagStartTick: Int = -1
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

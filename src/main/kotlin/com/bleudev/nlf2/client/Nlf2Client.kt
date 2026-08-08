@@ -45,6 +45,7 @@ import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
 import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
+import kotlin.random.Random
 
 class Nlf2Client : ClientModInitializer {
     override fun onInitializeClient() {
@@ -224,6 +225,9 @@ class Nlf2Client : ClientModInitializer {
             }
         }
         HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
+            if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
+            if (ripVertEventEnabled && TICKER_RIP_VERT.ticks >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_DURATION)
+                ripVertEventEnabled = false
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
                 val seq = GuiTextBoxSequence(textBoxSequence)
@@ -235,8 +239,26 @@ class Nlf2Client : ClientModInitializer {
                     textBoxFadeOut = 0
                     return@addLast
                 }
-                val alpha = ((t - seq.start + textBoxFadeOut).toFloat() / textBoxFadeOut).coerceIn(0f, 1f).reverseDelta()
+                val alpha = if (textBoxFadeOut <= 0) 1f
+                    else ((t - seq.start + textBoxFadeOut).toFloat() / textBoxFadeOut).coerceIn(0f, 1f).reverseDelta()
+
+                var shakeForce = 0f
+                if (ripVertEventEnabled) {
+                    shakeForce = ((TICKER_RIP_VERT.ticks - ripVertEventShakeStartTick).toFloat() / 50).coerceIn(0f, 1f)
+                }
+
+                graphics.pose().pushMatrix()
+                graphics.pose().translate(
+                    Random.nextDouble(-2.5, 2.5).toFloat() * shakeForce,
+                    Random.nextDouble(-2.5, 2.5).toFloat() * shakeForce
+                )
                 seq.extractRenderState(graphics, alpha)
+                graphics.pose().popMatrix()
+            }
+            // RIP Vert noise
+            if (ripVertEventEnabled) {
+                val noiseForce = ((TICKER_RIP_VERT.ticks - ripVertEventLagStartTick).toFloat() / RIP_VERT_EVENT_LAG_DURATION).coerceIn(0f, 1f)
+                graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, 0xffffff))
             }
         }
 
@@ -301,6 +323,12 @@ class Nlf2Client : ClientModInitializer {
             shouldRenderTextBox = true
             textBoxSequence = payload.sequence
             textBoxFadeOut = payload.fadeOut
+        }
+        registerPacketReceiver(RIPVertEvent) { payload ->
+            ripVertEventShakeStartTick = payload.shakeStartTick
+            ripVertEventLagStartTick = payload.lagStartTick
+            TICKER_RIP_VERT.reset()
+            ripVertEventEnabled = true
         }
         registerPacketReceiver(SkyColorEffect) { payload ->
             skyColorEffectTicks = 0

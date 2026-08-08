@@ -14,6 +14,7 @@ import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
 import com.bleudev.nlf2.custom.packet.payload.OpenTextBox
+import com.bleudev.nlf2.custom.packet.payload.RIPVertEvent
 import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
@@ -363,9 +364,32 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
         val seq = TextBoxSequence()
         seq.color(TextColorConstants.VERT)
         seq.speed(4)
-        seq.add("ПРИВЕТ", 20)
-        seq.add("КУ", 60)
-        val packet = OpenTextBox(seq, 20)
-        server.sendToEveryone { arrayOf(packet) }
+        seq.add("Я бы хотел&вам помочь...", 20)
+        seq.add("Правда...&Очень...", 20)
+        seq.add("Но я, увы,&не могу...", 20)
+        seq.add("Физически...", 20)
+        seq.add("Прощайте...", 20)
+        seq.speed(6)
+        seq.add("ОН ЗДЕСЬ", 40)
+        val shakeStart = seq.start - 30
+        seq.full(true)
+        val lagStart = seq.start
+        seq.add("ОN ZДЕSЬ", 10)
+        seq.add("OН ЗDES'", 10)
+        seq.add("ON ZDES'", 10)
+        seq.add("ОN ZДЕSЬ", 10)
+        seq.add("OН ЗDES'", 10)
+        seq.add("ON ZDES'", 10)
+        seq.add("ОN ZДЕSЬ", 10)
+        seq.add("OН ЗDES'", 10)
+        seq.add("ON ZDES'", 10)
+        seq.add("ОN ZДЕSЬ", 10)
+        seq.add("OН ЗDES'", 10)
+        seq.add("ON ZDES'", 10)
+        val packets = arrayOf(
+            OpenTextBox(seq, 0),
+            RIPVertEvent(shakeStart, lagStart)
+        )
+        server.sendToEveryone { packets }
     }
 }

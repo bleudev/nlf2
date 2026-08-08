@@ -17,19 +17,20 @@ class GuiTextBoxSequence(lines: List<TextBoxInfo> = listOf()) : TextBoxSequence(
     fun tick(new: Int) { internalTick = new }
 
     fun extractRenderState(guiGraphicsExtractor: GuiGraphicsExtractor, alpha: Float = 1f) {
-        for ((text, speed, start, end, color) in lines) {
-            guiGraphicsExtractor.textbox(internalTick, text, speed, start, end, ARGB.color(alpha, color))
+        for ((text, speed, start, end, color, full) in lines) {
+            guiGraphicsExtractor.textbox(internalTick, text, speed, start, end, ARGB.color(alpha, color), full)
         }
     }
 }
 
-private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int, color: Int) {
+private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, start: Int, end: Int, color: Int, full: Boolean) {
     if (curr >= end) return
+    if (curr < start) return
     pose().pushMatrix()
     pose().translate(90f, 200f)
     pose().scale(1.7f)
 
-    var remain = (curr - start) / speed
+    var remain = if (full) text.replace("&", "").length else (curr - start) / speed
     val font = Minecraft.getInstance().font
     val split = text.split("&")
     for (i in split.indices) {

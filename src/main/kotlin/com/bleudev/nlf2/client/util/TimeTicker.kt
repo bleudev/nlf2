@@ -32,6 +32,7 @@ val TICKER_STORY = object : TimeTicker() {
     }
 }
 val TICKER_TEXT_BOX = TimeTicker()
+val TICKER_RIP_VERT = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()
