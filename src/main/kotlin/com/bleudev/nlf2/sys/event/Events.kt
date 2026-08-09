@@ -390,22 +390,17 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
             RIPVertEvent(shakeStart, lagStart)
         )
         server.sendToEveryone { packets }
+        server.nlf2data::loreData.transform {
+            it.noVert = true
+            it
+        }
         endTick = lagStart + RIP_VERT_EVENT_LAG_FADE_IN
     }
 
     override fun tick() {
         super.tick()
         if (ticks == endTick) {
-            for (player in server.playerList.players) {
-                player.advancedClear(
-                    Nlf2Items.MANUAL,
-                    Nlf2Items.WD_PUZZLE,
-                    Nlf2Items.CARD,
-                    Nlf2Items.CHARGED_MANUAL,
-                    Nlf2Blocks.STRANGE_JUKEBOX,
-                    Nlf2Blocks.AMETHYST_OXEYE_DAISY
-                )
-            }
+            clearVertItemsIfNeed(server)
         }
     }
 }

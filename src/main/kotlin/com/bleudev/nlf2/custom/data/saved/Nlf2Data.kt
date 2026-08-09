@@ -2,8 +2,6 @@ package com.bleudev.nlf2.custom.data.saved
 
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
-import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
-import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.getIdentifier
@@ -16,7 +14,7 @@ import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
 
 
-class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
+class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
     private fun ServerPlayer.sync() {
         sendPacket(ClientNlf2DataSync(
             loreData.actor,
@@ -70,6 +68,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         var compassCrazy: Boolean = false,
         var forceJukeboxMus: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL,
         var mobAvoidPlayers: Boolean = false,
+        var noVert: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
@@ -83,6 +82,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.BOOL.fieldOf("compassCrazy").forGetter(LoreData::compassCrazy),
                 StrangeJukeboxBlock.SelectedMus.CODEC.fieldOf("forceJukeboxMus").forGetter(LoreData::forceJukeboxMus),
                 Codec.BOOL.fieldOf("mobAvoidPlayers").forGetter(LoreData::mobAvoidPlayers),
+                Codec.BOOL.fieldOf("noVert").forGetter(LoreData::noVert),
             ).apply(it, ::LoreData) }
         }
     }
@@ -98,6 +98,15 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             }
         }
     }
+
+    companion object {
+        val CODEC: Codec<Nlf2Data> = RecordCodecBuilder.create { it.group(
+            LoreData.CODEC.fieldOf("lore").forGetter(Nlf2Data::loreData),
+            Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2Data::getPlayers),
+        ).apply(it, ::Nlf2Data) }
+        val TYPE: SavedDataType<Nlf2Data> = SavedDataType(getIdentifier("data"), ::Nlf2Data, CODEC,
+            DataFixTypes.SAVED_DATA_MAP_DATA)
+    }
 }
 
 object BorderStates {
@@ -106,13 +115,5 @@ object BorderStates {
     const val BLACK_FOG_KILL = 2
 }
 
-private val CODEC: Codec<Nlf2PlayersData> = RecordCodecBuilder.create { it.group(
-    LoreData.CODEC.fieldOf("lore").forGetter(Nlf2PlayersData::loreData),
-    Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2PlayersData::getPlayers),
-).apply(it, ::Nlf2PlayersData) }
-
-private val TYPE: SavedDataType<Nlf2PlayersData> = SavedDataType(getIdentifier("lore_players_data"), ::Nlf2PlayersData, CODEC,
-    DataFixTypes.SAVED_DATA_MAP_DATA)
-
-val MinecraftServer.nlf2data: Nlf2PlayersData
-    get() = dataStorage.computeIfAbsent(TYPE).apply { serverToSync = this@nlf2data }
+val MinecraftServer.nlf2data: Nlf2Data
+    get() = dataStorage.computeIfAbsent(Nlf2Data.TYPE).apply { serverToSync = this@nlf2data }
