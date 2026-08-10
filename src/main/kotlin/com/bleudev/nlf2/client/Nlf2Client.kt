@@ -129,7 +129,6 @@ class Nlf2Client : ClientModInitializer {
         PostEffectRegistry.registerNlf2("border_end", ::shaderBorderEnd)
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
-            mc.window.setTitle(if (webcamEnabled) "EYES ARE WATCHING" else "\"Minecraft\" 26.2")
             if (Webcam.getDefault().isOpen) {
                 if (!webcamEnabled) Webcam.getDefault().close()
             } else if (webcamEnabled) Webcam.getDefault().open()
