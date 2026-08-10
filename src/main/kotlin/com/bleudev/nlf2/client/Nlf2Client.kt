@@ -23,6 +23,7 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFo
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
+import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
@@ -239,20 +240,14 @@ class Nlf2Client : ClientModInitializer {
                     textBoxFadeOut = 0
                     return@addLast
                 }
-                val alpha = if (textBoxFadeOut <= 0) 1f
-                    else ((t - seq.start + textBoxFadeOut).toFloat() / textBoxFadeOut).coerceIn(0f, 1f).reverseDelta()
-
-                var shakeForce = 0f
-                if (ripVertEventEnabled) {
-                    shakeForce = ((TICKER_RIP_VERT.ticks - ripVertEventShakeStartTick).toFloat() / 50).coerceIn(0f, 1f)
-                }
 
                 graphics.pose().pushMatrix()
                 graphics.pose().translate(
-                    Random.nextDouble(-2.5, 2.5).toFloat() * shakeForce,
-                    Random.nextDouble(-2.5, 2.5).toFloat() * shakeForce
+                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount,
+                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount
                 )
-                seq.extractRenderState(graphics, alpha)
+                seq.extractRenderState(graphics, TICKER_RIP_VERT.delta(seq.start - textBoxFadeOut, textBoxFadeOut)
+                    .onlyIf(textBoxFadeOut > 0).reverseDelta())
                 graphics.pose().popMatrix()
             }
             // RIP Vert noise

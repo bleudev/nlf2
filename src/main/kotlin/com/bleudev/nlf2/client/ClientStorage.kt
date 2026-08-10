@@ -4,6 +4,7 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.client.util.TICKER_RIP_VERT
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.onlyIf
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
-import kotlin.math.max
 
 @JvmField
 var webcamEnabled: Boolean = false
@@ -34,13 +34,13 @@ val manualUpdateEffectAmount: Float get() = manualUpdateTicks.toFloat() / MANUAL
 // Event 101
 var event101screenEffectClearTicks: Int = 0
 // Earthquake
-private val earthquakeProp: Float get() =
-    max(
-        if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
-            (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION).reverseDelta() * 1.25f
-        else noise_amount,
-        manualUpdateEffectAmount / 2,
-    )
+private val earthquakeProp: Float get() = listOf(
+    if (borderBlackFogTicks != -1 && borderBlackFogStarting && borderBlackFogTicks <= BORDER_BLACK_FOG_KILL_TRANS_DURATION)
+        (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION).reverseDelta() * 1.25f
+    else noise_amount,
+    manualUpdateEffectAmount / 2,
+    ripVertShakeAmount,
+).max()
 val earthquakeStrength: Float get() = earthquakeProp / 8
 val earthquakeSpeed: Float get() = earthquakeProp * 2
 // Border black fog
@@ -96,6 +96,7 @@ var textBoxFadeOut: Int = 0
 var ripVertEventEnabled: Boolean = false
 var ripVertEventShakeStartTick: Int = -1
 var ripVertEventLagStartTick: Int = -1
+val ripVertShakeAmount: Float get() = TICKER_RIP_VERT.delta(ripVertEventShakeStartTick, 50).onlyIf(ripVertEventEnabled)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -136,6 +137,7 @@ var shaderAnaglyphUniformX: Float = 0f
         manualUpdateEffectAmount * 0.01f,
         event101_noise_amount * 0.01f,
         amethyst_daisy_amount * 0.004f,
+        ripVertShakeAmount * 0.01f,
     ).max()
 var shaderAnaglyphUniformY: Float = 0f
     get() = listOf(
@@ -143,6 +145,7 @@ var shaderAnaglyphUniformY: Float = 0f
         manualUpdateEffectAmount * 0.005f,
         event101_noise_amount * 0.005f,
         amethyst_daisy_amount * 0.002f,
+        ripVertShakeAmount * 0.008f,
     ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength

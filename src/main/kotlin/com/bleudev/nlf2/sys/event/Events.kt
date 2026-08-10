@@ -376,15 +376,11 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
         seq.add("ОN ZДЕSЬ", 10)
         seq.add("OН ЗDES'", 10)
         seq.add("ON ZDES'", 10)
-        seq.add("ОN ZДЕSЬ", 10)
-        seq.add("OН ЗDES'", 10)
-        seq.add("ON ZDES'", 10)
-        seq.add("ОN ZДЕSЬ", 10)
-        seq.add("OН ЗDES'", 10)
-        seq.add("ON ZDES'", 10)
-        seq.add("ОN ZДЕSЬ", 10)
-        seq.add("OН ЗDES'", 10)
-        seq.add("ON ZDES'", 10)
+        repeat(5) {
+            seq.add("ОN ZДЕSЬ", 2)
+            seq.add("OН ЗDES'", 2)
+            seq.add("ON ZDES'", 2)
+        }
         val packets = arrayOf(
             OpenTextBox(seq, 0),
             RIPVertEvent(shakeStart, lagStart)

@@ -22,6 +22,9 @@ open class TimeTicker : Ticker() {
         }
         return ticks
     }
+
+    fun delta(start: Long, duration: Long): Float = ((ticks - start).toFloat() / duration).coerceIn(0f, 1f)
+    fun delta(start: Int, duration: Int): Float = delta(start.toLong(), duration.toLong())
 }
 
 val TICKER_INTRO = TimeTicker()
