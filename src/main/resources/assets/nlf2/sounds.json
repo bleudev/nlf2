@@ -70,5 +70,23 @@
         "sounds": [
             "nlf2:noise"
         ]
+    },
+    "mus_man_before": {
+        "subtitle": "sound.nlf2.mus_man_before",
+        "sounds": [
+            "nlf2:mus_man_before"
+        ]
+    },
+    "mus_man_weird": {
+        "subtitle": "sound.nlf2.mus_man_weird",
+        "sounds": [
+            "nlf2:mus_man_weird"
+        ]
+    },
+    "mus_quake": {
+        "subtitle": "sound.nlf2.mus_quake",
+        "sounds": [
+            "nlf2:mus_quake"
+        ]
     }
 }

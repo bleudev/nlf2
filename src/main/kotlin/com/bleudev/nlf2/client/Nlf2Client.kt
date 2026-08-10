@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
@@ -15,6 +16,7 @@ import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
+import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -41,6 +43,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
@@ -49,6 +52,14 @@ import unknown.depths.r.man.ROHJEN67SW51
 import kotlin.random.Random
 
 class Nlf2Client : ClientModInitializer {
+    class MusManBeforeInstance(private val end: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_MAN_BEFORE) {
+        override fun vol(): Float = TICKER_RIP_VERT.delta(0, end, 40).also { println("MUS MAN BEFORE VOLUME IS $it") }
+    }
+    class MusManWeirdInstanceSnippet(private val start: Int, private val mid: Int, sound: SoundEvent) : TickableLoopedAmbientSoundInstance(sound) {
+        override fun vol(): Float = TICKER_RIP_VERT.delta(start, 40)
+        override fun pit(): Float = TICKER_RIP_VERT.delta(mid, mid + 60).lerp(1f, 2f)
+    }
+
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         ActorCharEntrypoint.initialize()
@@ -126,6 +137,25 @@ class Nlf2Client : ClientModInitializer {
             pause_screen_ticks++
             noise_tick++
             ActorCharEntrypointClient.tick()
+
+            // RIP Vert sounds
+            if (ripVertEventEnabled) {
+                val sm = mc.soundManager
+                when (TICKER_RIP_VERT.ticks) {
+                    1L -> {
+                        sm.play(MusManBeforeInstance(ripVertEventShakeStartTick))
+                    }
+                    ripVertEventShakeStartTick.toLong() -> {
+                        sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_MAN_WEIRD))
+                        sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_QUAKE))
+                        sm.stop(Nlf2Sounds.MUS_MAN_BEFORE.location, null)
+                    }
+                    in (ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN)..(ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN+RIP_VERT_EVENT_ERASE_DURATION) -> {
+                        sm.stop(Nlf2Sounds.MUS_MAN_WEIRD.location, null)
+                        sm.stop(Nlf2Sounds.MUS_QUAKE.location, null)
+                    }
+                }
+            }
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++
