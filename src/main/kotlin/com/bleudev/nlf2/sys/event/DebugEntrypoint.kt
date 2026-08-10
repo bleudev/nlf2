@@ -24,6 +24,8 @@ object DebugEntrypoint {
         add(57, ::BlueSkyTest)
         add(58, ::WhiteSkyTest)
         add(101, ::OrangeSkinOverlay)
+        add(110) { FI_NoVert(it, false) }
+        add(111) { FI_NoVert(it, true) }
     }
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {

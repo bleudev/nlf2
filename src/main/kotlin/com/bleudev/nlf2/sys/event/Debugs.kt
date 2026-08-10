@@ -30,3 +30,13 @@ class RedSkyTest(server: MinecraftServer) : FI_SkyColorEffect(server, 0xffff0000
 class GreenSkyTest(server: MinecraftServer) : FI_SkyColorEffect(server, 0xff00ff00.toInt(), "green")
 class BlueSkyTest(server: MinecraftServer) : FI_SkyColorEffect(server, 0xff0000ff.toInt(), "blue")
 class WhiteSkyTest(server: MinecraftServer) : FI_SkyColorEffect(server, 0xffffffff.toInt(), "white")
+
+class FI_NoVert(server: MinecraftServer, val new: Boolean) : Nlf2Event(server, "no_vert_$new") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.noVert = new
+            it
+        }
+    }
+}

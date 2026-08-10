@@ -5,6 +5,7 @@ import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.util.clearVertItemsIfNeed
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.server.MinecraftServer
@@ -27,6 +28,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
             loreData.compassCrazy,
             players[gameProfile.name]?.simulateNickname ?: "self",
         ))
+        clearVertItemsIfNeed(level().server)
     }
     private fun MinecraftServer.sync() { for (i in playerList.players) i.sync() }
 

@@ -24,10 +24,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.world.Nlf2MobEffects
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
-import com.bleudev.nlf2.util.actor
-import com.bleudev.nlf2.util.hurtUnknown
-import com.bleudev.nlf2.util.isActor
-import com.bleudev.nlf2.util.sendToEveryone
+import com.bleudev.nlf2.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -149,6 +146,8 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            clearVertItemsCludge = server.nlf2data.loreData.noVert
+            clearVertItemsIfNeed(server)
             val pl = if (DEV_EVENT_85) server.actor else server.playerList.getPlayer(EVENT85_NICKNAME)
             pl?.run {
                 sendPacket(BeforeMeetWaterFluid(
