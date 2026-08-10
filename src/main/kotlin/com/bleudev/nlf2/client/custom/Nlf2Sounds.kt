@@ -27,6 +27,12 @@ object Nlf2Sounds {
     val MUS_MAN_STORY = registerSound("mus_man_story")
     @JvmField
     val NOISE = registerSound("noise")
+    @JvmField
+    val MUS_MAN_BEFORE = registerSound("mus_man_before")
+    @JvmField
+    val MUS_MAN_WEIRD = registerSound("mus_man_weird")
+    @JvmField
+    val MUS_QUAKE = registerSound("mus_quake")
 
     fun allJukeboxMusic() = listOf(
         MUS_STRANGE_NOISE, MUS_MILKICH_APPEARS, MUS_JUKEBOX_PUZZLE, MUS_JUKEBOX, MUS_EASTER_EGG
@@ -34,6 +40,10 @@ object Nlf2Sounds {
     @JvmStatic
     fun storySounds() = listOf(
         MUS_STORY, MUS_MAN_STORY, NOISE
+    )
+    @JvmStatic
+    fun ripVertSounds() = listOf(
+        MUS_MAN_BEFORE
     )
 
     fun initialize() {}
