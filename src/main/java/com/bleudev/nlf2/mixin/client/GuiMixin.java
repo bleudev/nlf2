@@ -56,6 +56,6 @@ public abstract class GuiMixin {
 
     @Inject(method = "extractRenderState", at = @At("TAIL"))
     private void extractExtras(DeltaTracker deltaTracker, boolean shouldRenderLevel, boolean resourcesLoaded, CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
-        StoryAnimation.INSTANCE.render(graphics);
+        StoryAnimation.INSTANCE.extractRenderState(graphics);
     }
 }

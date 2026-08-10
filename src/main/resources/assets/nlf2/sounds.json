@@ -59,10 +59,10 @@
             "nlf2:mus_story"
         ]
     },
-    "mus_red_wind": {
-        "subtitle": "sound.nlf2.mus_red_wind",
+    "mus_man_story": {
+        "subtitle": "sound.nlf2.mus_man_story",
         "sounds": [
-            "nlf2:mus_red_wind"
+            "nlf2:mus_man_story"
         ]
     },
     "noise": {

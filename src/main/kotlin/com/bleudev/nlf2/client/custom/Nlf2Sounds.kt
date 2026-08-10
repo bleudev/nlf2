@@ -24,7 +24,7 @@ object Nlf2Sounds {
     @JvmField
     val MUS_STORY = registerSound("mus_story")
     @JvmField
-    val MUS_RED_WIND = registerSound("mus_red_wind")
+    val MUS_MAN_STORY = registerSound("mus_man_story")
     @JvmField
     val NOISE = registerSound("noise")
 
@@ -33,7 +33,7 @@ object Nlf2Sounds {
     )
     @JvmStatic
     fun storySounds() = listOf(
-        MUS_STORY, MUS_RED_WIND, NOISE
+        MUS_STORY, MUS_MAN_STORY, NOISE
     )
 
     fun initialize() {}

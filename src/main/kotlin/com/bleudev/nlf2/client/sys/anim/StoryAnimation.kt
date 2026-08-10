@@ -32,7 +32,7 @@ import kotlin.random.Random
 object StoryAnimation {
     private var playedMusStory = false
     private var playedNoise = false
-    private var playedMusRedWind = false
+    private var playedMusManStory = false
     private var preSavedHideIcons = false
     private var preSavedDisabled = false
     internal var endTick = 99999
@@ -42,12 +42,12 @@ object StoryAnimation {
     val otherVolume: Float get() {
         val t = TICKER_STORY.ticks
         return min(
-            ((t.toFloat()) / 30).coerceIn(0f, 1f),
-            ((t - endTick + 60).toFloat() / 60).coerceIn(0f, 1f).reverseDelta(),
+            TICKER_STORY.delta(0, 30),
+            TICKER_STORY.delta(endTick - 60, 60).reverseDelta(),
         ).reverseDelta()
     }
 
-    fun render(graphics: GuiGraphicsExtractor) {
+    fun extractRenderState(graphics: GuiGraphicsExtractor) {
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
         graphics.black(otherVolume.reverseDelta())
@@ -67,12 +67,12 @@ object StoryAnimation {
             shouldRenderStory = false
             playedMusStory = false
             playedNoise = false
-            playedMusRedWind = false
+            playedMusManStory = false
             canUseMouse = true
             canUseKeyboard = true
             val sm = Minecraft.getInstance().soundManager
             sm.stop(Nlf2Sounds.MUS_STORY.location, SoundSource.AMBIENT)
-            sm.stop(Nlf2Sounds.MUS_RED_WIND.location, SoundSource.AMBIENT)
+            sm.stop(Nlf2Sounds.MUS_MAN_STORY.location, SoundSource.AMBIENT)
             sm.stop(Nlf2Sounds.NOISE.location, SoundSource.AMBIENT)
             return
         }
@@ -301,9 +301,9 @@ object StoryAnimation {
                 })
                 playedNoise = true
             }
-            if (!playedMusRedWind) {
-                sm.play(MusRedWindInstance(end + 60))
-                playedMusRedWind = true
+            if (!playedMusManStory) {
+                sm.play(MusManStoryInstance(end + 60))
+                playedMusManStory = true
             }
         }
         // Other
@@ -316,7 +316,7 @@ object StoryAnimation {
             ((TICKER_STORY.ticks - endTick + 40).toFloat() / 40).coerceIn(0f, 1f).reverseDelta() / 2
         override fun pit(): Float = 1f
     }
-    private class MusRedWindInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_RED_WIND) {
+    private class MusManStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_MAN_STORY) {
         override fun tick() {
             super.tick()
         }
