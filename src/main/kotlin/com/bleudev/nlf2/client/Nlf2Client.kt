@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
@@ -11,16 +12,21 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient
+import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
+import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
+import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
+import com.bleudev.nlf2.util.onlyIf
+import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList
@@ -37,13 +43,23 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
 import org.joml.Vector4f
 import unknown.depths.r.man.ROHJEN67SW51
+import kotlin.random.Random
 
 class Nlf2Client : ClientModInitializer {
+    class MusManBeforeInstance(private val end: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_MAN_BEFORE) {
+        override fun vol(): Float = TICKER_RIP_VERT.delta(0, end, 40).also { println("MUS MAN BEFORE VOLUME IS $it") }
+    }
+    class MusManWeirdInstanceSnippet(private val start: Int, private val mid: Int, sound: SoundEvent) : TickableLoopedAmbientSoundInstance(sound) {
+        override fun vol(): Float = TICKER_RIP_VERT.delta(start, 40)
+        override fun pit(): Float = TICKER_RIP_VERT.delta(mid, mid + 60).lerp(1f, 2f)
+    }
+
     override fun onInitializeClient() {
         Nlf2Sounds.initialize()
         ActorCharEntrypoint.initialize()
@@ -121,6 +137,25 @@ class Nlf2Client : ClientModInitializer {
             pause_screen_ticks++
             noise_tick++
             ActorCharEntrypointClient.tick()
+
+            // RIP Vert sounds
+            if (ripVertEventEnabled) {
+                val sm = mc.soundManager
+                when (TICKER_RIP_VERT.ticks) {
+                    1L -> {
+                        sm.play(MusManBeforeInstance(ripVertEventShakeStartTick))
+                    }
+                    ripVertEventShakeStartTick.toLong() -> {
+                        sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_MAN_WEIRD))
+                        sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_QUAKE))
+                        sm.stop(Nlf2Sounds.MUS_MAN_BEFORE.location, null)
+                    }
+                    in (ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN)..(ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN+RIP_VERT_EVENT_ERASE_DURATION) -> {
+                        sm.stop(Nlf2Sounds.MUS_MAN_WEIRD.location, null)
+                        sm.stop(Nlf2Sounds.MUS_QUAKE.location, null)
+                    }
+                }
+            }
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++
@@ -220,6 +255,60 @@ class Nlf2Client : ClientModInitializer {
                 graphics.overlayWithColor(((pause_screen_ticks - 200) / 400f).coerceIn(0f, 1f), 0f, 0f, 0f)
             }
         }
+        HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
+            if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
+            if (TICKER_RIP_VERT >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + RIP_VERT_EVENT_ERASE_DURATION) {
+                ripVertEventEnabled = false
+            }
+            if (shouldRenderTextBox) {
+                val t = TICKER_TEXT_BOX.tick().toInt()
+                val seq = GuiTextBoxSequence(textBoxSequence)
+                seq.tick(t)
+                if (t >= seq.start) {
+                    shouldRenderTextBox = false
+                    TICKER_TEXT_BOX.reset()
+                    textBoxSequence = TextBoxSequence()
+                    textBoxFadeOut = 0
+                    return@addLast
+                }
+
+                graphics.pose().pushMatrix()
+                graphics.pose().translate(
+                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount,
+                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount
+                )
+                seq.extractRenderState(graphics, TICKER_RIP_VERT.delta(seq.start - textBoxFadeOut, textBoxFadeOut)
+                    .onlyIf(textBoxFadeOut > 0).reverseDelta())
+                graphics.pose().popMatrix()
+            }
+        }
+        HudElementRegistry.addLast(Layer.EVENT_RIP_VERT) { graphics, _ ->
+            // RIP Vert noise
+            if (ripVertEventEnabled) {
+                val noiseForce = TICKER_RIP_VERT.delta(ripVertEventLagStartTick, RIP_VERT_EVENT_LAG_FADE_IN)
+                val colors = ArrayList<Int>()
+                colors.add(0xffffff)
+                for (i in 0..7) {
+                    colors.add(ARGB.color(
+                        if ((i / 4) == 0) 0xff else 0xe0,
+                        if ((i / 2) % 2 == 0) 0xff else 0xe0,
+                        if (i % 2 == 0) 0xff else 0xe0
+                    ))
+                }
+                graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, colors.random()))
+
+                if (TICKER_RIP_VERT - ripVertEventLagStartTick - RIP_VERT_EVENT_LAG_FADE_IN in 0..RIP_VERT_EVENT_ERASE_DURATION) {
+                    val font = Minecraft.getInstance().font
+                    val str = "ERASE"
+                    graphics.black()
+                    graphics.pose().pushMatrix()
+                    graphics.pose().translate(graphics.guiWidth().toFloat() / 2, graphics.guiHeight().toFloat() / 2)
+                    graphics.pose().scale(2f)
+                    graphics.text(font, str, - font.width(str) / 2, 0, 0xffffffff.toInt(), false)
+                    graphics.pose().popMatrix()
+                }
+            }
+        }
 
         // Packets
         registerPacketReceiver(BeforeMeetWaterFluid) { payload ->
@@ -277,6 +366,18 @@ class Nlf2Client : ClientModInitializer {
                 ctx.client().gui.setScreen(PuzzleScreen(it))
             }
         }
+        registerPacketReceiver(OpenTextBox) { payload ->
+            TICKER_TEXT_BOX.reset()
+            shouldRenderTextBox = true
+            textBoxSequence = payload.sequence
+            textBoxFadeOut = payload.fadeOut
+        }
+        registerPacketReceiver(RIPVertEvent) { payload ->
+            ripVertEventShakeStartTick = payload.shakeStartTick
+            ripVertEventLagStartTick = payload.lagStartTick
+            TICKER_RIP_VERT.reset()
+            ripVertEventEnabled = true
+        }
         registerPacketReceiver(SkyColorEffect) { payload ->
             skyColorEffectTicks = 0
             skyColorEffectStartDuration = payload.startDuration
@@ -304,6 +405,10 @@ class Nlf2Client : ClientModInitializer {
 
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
+        }
+        registerPacketReceiver(StoryStart) {
+            TICKER_STORY.reset()
+            shouldRenderStory = true
         }
         registerPacketReceiver(StrangeJukeboxMusicStop) {
             val sm = Minecraft.getInstance().soundManager
@@ -340,6 +445,8 @@ class Nlf2Client : ClientModInitializer {
         val BORDER_NOISE: Identifier = getIdentifier("layer/border/noise")
         val OVERLAY_FIX: Identifier = getIdentifier("layer/overlay/fix")
         val OVERLAY_PAUSE_SCREEN: Identifier = getIdentifier("layer/overlay/pause_screen")
+        val OVERLAY_TEXT_BOX: Identifier = getIdentifier("layer/overlay/text_box")
+        val EVENT_RIP_VERT: Identifier = getIdentifier("layer/event/rip_vert")
     }
 
     object Sprite {

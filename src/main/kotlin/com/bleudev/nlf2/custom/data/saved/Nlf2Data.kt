@@ -2,11 +2,10 @@ package com.bleudev.nlf2.custom.data.saved
 
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
-import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.LoreData
-import com.bleudev.nlf2.custom.data.saved.Nlf2PlayersData.PlayerData
 import com.bleudev.nlf2.custom.packet.payload.ClientNlf2DataSync
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.util.clearVertItemsIfNeed
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.server.MinecraftServer
@@ -16,7 +15,7 @@ import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
 
 
-class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
+class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerData> = mapOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
     private fun ServerPlayer.sync() {
         sendPacket(ClientNlf2DataSync(
             loreData.actor,
@@ -27,8 +26,9 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             loreData.event101,
             loreData.manualId,
             loreData.compassCrazy,
-            getPlayerData(gameProfile.name)?.simulateNickname ?: "self",
+            players[gameProfile.name]?.simulateNickname ?: "self",
         ))
+        clearVertItemsIfNeed(level().server)
     }
     private fun MinecraftServer.sync() { for (i in playerList.players) i.sync() }
 
@@ -40,23 +40,20 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
             serverToSync?.sync()
         }
 
-    private val players: ArrayList<PlayerData> = ArrayList(playersData)
-    fun getPlayers(): List<PlayerData> = players.toList()
-    fun getPlayerData(nickname: String): PlayerData? = players.toList().firstOrNull { it.name == nickname }
-    fun setPlayerData(data: PlayerData) {
-        val index = players.indexOfFirst { it.name == data.name }
-        if (index == -1) players.add(data)
-        else players[index] = data
+    private val varPlayers: HashMap<String, PlayerData> = HashMap(playersData)
+    val players: Map<String, PlayerData> get() = varPlayers.toMap()
+    fun setPlayerData(nickname: String, data: PlayerData) {
+        varPlayers[nickname] = data
         setDirty()
         serverToSync?.sync()
     }
     fun changePlayerData(name: String, changer: (PlayerData) -> PlayerData) =
-        setPlayerData((getPlayers().find { it.name == name }?: PlayerData(name)).let(changer))
+        setPlayerData(name, (players[name] ?: PlayerData()).let(changer))
 
     fun onJoin(player: ServerPlayer) {
         causeEvent(34)
         val name = player.gameProfile.name
-        if (players.none { it.name == name }) players.add(PlayerData(name))
+        varPlayers.computeIfAbsent(name) { PlayerData() }
         player.sync()
     }
 
@@ -70,6 +67,7 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
         var compassCrazy: Boolean = false,
         var forceJukeboxMus: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL,
         var mobAvoidPlayers: Boolean = false,
+        var noVert: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
@@ -83,20 +81,29 @@ class Nlf2PlayersData(loreData: LoreData = LoreData(), playersData: List<PlayerD
                 Codec.BOOL.fieldOf("compassCrazy").forGetter(LoreData::compassCrazy),
                 StrangeJukeboxBlock.SelectedMus.CODEC.fieldOf("forceJukeboxMus").forGetter(LoreData::forceJukeboxMus),
                 Codec.BOOL.fieldOf("mobAvoidPlayers").forGetter(LoreData::mobAvoidPlayers),
+                Codec.BOOL.fieldOf("noVert").forGetter(LoreData::noVert),
             ).apply(it, ::LoreData) }
         }
     }
 
-    class PlayerData(var name: String, var teleported: Boolean = false, var simulateNickname: String = "self", var curse: Float = 0f) {
+    class PlayerData(var teleported: Boolean = false, var simulateNickname: String = "self", var curse: Float = 0f) {
         companion object {
             val CODEC: Codec<PlayerData> = RecordCodecBuilder.create { it.group(
-                Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
                 Codec.BOOL.fieldOf("teleported").forGetter(PlayerData::teleported),
                 Codec.STRING.fieldOf("simulate").forGetter(PlayerData::simulateNickname),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
             ).apply(it, ::PlayerData)
             }
         }
+    }
+
+    companion object {
+        val CODEC: Codec<Nlf2Data> = RecordCodecBuilder.create { it.group(
+            LoreData.CODEC.fieldOf("lore").forGetter(Nlf2Data::loreData),
+            Codec.unboundedMap(Codec.STRING, PlayerData.CODEC).fieldOf("players").forGetter(Nlf2Data::players),
+        ).apply(it, ::Nlf2Data) }
+        val TYPE: SavedDataType<Nlf2Data> = SavedDataType(getIdentifier("data"), ::Nlf2Data, CODEC,
+            DataFixTypes.SAVED_DATA_MAP_DATA)
     }
 }
 
@@ -106,13 +113,5 @@ object BorderStates {
     const val BLACK_FOG_KILL = 2
 }
 
-private val CODEC: Codec<Nlf2PlayersData> = RecordCodecBuilder.create { it.group(
-    LoreData.CODEC.fieldOf("lore").forGetter(Nlf2PlayersData::loreData),
-    Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2PlayersData::getPlayers),
-).apply(it, ::Nlf2PlayersData) }
-
-private val TYPE: SavedDataType<Nlf2PlayersData> = SavedDataType(getIdentifier("lore_players_data"), ::Nlf2PlayersData, CODEC,
-    DataFixTypes.SAVED_DATA_MAP_DATA)
-
-val MinecraftServer.nlf2data: Nlf2PlayersData
-    get() = dataStorage.computeIfAbsent(TYPE).apply { serverToSync = this@nlf2data }
+val MinecraftServer.nlf2data: Nlf2Data
+    get() = dataStorage.computeIfAbsent(Nlf2Data.TYPE).apply { serverToSync = this@nlf2data }

@@ -19,6 +19,7 @@ class Nlf2ModelProvider(packOutput: FabricPackOutput) : FabricModelProvider(pack
         generator.generateFlatItem(Nlf2Items.WD_PUZZLE, ModelTemplates.FLAT_ITEM)
         generator.generateFlatItem(Nlf2Items.MANUAL, ModelTemplates.FLAT_ITEM)
         generator.generateFlatItem(Nlf2Items.CARD, ModelTemplates.FLAT_ITEM)
+        generator.generateFlatItem(Nlf2Items.CHARGED_MANUAL, ModelTemplates.FLAT_ITEM)
     }
 
 }

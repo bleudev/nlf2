@@ -37,13 +37,16 @@ object EventEntrypoint {
         add(93, ::Manual1)
         add(94, ::Manual2)
         add(95, ::Manual3)
+        add(96, ::Manual4)
 
         add(101, ::OrangeSkinOverlayRemove)
+        add(111, ::`RIP Vert(`)
         add(140, ::LabOverlay0)
         add(141, ::LabOverlay1)
         add(189, ::EndSerieCrash)
         add(200, ::CompassCrazyFalse)
         add(201, ::CompassCrazyTrue)
+        add(228, ::StoryStart)
         add(300, ::MobAvoidPlayersFalse)
         add(301, ::MobAvoidPlayersTrue)
         // Force jukebox

@@ -64,7 +64,11 @@ const val BEFORE_MEET_WATER_FLUID_TICKS = 60
 
 const val AMETHYST_DAISY_DISTANCE = 3
 
-const val INTRO_ENABLED = true
+const val RIP_VERT_EVENT_LAG_FADE_IN = 50
+const val RIP_VERT_EVENT_ERASE_DURATION = 80
+
+const val INTRO_ENABLED = false
 
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
+const val DEV_STORY_ACTOR = true

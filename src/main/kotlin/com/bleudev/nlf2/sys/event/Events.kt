@@ -3,19 +3,22 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nlf2.DEV_EVENT_101
-import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.TELEPORT_LOCATIONS
+import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
+import com.bleudev.nlf2.custom.packet.payload.OpenTextBox
+import com.bleudev.nlf2.custom.packet.payload.RIPVertEvent
 import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
+import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
+import com.bleudev.nlf2.sys.util.TextBoxSequence
+import com.bleudev.nlf2.sys.util.TextColorConstants
 import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.component.DataComponents
@@ -50,7 +53,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
         vararg args: Any?
     ) {
         super.cause(causedBy, *args)
-        for (name in server.nlf2data.getPlayers().filter { !it.teleported }.map { it.name }) {
+        for (name in server.nlf2data.players.entries.filter { !it.value.teleported }.map { it.key }) {
             val lc = name.lowercase()
             if (lc in TELEPORT_LOCATIONS) {
                 server.playerList.getPlayer(name)?.let { pl ->
@@ -72,7 +75,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
 class ResetTeleportsOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "reset_teleports_on_first_join") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
-        for (name in server.nlf2data.getPlayers().map { it.name }) {
+        for (name in server.nlf2data.players.keys) {
             server.nlf2data.changePlayerData(name) {
                 it.teleported = false
                 it
@@ -141,6 +144,17 @@ class Manual0(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.DEFAUL
 class Manual1(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_DEBUG_STICK.id, "manual_1_internal")
 class Manual2(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_STICK.id, "manual_2_internal")
 class Manual3(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.AFTER_AMETHYST_OXEYE_DAISY.id, "manual_3_internal")
+class Manual4(server: MinecraftServer) : FI_ManualUpdate(server, ManualId.BEFORE_CHARGED_MANUAL.id, "manual_4") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.VERT)
+        seq.speed(6)
+        seq.add("Руководство...", 40)
+        val packet = OpenTextBox(seq, 40)
+        server.sendToEveryone { arrayOf(packet) }
+        super.cause(causedBy, *args)
+    }
+}
 
 class OrangeSkinOverlayRemove(server: MinecraftServer) : Nlf2Event(server, "orange_skin_overlay_remove_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
@@ -326,5 +340,63 @@ class StealStrangeJukebox(server: MinecraftServer) : Nlf2Event(server, "steal_st
         }
         val itemStack = causedBy.inventory.find { it.`is`(Nlf2Blocks.STRANGE_JUKEBOX.asItem()) } ?: return
         tryPickItem(causedBy, itemStack)
+    }
+}
+
+class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        server.playerList.players.forEach {
+            if (it.wantsToListenStory) {
+                it.sendPacket(StoryStart.INSTANCE)
+            }
+        }
+        Nlf2.storyStarted(server)
+    }
+}
+
+// Debug Like
+class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (internal)") {
+    private var endTick: Int = 99999
+
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.VERT)
+        seq.speed(4)
+        seq.add("Я бы хотел&вам помочь...", 20)
+        seq.add("Правда...&Очень...", 20)
+        seq.add("Но я, увы,&не могу...", 20)
+        seq.add("Физически...", 20)
+        seq.add("Прощайте...", 20)
+        seq.speed(6)
+        seq.add("ОН ЗДЕСЬ", 40)
+        val shakeStart = seq.start - 30
+        seq.full(true)
+        val lagStart = seq.start
+        seq.add("ОN ZДЕSЬ", 10)
+        seq.add("OН ЗDES'", 10)
+        seq.add("ON ZDES'", 10)
+        repeat(10) {
+            seq.add("ОN ZДЕSЬ", 2)
+            seq.add("OН ЗDES'", 2)
+            seq.add("ON ZDES'", 2)
+        }
+        val packets = arrayOf(
+            OpenTextBox(seq, 0),
+            RIPVertEvent(shakeStart, lagStart)
+        )
+        server.sendToEveryone { pl -> packets.takeIf { pl.wantsToListenStory } ?: arrayOf() }
+        endTick = lagStart + RIP_VERT_EVENT_LAG_FADE_IN
+    }
+
+    override fun tick() {
+        super.tick()
+        if (ticks == endTick) {
+            clearVertItemsIfNeed(server)
+            server.nlf2data::loreData.transform {
+                it.noVert = true
+                it
+            }
+        }
     }
 }

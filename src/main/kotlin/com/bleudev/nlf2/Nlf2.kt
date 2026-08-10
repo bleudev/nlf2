@@ -1,6 +1,11 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesItems
+import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
+import com.bleudev.nine_lifes.util.alwaysTrue
+import com.bleudev.nine_lifes.util.entityIn
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
@@ -19,10 +24,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.world.Nlf2MobEffects
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
-import com.bleudev.nlf2.util.actor
-import com.bleudev.nlf2.util.hurtUnknown
-import com.bleudev.nlf2.util.isActor
-import com.bleudev.nlf2.util.sendToEveryone
+import com.bleudev.nlf2.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -33,7 +35,11 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.player.Player
@@ -52,6 +58,45 @@ fun getIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MO
 val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
+    companion object {
+        private var isStorySpectator = false
+        private var storyTicks = -1
+        private var scheduledEvents: ArrayList<ScheduledEvent> = ArrayList()
+
+        fun storyStarted(server: MinecraftServer) {
+            storyTicks = 0
+            scheduledEvents.add(ScheduledEvent(30) {
+                isStorySpectator = true
+                for (player in server.playerList.players) {
+                    if (player.wantsToListenStory) {
+                        player.setGameMode(GameType.SPECTATOR)
+                        player.addEffect(MobEffectInstance(MobEffects.RESISTANCE, 1640, 255, false, false))
+                    }
+                }
+            })
+            scheduledEvents.add(ScheduledEvent(1640) {
+                isStorySpectator = false
+                for (player in server.playerList.players) {
+                    if (player.wantsToListenStory) {
+                        player.setGameMode(GameType.SURVIVAL)
+                    }
+                }
+            })
+            scheduledEvents.add(ScheduledEvent(1700) {
+                causeEvent(111)
+            })
+        }
+    }
+
+    data class ScheduledEvent(var remainingTicks: Int, val runnable: Runnable) {
+        fun tick() {
+            if (remainingTicks <= 0) return
+            remainingTicks--
+            if (remainingTicks <= 0) {
+                runnable.run()
+            }
+        }
+    }
     data class BorderLoseHeartsInfo(var ticksBeforeLose: Int, var ticksAfterLose: Int)
 
     private var ticks = 0
@@ -110,6 +155,8 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            clearVertItemsCludge = server.nlf2data.loreData.noVert
+            clearVertItemsIfNeed(server)
             val pl = if (DEV_EVENT_85) server.actor else server.playerList.getPlayer(EVENT85_NICKNAME)
             pl?.run {
                 sendPacket(BeforeMeetWaterFluid(
@@ -162,9 +209,41 @@ class Nlf2 : ModInitializer {
             }
             // Events
             EventEntrypoint.tick()
-            // Don't show advancements
+            // Scheduled
+            scheduledEvents.forEach(ScheduledEvent::tick)
+            scheduledEvents.removeAll { it.remainingTicks <= 0 }
+            // Game rules
             if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
                 server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //
+            }
+            if (server.gameRules.get(GameRules.PLAYERS_SLEEPING_PERCENTAGE) != 1) {
+                server.gameRules.set(GameRules.PLAYERS_SLEEPING_PERCENTAGE, 1, server)
+            }
+            // Charge manual
+            val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
+            for (level in server.allLevels) {
+                for (lightningBolt in level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue())) {
+                    for (itemEntity in level.getEntities(EntityTypes.ITEM, entityIn(lightningBolt.position(), LIGHTNING_CHARGING_RADIUS))) {
+                        if (itemEntity.item.`is`(Nlf2Items.MANUAL)) {
+                            itemEntity.item = itemEntity.item.transmuteCopy(Nlf2Items.CHARGED_MANUAL)
+                        }
+                        level.players().forEach { player ->
+                            val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
+                                .coerceAtLeast(.0)
+                            NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
+                            val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
+                            player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
+                        }
+                    }
+                }
+            }
+            // Story
+            if (isStorySpectator) {
+                for (player in server.playerList.players) {
+                    if (player.wantsToListenStory) {
+                        player.deltaMovement = Vec3.ZERO
+                    }
+                }
             }
         }
         EntityElytraEvents.CUSTOM.register { entity, _ ->

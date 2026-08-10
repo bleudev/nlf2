@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.mixin.client;
 
-import com.bleudev.nlf2.client.IntroHelper;
+import com.bleudev.nlf2.client.sys.anim.IntroAnimation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,6 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LoadingOverlayMixin {
     @Inject(method = "extractRenderState", at = @At("RETURN"))
     private void renderIntro(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        IntroHelper.INSTANCE.render(graphics);
+        IntroAnimation.INSTANCE.render(graphics);
     }
 }

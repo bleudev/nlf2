@@ -4,6 +4,7 @@
   "package": "com.bleudev.nlf2.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "AbstractContainerMenuMixin",
     "AbstractVillagerMixin",
     "AnimalsMixin",
     "EnderEyeItemMixin",
@@ -41,6 +42,7 @@
     "client.PanoramaMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
+    "client.SoundEngineMixin",
     "client.TitleScreenMixin",
     "client.accessor.KeyBindsList$KeyEntryAccessor",
     "client.impl.KeyBindsList$CategoryEntryMixin",

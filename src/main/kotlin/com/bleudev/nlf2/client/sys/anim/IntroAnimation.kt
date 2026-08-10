@@ -1,12 +1,15 @@
 @file:Environment(EnvType.CLIENT)
 
-package com.bleudev.nlf2.client
+package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nlf2.INTRO_ENABLED
 import com.bleudev.nlf2.SERVER_ADDRESS
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.join_blackness
+import com.bleudev.nlf2.client.join_blackness_delay_ticks
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
+import com.bleudev.nlf2.client.webcamEnabled
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
@@ -19,7 +22,7 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress
 import net.minecraft.sounds.SoundSource
 import kotlin.math.min
 
-object IntroHelper {
+object IntroAnimation {
     fun render(graphics: GuiGraphicsExtractor) {
         if (!INTRO_ENABLED) return
 
@@ -98,7 +101,7 @@ object IntroHelper {
         else if (t <= 340) intro(13)
         else if (t <= 360) intro(14)
         else if (t <= 380) intro(15)
-        else if (t <= 400) intro(16)
+        else intro(16)
         graphics.pose().popMatrix()
 
         // Laugh sound
