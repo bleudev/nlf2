@@ -33,6 +33,11 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("sound.nlf2.mus_milkich_appears", "10 (Not) lactose-free")
         builder.add("sound.nlf2.mus_jukebox_puzzle", "")
         builder.add("sound.nlf2.mus_story", "")
+        builder.add("sound.nlf2.mus_man_story", "")
+        builder.add("sound.nlf2.noise", "")
+        builder.add("sound.nlf2.mus_man_before", "Strange music")
+        builder.add("sound.nlf2.mus_man_weird", "LOUD MUSIC")
+        builder.add("sound.nlf2.mus_quake", "LOUD EARTHQUAKE")
         builder.add("sound.nlf2.mus_jukebox", "11 The Abandoned World")
         builder.add("sound.nlf2.mus_easter_egg", "12 Jukeboxing To The Fullest!")
     }
@@ -60,5 +65,8 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("sound.nlf2.border_ambient", "Странный шум")
         builder.add("sound.nlf2.pause_cutscene_ambient", "Странный шум")
         builder.add("sound.nlf2.mus_strange_noise", "Странный шум")
+        builder.add("sound.nlf2.mus_man_before", "Странная музыка")
+        builder.add("sound.nlf2.mus_man_weird", "ГРОМКАЯ МУЗЫКА")
+        builder.add("sound.nlf2.mus_quake", "ГРОМКОЕ ЗЕМЛЕТРЯСЕНИЕ")
     }
 }
