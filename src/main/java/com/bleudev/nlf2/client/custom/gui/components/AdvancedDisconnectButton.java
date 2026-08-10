@@ -20,6 +20,7 @@ public class AdvancedDisconnectButton extends Button.Plain {
             this.setMessage(Component.literal("I'M WATCHING FOR YOU"));
             this.active = false;
             webcamEnabled = true;
+            Minecraft.getInstance().updateTitle();
             pause_screen_ticks = 0;
             pause_screen_red_screen_effect = true;
             should_not_play_any_sound = true;

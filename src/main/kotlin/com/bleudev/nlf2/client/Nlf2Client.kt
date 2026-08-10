@@ -258,6 +258,8 @@ class Nlf2Client : ClientModInitializer {
             if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
             if (TICKER_RIP_VERT >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + RIP_VERT_EVENT_ERASE_DURATION) {
                 ripVertEventEnabled = false
+                webcamEnabled = false
+                Minecraft.getInstance().updateTitle()
             }
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
@@ -297,6 +299,8 @@ class Nlf2Client : ClientModInitializer {
                 graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, colors.random()))
 
                 if (TICKER_RIP_VERT - ripVertEventLagStartTick - RIP_VERT_EVENT_LAG_FADE_IN in 0..RIP_VERT_EVENT_ERASE_DURATION) {
+                    webcamEnabled = true
+                    Minecraft.getInstance().updateTitle()
                     val font = Minecraft.getInstance().font
                     val str = "ERASE"
                     graphics.black()

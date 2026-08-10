@@ -49,6 +49,7 @@ object IntroAnimation {
         canUseMouse = false
         canUseKeyboard = false
         webcamEnabled = t in 190..380
+        Minecraft.getInstance().updateTitle()
 
         val mc = Minecraft.getInstance()
 

@@ -3,6 +3,7 @@ package com.bleudev.nlf2.mixin.client;
 import com.bleudev.nlf2.client.custom.gui.components.AdvancedDisconnectButton;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -35,6 +36,7 @@ public class PauseScreenMixin extends Screen {
     @Inject(method = "onClose", at = @At("TAIL"))
     public void onClose(CallbackInfo ci) {
         webcamEnabled = false;
+        Minecraft.getInstance().updateTitle();
         pause_screen_red_screen_effect = false;
         should_not_play_any_sound = false;
     }

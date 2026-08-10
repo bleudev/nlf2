@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -43,6 +44,7 @@ public abstract class GuiMixin {
     private void blockSpecificScreens(Screen screen, CallbackInfo ci) {
         if (screen == null) {
             webcamEnabled = false;
+            Minecraft.getInstance().updateTitle();
             pause_screen_red_screen_effect = false;
             should_not_play_any_sound = false;
         } else if (screen.getTitle().equals(Component.translatable("gui.xaero_world_map_screen"))) { // Block Xaero's world map

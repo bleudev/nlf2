@@ -97,6 +97,7 @@ var ripVertEventEnabled: Boolean = false
 var ripVertEventShakeStartTick: Int = -1
 var ripVertEventLagStartTick: Int = -1
 val ripVertShakeAmount: Float get() = TICKER_RIP_VERT.delta(ripVertEventShakeStartTick, 50).onlyIf(ripVertEventEnabled)
+var ripVertSavedWindowTitle: String = ""
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
