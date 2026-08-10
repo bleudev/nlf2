@@ -37,6 +37,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -57,24 +59,31 @@ val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
     companion object {
+        private var isStorySpectator = false
         private var storyTicks = -1
         private var scheduledEvents: ArrayList<ScheduledEvent> = ArrayList()
 
         fun storyStarted(server: MinecraftServer) {
             storyTicks = 0
             scheduledEvents.add(ScheduledEvent(30) {
+                isStorySpectator = true
                 for (player in server.playerList.players) {
-                    if (!player.isActor) {
+                    if (player.wantsToListenStory) {
                         player.setGameMode(GameType.SPECTATOR)
+                        player.addEffect(MobEffectInstance(MobEffects.RESISTANCE, 1640, 255, false, false))
                     }
                 }
             })
-            scheduledEvents.add(ScheduledEvent(1459) {
+            scheduledEvents.add(ScheduledEvent(1640) {
+                isStorySpectator = false
                 for (player in server.playerList.players) {
-                    if (!player.isActor) {
+                    if (player.wantsToListenStory) {
                         player.setGameMode(GameType.SURVIVAL)
                     }
                 }
+            })
+            scheduledEvents.add(ScheduledEvent(1700) {
+                causeEvent(111)
             })
         }
     }
@@ -203,7 +212,7 @@ class Nlf2 : ModInitializer {
             // Scheduled
             scheduledEvents.forEach(ScheduledEvent::tick)
             scheduledEvents.removeAll { it.remainingTicks <= 0 }
-            // Don't show advancements
+            // Game rules
             if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
                 server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //
             }
@@ -225,6 +234,14 @@ class Nlf2 : ModInitializer {
                             val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
                             player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                         }
+                    }
+                }
+            }
+            // Story
+            if (isStorySpectator) {
+                for (player in server.playerList.players) {
+                    if (player.wantsToListenStory) {
+                        player.deltaMovement = Vec3.ZERO
                     }
                 }
             }

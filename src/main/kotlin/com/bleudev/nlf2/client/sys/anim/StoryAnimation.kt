@@ -25,7 +25,7 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 import kotlin.math.PI
 import kotlin.math.cos
-import kotlin.math.min
+import kotlin.math.max
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -39,13 +39,10 @@ object StoryAnimation {
     private var ruler3Tick = 99999
 
     @JvmStatic
-    val otherVolume: Float get() {
-        val t = TICKER_STORY.ticks
-        return min(
-            TICKER_STORY.delta(0, 30),
-            TICKER_STORY.delta(endTick - 60, 60).reverseDelta(),
-        ).reverseDelta()
-    }
+    val otherVolume: Float get() = max(
+        TICKER_STORY.delta(0, 30).reverseDelta(),
+        TICKER_STORY.delta(endTick - 60, 60)
+    )
 
     fun extractRenderState(graphics: GuiGraphicsExtractor) {
         if (!shouldRenderStory) return
@@ -309,6 +306,8 @@ object StoryAnimation {
         // Other
         if (endTick == 99999) endTick = end + 120
         if (ruler3Tick == 99999) ruler3Tick = ruler3
+
+//        println("END TICK ${end - 60}")
     }
 
     private class MusStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {

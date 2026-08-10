@@ -3,6 +3,7 @@ package com.bleudev.nlf2.util
 import com.bleudev.nine_lifes.api.Transformer
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
+import com.bleudev.nlf2.DEV_STORY_ACTOR
 import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -100,6 +101,9 @@ val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
 val ServerPlayer.isActor: Boolean
     get() = gameProfile.name.equals(level().server.actorNickname, true)
+@Suppress("SimplifyBooleanWithConstants")
+val ServerPlayer.wantsToListenStory: Boolean
+    get() = DEV_STORY_ACTOR || !isActor
 
 // Color
 fun Int.normalize(rgbTarget: Int = 0) =

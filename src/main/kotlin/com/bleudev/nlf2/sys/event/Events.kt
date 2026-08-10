@@ -346,7 +346,7 @@ class StealStrangeJukebox(server: MinecraftServer) : Nlf2Event(server, "steal_st
 class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         server.playerList.players.forEach {
-            if (!it.isActor) {
+            if (it.wantsToListenStory) {
                 it.sendPacket(StoryStart.INSTANCE)
             }
         }
@@ -385,11 +385,7 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
             OpenTextBox(seq, 0),
             RIPVertEvent(shakeStart, lagStart)
         )
-        server.sendToEveryone { packets }
-        server.nlf2data::loreData.transform {
-            it.noVert = true
-            it
-        }
+        server.sendToEveryone { pl -> packets.takeIf { pl.wantsToListenStory } ?: arrayOf() }
         endTick = lagStart + RIP_VERT_EVENT_LAG_FADE_IN
     }
 
@@ -397,6 +393,10 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
         super.tick()
         if (ticks == endTick) {
             clearVertItemsIfNeed(server)
+            server.nlf2data::loreData.transform {
+                it.noVert = true
+                it
+            }
         }
     }
 }
