@@ -53,7 +53,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
         vararg args: Any?
     ) {
         super.cause(causedBy, *args)
-        for (name in server.nlf2data.getPlayers().filter { !it.teleported }.map { it.name }) {
+        for (name in server.nlf2data.players.entries.filter { !it.value.teleported }.map { it.key }) {
             val lc = name.lowercase()
             if (lc in TELEPORT_LOCATIONS) {
                 server.playerList.getPlayer(name)?.let { pl ->
@@ -75,7 +75,7 @@ class TryTeleportOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "try_t
 class ResetTeleportsOnFirstJoin(server: MinecraftServer) : Nlf2Event(server, "reset_teleports_on_first_join") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
-        for (name in server.nlf2data.getPlayers().map { it.name }) {
+        for (name in server.nlf2data.players.keys) {
             server.nlf2data.changePlayerData(name) {
                 it.teleported = false
                 it

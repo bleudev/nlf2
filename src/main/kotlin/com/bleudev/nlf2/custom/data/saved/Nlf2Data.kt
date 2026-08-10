@@ -14,7 +14,7 @@ import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
 
 
-class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = listOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
+class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerData> = mapOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
     private fun ServerPlayer.sync() {
         sendPacket(ClientNlf2DataSync(
             loreData.actor,
@@ -25,7 +25,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = 
             loreData.event101,
             loreData.manualId,
             loreData.compassCrazy,
-            getPlayerData(gameProfile.name)?.simulateNickname ?: "self",
+            players[gameProfile.name]?.simulateNickname ?: "self",
         ))
     }
     private fun MinecraftServer.sync() { for (i in playerList.players) i.sync() }
@@ -38,23 +38,20 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = 
             serverToSync?.sync()
         }
 
-    private val players: ArrayList<PlayerData> = ArrayList(playersData)
-    fun getPlayers(): List<PlayerData> = players.toList()
-    fun getPlayerData(nickname: String): PlayerData? = players.toList().firstOrNull { it.name == nickname }
-    fun setPlayerData(data: PlayerData) {
-        val index = players.indexOfFirst { it.name == data.name }
-        if (index == -1) players.add(data)
-        else players[index] = data
+    private val varPlayers: HashMap<String, PlayerData> = HashMap(playersData)
+    val players: Map<String, PlayerData> get() = varPlayers.toMap()
+    fun setPlayerData(nickname: String, data: PlayerData) {
+        varPlayers[nickname] = data
         setDirty()
         serverToSync?.sync()
     }
     fun changePlayerData(name: String, changer: (PlayerData) -> PlayerData) =
-        setPlayerData((getPlayers().find { it.name == name }?: PlayerData(name)).let(changer))
+        setPlayerData(name, (players[name] ?: PlayerData()).let(changer))
 
     fun onJoin(player: ServerPlayer) {
         causeEvent(34)
         val name = player.gameProfile.name
-        if (players.none { it.name == name }) players.add(PlayerData(name))
+        varPlayers.computeIfAbsent(name) { PlayerData() }
         player.sync()
     }
 
@@ -87,10 +84,9 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = 
         }
     }
 
-    class PlayerData(var name: String, var teleported: Boolean = false, var simulateNickname: String = "self", var curse: Float = 0f) {
+    class PlayerData(var teleported: Boolean = false, var simulateNickname: String = "self", var curse: Float = 0f) {
         companion object {
             val CODEC: Codec<PlayerData> = RecordCodecBuilder.create { it.group(
-                Codec.STRING.fieldOf("name").forGetter(PlayerData::name),
                 Codec.BOOL.fieldOf("teleported").forGetter(PlayerData::teleported),
                 Codec.STRING.fieldOf("simulate").forGetter(PlayerData::simulateNickname),
                 Codec.FLOAT.fieldOf("curse").forGetter(PlayerData::curse),
@@ -102,7 +98,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: List<PlayerData> = 
     companion object {
         val CODEC: Codec<Nlf2Data> = RecordCodecBuilder.create { it.group(
             LoreData.CODEC.fieldOf("lore").forGetter(Nlf2Data::loreData),
-            Codec.list(PlayerData.CODEC).fieldOf("players").forGetter(Nlf2Data::getPlayers),
+            Codec.unboundedMap(Codec.STRING, PlayerData.CODEC).fieldOf("players").forGetter(Nlf2Data::players),
         ).apply(it, ::Nlf2Data) }
         val TYPE: SavedDataType<Nlf2Data> = SavedDataType(getIdentifier("data"), ::Nlf2Data, CODEC,
             DataFixTypes.SAVED_DATA_MAP_DATA)
