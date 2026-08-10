@@ -227,8 +227,9 @@ class Nlf2Client : ClientModInitializer {
         }
         HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
             if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
-            if (ripVertEventEnabled && TICKER_RIP_VERT.ticks >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN)
+            if (TICKER_RIP_VERT >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + RIP_VERT_EVENT_ERASE_DURATION) {
                 ripVertEventEnabled = false
+            }
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
                 val seq = GuiTextBoxSequence(textBoxSequence)
@@ -250,10 +251,32 @@ class Nlf2Client : ClientModInitializer {
                     .onlyIf(textBoxFadeOut > 0).reverseDelta())
                 graphics.pose().popMatrix()
             }
+        }
+        HudElementRegistry.addLast(Layer.EVENT_RIP_VERT) { graphics, _ ->
             // RIP Vert noise
             if (ripVertEventEnabled) {
-                val noiseForce = ((TICKER_RIP_VERT.ticks - ripVertEventLagStartTick).toFloat() / RIP_VERT_EVENT_LAG_FADE_IN).coerceIn(0f, 1f)
-                graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, 0xffffff))
+                val noiseForce = TICKER_RIP_VERT.delta(ripVertEventLagStartTick, RIP_VERT_EVENT_LAG_FADE_IN)
+                val colors = ArrayList<Int>()
+                colors.add(0xffffff)
+                for (i in 0..7) {
+                    colors.add(ARGB.color(
+                        if ((i / 4) == 0) 0xff else 0xe0,
+                        if ((i / 2) % 2 == 0) 0xff else 0xe0,
+                        if (i % 2 == 0) 0xff else 0xe0
+                    ))
+                }
+                graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, colors.random()))
+
+                if (TICKER_RIP_VERT - ripVertEventLagStartTick - RIP_VERT_EVENT_LAG_FADE_IN in 0..RIP_VERT_EVENT_ERASE_DURATION) {
+                    val font = Minecraft.getInstance().font
+                    val str = "ERASE"
+                    graphics.black()
+                    graphics.pose().pushMatrix()
+                    graphics.pose().translate(graphics.guiWidth().toFloat() / 2, graphics.guiHeight().toFloat() / 2)
+                    graphics.pose().scale(2f)
+                    graphics.text(font, str, - font.width(str) / 2, 0, 0xffffffff.toInt(), false)
+                    graphics.pose().popMatrix()
+                }
             }
         }
 
@@ -393,6 +416,7 @@ class Nlf2Client : ClientModInitializer {
         val OVERLAY_FIX: Identifier = getIdentifier("layer/overlay/fix")
         val OVERLAY_PAUSE_SCREEN: Identifier = getIdentifier("layer/overlay/pause_screen")
         val OVERLAY_TEXT_BOX: Identifier = getIdentifier("layer/overlay/text_box")
+        val EVENT_RIP_VERT: Identifier = getIdentifier("layer/event/rip_vert")
     }
 
     object Sprite {

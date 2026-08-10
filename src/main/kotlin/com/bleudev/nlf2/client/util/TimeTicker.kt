@@ -9,6 +9,18 @@ abstract class Ticker {
     fun reset() {
         ticks = 0
     }
+
+    fun delta(start: Long, duration: Long): Float = ((ticks - start).toFloat() / duration).coerceIn(0f, 1f)
+    fun delta(start: Int, duration: Int): Float = delta(start.toLong(), duration.toLong())
+
+    operator fun compareTo(other: Int) = ticks.compareTo(other)
+    operator fun compareTo(other: Long) = ticks.compareTo(other)
+    operator fun plus(other: Int): Long = ticks.plus(other)
+    operator fun plus(other: Long): Long = ticks.plus(other)
+    operator fun minus(other: Int): Long = ticks.minus(other)
+    operator fun minus(other: Long): Long = ticks.minus(other)
+
+    override fun toString(): String = ticks.toString()
 }
 
 open class TimeTicker : Ticker() {
@@ -22,9 +34,6 @@ open class TimeTicker : Ticker() {
         }
         return ticks
     }
-
-    fun delta(start: Long, duration: Long): Float = ((ticks - start).toFloat() / duration).coerceIn(0f, 1f)
-    fun delta(start: Int, duration: Int): Float = delta(start.toLong(), duration.toLong())
 }
 
 val TICKER_INTRO = TimeTicker()
