@@ -8,6 +8,7 @@ import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.client.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
@@ -48,3 +49,7 @@ var canUseKeyboard: Boolean = true
         event85var,
         field,
     ).all{it}
+    set(v) {
+        field = v
+        KeyMapping.releaseAll()
+    }

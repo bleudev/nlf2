@@ -270,10 +270,10 @@ class Nlf2Client : ClientModInitializer {
                 }
 
                 graphics.pose().pushMatrix()
-                if (textBoxEventShake > 0) {
+                if (textBoxShake > 0) {
                     graphics.pose().translate(
-                        Random.nextDouble(-textBoxEventShake, +textBoxEventShake).toFloat(),
-                        Random.nextDouble(-textBoxEventShake, +textBoxEventShake).toFloat()
+                        Random.nextDouble(-textBoxShake, +textBoxShake).toFloat(),
+                        Random.nextDouble(-textBoxShake, +textBoxShake).toFloat()
                     )
                 }
                 seq.extractRenderState(graphics,

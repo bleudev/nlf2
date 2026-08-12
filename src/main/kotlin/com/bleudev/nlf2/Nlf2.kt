@@ -91,7 +91,8 @@ class Nlf2 : ModInitializer {
     data class BorderLoseHeartsInfo(var ticksBeforeLose: Int, var ticksAfterLose: Int)
 
     private var ticks = 0
-    private var sbSendTicks = 0
+    private var sbSendRipVertTicks = 0
+    private var sbSendRipSanyaTicks = 0
     private var ripVertStartTicks = -1
     private var ripSanyaStartTicks = -1
     private var borderLoseHeartsInfos: HashMap<String, BorderLoseHeartsInfo> = HashMap()
@@ -149,7 +150,8 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            if (sbSendTicks > 0) sbSendTicks--
+            if (sbSendRipVertTicks > 0) sbSendRipVertTicks--
+            if (sbSendRipSanyaTicks > 0) sbSendRipSanyaTicks--
             if (ripVertStartTicks > 0) ripVertStartTicks--
             if (ripVertStartTicks == 0) {
                 causeEvent(111)
@@ -277,18 +279,18 @@ class Nlf2 : ModInitializer {
             ctx.player().hurtUnknown(9999f)
         }
         registerPacketReceiver(RipVertEnd) { _, ctx ->
-            if (sbSendTicks > 0) return@registerPacketReceiver
-            sbSendTicks = 100
+            if (sbSendRipVertTicks > 0) return@registerPacketReceiver
+            sbSendRipVertTicks = 200
             ctx.server().nlf2data::loreData.transform {
                 it.noVert = true
                 it
             }
             clearVertItemsIfNeed(ctx.server())
-            ripSanyaStartTicks = 100
+            ripSanyaStartTicks = 200
         }
         registerPacketReceiver(StoryEnd) { _, ctx ->
-            if (sbSendTicks > 0) return@registerPacketReceiver
-            sbSendTicks = 100
+            if (sbSendRipSanyaTicks > 0) return@registerPacketReceiver
+            sbSendRipSanyaTicks = 200
             isStorySpectator = false
             for (player in ctx.server().playerList.players) {
                 if (player.wantsToListenStory) {

@@ -40,7 +40,7 @@ private val earthquakeProp: Float get() = listOf(
         (borderBlackFogTicks.toFloat() / BORDER_BLACK_FOG_KILL_TRANS_DURATION).reverseDelta() * 1.25f
     else noise_amount,
     manualUpdateEffectAmount / 2,
-    textBoxEventShake.toFloat(),
+    textBoxShake.toFloat().onlyIf(ripVertEventEnabled),
 ).max()
 val earthquakeStrength: Float get() = earthquakeProp / 8
 val earthquakeSpeed: Float get() = earthquakeProp * 2
@@ -93,9 +93,9 @@ var shouldRenderStory: Boolean = false
 var shouldRenderTextBox: Boolean = false
 var textBoxSequence: TextBoxSequence = TextBoxSequence()
 var textBoxFadeOut: Int = 0
-val textBoxEventShake: Double get() = listOf(
+val textBoxShake: Double get() = listOf(
     TICKER_RIP_VERT.delta(ripVertEventShakeStartTick, 50).onlyIf(ripVertEventEnabled) * 2.5,
-    TICKER_RIP_SANYA.delta(0, 100) * 0.25
+    TICKER_RIP_SANYA.delta(0, 100) * 0.25,
 ).max()
 // RIP VERT Event
 var ripVertEventEnabled: Boolean = false
@@ -144,7 +144,7 @@ var shaderAnaglyphUniformX: Float = 0f
         manualUpdateEffectAmount * 0.01f,
         event101_noise_amount * 0.01f,
         amethyst_daisy_amount * 0.004f,
-        textBoxEventShake.toFloat() * 0.01f,
+        (textBoxShake.toFloat() * 0.01f).onlyIf(ripVertEventEnabled),
     ).max()
 var shaderAnaglyphUniformY: Float = 0f
     get() = listOf(
@@ -152,7 +152,7 @@ var shaderAnaglyphUniformY: Float = 0f
         manualUpdateEffectAmount * 0.005f,
         event101_noise_amount * 0.005f,
         amethyst_daisy_amount * 0.002f,
-        textBoxEventShake.toFloat() * 0.008f,
+        (textBoxShake.toFloat() * 0.008f).onlyIf(ripVertEventEnabled),
     ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength
