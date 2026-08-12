@@ -30,6 +30,7 @@ import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
+import com.google.common.primitives.Floats.min
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList
 import net.fabricmc.api.ClientModInitializer
@@ -78,6 +79,13 @@ class Nlf2Client : ClientModInitializer {
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             ARGB.srgbLerp(beforeMeetWaterFluidAmount, current, 0xff000000.toInt())
         }
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            if (!ripSanyaEventEnabled) return@register current
+            ARGB.srgbLerp(min(
+                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, 0),
+                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta()
+            ), current, 0xffff0000.toInt())
+        }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             current.lerp(Vector4f(0f, 0f, 0f, 1f), blackFogEffect)
         }
@@ -87,6 +95,13 @@ class Nlf2Client : ClientModInitializer {
         }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             current.lerp(Vector4f(0f, 0f, 0f, 1f), beforeMeetWaterFluidAmount)
+        }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            if (!ripSanyaEventEnabled) return@register current
+            current.lerp(Vector4f(1f, 0f, 0f, 1f), min(
+                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, 0),
+                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta()
+            ))
         }
         ClientEnvironmentSetupEvents.FOG_START.register { original, current ->
             Mth.lerp(blackFogEffect, current, original * .03f)
@@ -323,12 +338,17 @@ class Nlf2Client : ClientModInitializer {
         HudElementRegistry.addLast(Layer.EVENT_RIP_SANYA) { graphics, _ ->
             if (ripSanyaEventEnabled) {
                 TICKER_RIP_SANYA.tick()
-                if (TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) {
+                if (TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT) {
                     ripSanyaEventEnabled = false
                     return@addLast
                 }
-                val alpha = TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, RIP_SANYA_EVENT_WHITE_FADE)
+                val alpha = TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + 20, RIP_SANYA_EVENT_WHITE_FADE)
                 graphics.white(alpha)
+            }
+        }
+        HudElementRegistry.attachElementBefore(Layer.OVERLAY_TEXT_BOX, Layer.EVENT_RIP_SANYA_BEFORE_BOX) { graphics, _ ->
+            if (ripSanyaEventEnabled && TICKER_RIP_SANYA <= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) {
+                graphics.black(TICKER_RIP_SANYA.delta(0, 100) * .5f)
             }
         }
 
@@ -476,6 +496,7 @@ class Nlf2Client : ClientModInitializer {
         val OVERLAY_TEXT_BOX: Identifier = getIdentifier("layer/overlay/text_box")
         val EVENT_RIP_VERT: Identifier = getIdentifier("layer/event/rip_vert")
         val EVENT_RIP_SANYA: Identifier = getIdentifier("layer/event/rip_sanya")
+        val EVENT_RIP_SANYA_BEFORE_BOX: Identifier = getIdentifier("layer/event/rip_sanya/before_box")
     }
 
     object Sprite {

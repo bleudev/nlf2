@@ -39,6 +39,7 @@ val TELEPORT_LOCATIONS = mapOf(
     "samivarence" to Vec3(564.0, 70.0, 575.0),
     "milkich22397" to Vec3(530.0, 127.0, 865.0),
 )
+const val EVENT112_NICKNAME = "Samivarence"
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
 
@@ -74,6 +75,8 @@ const val RIP_VERT_EVENT_LAG_FADE_IN = 50
 const val RIP_VERT_EVENT_ERASE_DURATION = 80
 
 const val RIP_SANYA_EVENT_WHITE_FADE = 25
+const val RIP_SANYA_EVENT_SANYA_TAKE = 200
+const val RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT = 40
 
 // Booleans
 const val INTRO_ENABLED = false
