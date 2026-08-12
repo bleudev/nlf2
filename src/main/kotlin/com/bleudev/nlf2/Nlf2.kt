@@ -11,8 +11,6 @@ import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
-import com.bleudev.nlf2.custom.data.saved.BorderStates
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.BeforeMeetWaterFluid
 import com.bleudev.nlf2.custom.packet.payload.DistanceUpdate
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
@@ -21,7 +19,8 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
-import com.bleudev.nlf2.custom.world.Nlf2MobEffects
+import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.*

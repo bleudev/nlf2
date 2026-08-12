@@ -26,10 +26,10 @@ val canOpenChat: Boolean get() {
 }
 
 fun renderHitboxes(entity: Entity): Boolean =
-    !(entity is Player && dataSyncedActor.equals(entity.gameProfile.name, true))
+    !(entity is Player && !dataSyncedVisibleActor && dataSyncedActor.equals(entity.gameProfile.name, true))
 fun renderPlayerInTab(name: String): Boolean =
     if (dataSyncedMeetState % 2 == 0) name.equals(Minecraft.getInstance().gameProfile.name, true)
-    else !name.equals(dataSyncedActor, true)
+    else !(!dataSyncedVisibleActor && name.equals(dataSyncedActor, true))
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME

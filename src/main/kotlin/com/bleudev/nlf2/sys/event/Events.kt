@@ -8,7 +8,6 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
 import com.bleudev.nlf2.custom.packet.payload.OpenTextBox
 import com.bleudev.nlf2.custom.packet.payload.RIPVertEvent
@@ -17,6 +16,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.sys.util.TextColorConstants
 import com.bleudev.nlf2.util.*
@@ -126,6 +126,37 @@ class MeetAfterMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         }
     }
 }
+class MeetBeforeFakeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_fake_waflla_wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            // TODO: Fake waflla
+            it.actorChar = "mask_waflla"
+            it
+        }
+    }
+}
+class MeetAfterFakeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_fake_waflla_wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        // TODO: Fake waflla disappear
+        server.nlf2data::loreData.transform {
+            it
+        }
+    }
+}
+class MeetBeforeBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_boberobo") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            // TODO: Boberobo appear
+            it.actorChar = "mask_boberobo"
+            it.visibleActor = true
+            it
+        }
+    }
+}
+class MeetAfterBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_boberobo")
 
 open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {

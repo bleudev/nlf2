@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.custom.data.saved
+package com.bleudev.nlf2.custom.world.level.saveddata
 
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
@@ -27,6 +27,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
             loreData.manualId,
             loreData.compassCrazy,
             players[gameProfile.name]?.simulateNickname ?: "self",
+            loreData.visibleActor,
         ))
         clearVertItemsIfNeed(level().server)
     }
@@ -68,6 +69,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
         var forceJukeboxMus: StrangeJukeboxBlock.SelectedMus = StrangeJukeboxBlock.SelectedMus.NULL,
         var mobAvoidPlayers: Boolean = false,
         var noVert: Boolean = false,
+        var visibleActor: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
@@ -82,6 +84,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
                 StrangeJukeboxBlock.SelectedMus.CODEC.fieldOf("forceJukeboxMus").forGetter(LoreData::forceJukeboxMus),
                 Codec.BOOL.fieldOf("mobAvoidPlayers").forGetter(LoreData::mobAvoidPlayers),
                 Codec.BOOL.fieldOf("noVert").forGetter(LoreData::noVert),
+                Codec.BOOL.fieldOf("visibleActor").forGetter(LoreData::visibleActor),
             ).apply(it, ::LoreData) }
         }
     }

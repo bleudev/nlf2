@@ -23,6 +23,7 @@ object DebugEntrypoint {
         add(56, ::GreenSkyTest)
         add(57, ::BlueSkyTest)
         add(58, ::WhiteSkyTest)
+        add(80, ::ResetVisibleActor)
         add(101, ::OrangeSkinOverlay)
         add(110) { FI_NoVert(it, false) }
         add(111) { FI_NoVert(it, true) }

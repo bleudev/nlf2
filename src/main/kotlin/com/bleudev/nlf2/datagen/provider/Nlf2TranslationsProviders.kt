@@ -2,7 +2,7 @@ package com.bleudev.nlf2.datagen.provider
 
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.world.Nlf2MobEffects
+import com.bleudev.nlf2.custom.Nlf2MobEffects
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup

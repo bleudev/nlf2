@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.custom.world
+package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.world.effect.GlidingEffect
 import com.bleudev.nlf2.util.registerMobEffect

@@ -282,4 +282,6 @@ var dataSyncedCompassCrazy: Boolean = false
 @JvmField
 var dataSyncedSimulateNickname: String = "self"
 @JvmField
+var dataSyncedVisibleActor: Boolean = false
+@JvmField
 var dataFogEventStateSyncTicks: Int = -1

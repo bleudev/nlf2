@@ -2,7 +2,7 @@ package com.bleudev.nlf2.util
 
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity

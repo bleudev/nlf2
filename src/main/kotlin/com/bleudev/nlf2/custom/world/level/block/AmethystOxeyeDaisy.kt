@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.custom.world.level.block
 
-import com.bleudev.nlf2.custom.world.Nlf2MobEffects
+import com.bleudev.nlf2.custom.Nlf2MobEffects
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.Blocks

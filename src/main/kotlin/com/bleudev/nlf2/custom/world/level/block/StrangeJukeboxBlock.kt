@@ -4,8 +4,8 @@ import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.world.level.block.entity.StrangeJukeboxBlockEntity
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder

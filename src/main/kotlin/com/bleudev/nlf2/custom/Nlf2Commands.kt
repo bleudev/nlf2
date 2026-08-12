@@ -2,7 +2,7 @@ package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
-import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.requiresAdmin

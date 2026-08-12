@@ -4,8 +4,8 @@ import com.bleudev.nine_lifes.api.Transformer
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nlf2.DEV_STORY_ACTOR
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.mojang.brigadier.builder.ArgumentBuilder
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -100,7 +100,7 @@ val MinecraftServer.actorNickname: String
 val MinecraftServer.actor: ServerPlayer?
     get() = playerList.getPlayer(actorNickname)
 val ServerPlayer.isActor: Boolean
-    get() = gameProfile.name.equals(level().server.actorNickname, true)
+    get() = level().server.let { gameProfile.name.equals(it.actorNickname, true) && !it.nlf2data.loreData.visibleActor }
 @Suppress("SimplifyBooleanWithConstants")
 val ServerPlayer.wantsToListenStory: Boolean
     get() = DEV_STORY_ACTOR || !isActor

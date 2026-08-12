@@ -3,7 +3,7 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
-import com.bleudev.nlf2.custom.data.saved.nlf2data
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.transform
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -36,6 +36,16 @@ class FI_NoVert(server: MinecraftServer, val new: Boolean) : Nlf2Event(server, "
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.noVert = new
+            it
+        }
+    }
+}
+
+class ResetVisibleActor(server: MinecraftServer) : Nlf2Event(server, "reset_visible_actor") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.visibleActor = false
             it
         }
     }

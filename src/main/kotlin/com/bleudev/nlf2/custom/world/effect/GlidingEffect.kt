@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.custom.world.effect
 
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
-import com.bleudev.nlf2.custom.world.Nlf2MobEffects
+import com.bleudev.nlf2.custom.Nlf2MobEffects
 import com.bleudev.nlf2.util.explode
 import com.bleudev.nlf2.util.hurtUnknown
 import net.minecraft.server.level.ServerPlayer

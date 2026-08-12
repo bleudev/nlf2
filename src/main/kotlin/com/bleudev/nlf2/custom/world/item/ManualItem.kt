@@ -2,8 +2,8 @@ package com.bleudev.nlf2.custom.world.item
 
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.dataSyncedManualId
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.OpenManual
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.sendPackets
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer

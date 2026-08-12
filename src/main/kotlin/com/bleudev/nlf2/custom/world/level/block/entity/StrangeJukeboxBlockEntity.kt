@@ -3,12 +3,12 @@ package com.bleudev.nlf2.custom.world.level.block.entity
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.data.saved.nlf2data
 import com.bleudev.nlf2.custom.packet.payload.StrangeJukeboxRainbowControl
 import com.bleudev.nlf2.custom.packet.payload.unit.StrangeJukeboxMusicStop
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.MUS
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.ON
+import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes

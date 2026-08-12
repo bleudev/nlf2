@@ -17,12 +17,12 @@ import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
-import com.bleudev.nlf2.custom.data.saved.BorderStates
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.*
+import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
@@ -343,6 +343,7 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedManualId = payload.manualId
             dataSyncedCompassCrazy = payload.compassCrazy
             dataSyncedSimulateNickname = payload.simulateNickname
+            dataSyncedVisibleActor = payload.visibleActor
 
             TIMER_MASK.reset()
         }
