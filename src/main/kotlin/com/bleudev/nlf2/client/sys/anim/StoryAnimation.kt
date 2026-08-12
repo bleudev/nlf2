@@ -3,6 +3,7 @@
 package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nlf2.ANIM_Y_REF
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
@@ -47,6 +48,7 @@ object StoryAnimation {
     )
 
     fun extractRenderState(graphics: GuiGraphicsExtractor) {
+        println("512x320 ${graphics.guiWidth()}x${graphics.guiHeight()}")
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
         graphics.black(otherVolume.reverseDelta())
@@ -239,6 +241,7 @@ object StoryAnimation {
         }
         seq.extractRenderState(graphics)
         graphics.pose().popMatrix()
+        graphics.pose().scale(graphics.guiHeight().toFloat() / ANIM_Y_REF)
         graphics.pose().translate(120f, 60f)
         graphics.pose().scale(3.5f)
 
@@ -309,8 +312,6 @@ object StoryAnimation {
         // Other
         if (endTick == 99999) endTick = end + 120
         if (ruler3Tick == 99999) ruler3Tick = ruler3
-
-//        println("END TICK ${end - 60}")
     }
 
     private class MusStoryInstance(val endTick: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_STORY) {

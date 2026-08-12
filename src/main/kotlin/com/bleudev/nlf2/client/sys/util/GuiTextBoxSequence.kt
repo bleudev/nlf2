@@ -2,6 +2,7 @@
 
 package com.bleudev.nlf2.client.sys.util
 
+import com.bleudev.nlf2.ANIM_Y_REF
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -27,7 +28,8 @@ private fun GuiGraphicsExtractor.textbox(curr: Int, text: String, speed: Int, st
     if (curr >= end) return
     if (curr < start) return
     pose().pushMatrix()
-    pose().translate(90f, 200f)
+    pose().scale(guiHeight().toFloat() / ANIM_Y_REF)
+    pose().translate(90f, 180f)
     pose().scale(1.7f)
 
     var remain = if (full) text.replace("&", "").length else (curr - start) / speed

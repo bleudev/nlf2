@@ -3,6 +3,11 @@ package com.bleudev.nlf2
 import net.minecraft.client.Minecraft
 import net.minecraft.world.phys.Vec3
 
+// Rendering
+const val ANIM_X_REF = 384 // Unused?
+const val ANIM_Y_REF = 240
+
+// Address
 private const val SERVER_OUT_ADDRESS: String = "pink.fnode.me:19164"
 private const val SERVER_IN_ADDRESS: String = "pink.in.fnode.me:19164"
 private val IN_ADDRESS_NICKNAMES = listOf(
@@ -15,7 +20,7 @@ val SERVER_ADDRESS: String get() = Minecraft.getInstance().gameProfile.name.lowe
 /// Modificators
 val MOD_BORDER_LOSE_HEARTS = getIdentifier("border_lose_hearts_modify")
 
-// Other
+// Nicknames
 @JvmField
 val SUPPORTED_NICKNAMES = listOf(
     "bleugame",
@@ -37,6 +42,7 @@ val TELEPORT_LOCATIONS = mapOf(
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
 
+// Ticks / durations
 const val BORDER_LOSE_HEARTS_BEFORE_DURATION = 200
 const val BORDER_LOSE_HEARTS_AFTER_DURATION = 80
 const val BORDER_LOSE_HEARTS_DISTANCE = 10
@@ -69,8 +75,10 @@ const val RIP_VERT_EVENT_ERASE_DURATION = 80
 
 const val RIP_SANYA_EVENT_WHITE_FADE = 25
 
+// Booleans
 const val INTRO_ENABLED = false
 
+/// DEV
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
