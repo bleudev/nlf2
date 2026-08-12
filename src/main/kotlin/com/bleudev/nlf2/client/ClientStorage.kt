@@ -97,7 +97,9 @@ var ripVertEventEnabled: Boolean = false
 var ripVertEventShakeStartTick: Int = -1
 var ripVertEventLagStartTick: Int = -1
 val ripVertShakeAmount: Float get() = TICKER_RIP_VERT.delta(ripVertEventShakeStartTick, 50).onlyIf(ripVertEventEnabled)
-var ripVertSavedWindowTitle: String = ""
+// RIP Sanya Event
+var ripSanyaEventEnabled: Boolean = false
+var ripSanyaEventByeTick: Int = -1
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

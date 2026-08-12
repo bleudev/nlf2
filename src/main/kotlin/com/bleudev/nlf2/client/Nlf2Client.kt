@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.Nlf2Sounds
@@ -255,12 +256,6 @@ class Nlf2Client : ClientModInitializer {
             }
         }
         HudElementRegistry.addLast(Layer.OVERLAY_TEXT_BOX) { graphics, _ ->
-            if (ripVertEventEnabled) TICKER_RIP_VERT.tick()
-            if (TICKER_RIP_VERT >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + RIP_VERT_EVENT_ERASE_DURATION) {
-                ripVertEventEnabled = false
-                webcamEnabled = false
-                Minecraft.getInstance().updateTitle()
-            }
             if (shouldRenderTextBox) {
                 val t = TICKER_TEXT_BOX.tick().toInt()
                 val seq = GuiTextBoxSequence(textBoxSequence)
@@ -284,8 +279,15 @@ class Nlf2Client : ClientModInitializer {
             }
         }
         HudElementRegistry.addLast(Layer.EVENT_RIP_VERT) { graphics, _ ->
-            // RIP Vert noise
             if (ripVertEventEnabled) {
+                TICKER_RIP_VERT.tick()
+                if (TICKER_RIP_VERT >= ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + RIP_VERT_EVENT_ERASE_DURATION) {
+                    ripVertEventEnabled = false
+                    webcamEnabled = false
+                    Minecraft.getInstance().updateTitle()
+                    return@addLast
+                }
+                // Noise
                 val noiseForce = TICKER_RIP_VERT.delta(ripVertEventLagStartTick, RIP_VERT_EVENT_LAG_FADE_IN)
                 val colors = ArrayList<Int>()
                 colors.add(0xffffff)
@@ -297,7 +299,7 @@ class Nlf2Client : ClientModInitializer {
                     ))
                 }
                 graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, colors.random()))
-
+                // ERASE
                 if (TICKER_RIP_VERT - ripVertEventLagStartTick - RIP_VERT_EVENT_LAG_FADE_IN in 0..RIP_VERT_EVENT_ERASE_DURATION) {
                     webcamEnabled = true
                     Minecraft.getInstance().updateTitle()
@@ -310,6 +312,17 @@ class Nlf2Client : ClientModInitializer {
                     graphics.text(font, str, - font.width(str) / 2, 0, 0xffffffff.toInt(), false)
                     graphics.pose().popMatrix()
                 }
+            }
+        }
+        HudElementRegistry.addLast(Layer.EVENT_RIP_SANYA) { graphics, _ ->
+            if (ripSanyaEventEnabled) {
+                TICKER_RIP_SANYA.tick()
+                if (TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) {
+                    ripSanyaEventEnabled = false
+                    return@addLast
+                }
+                val alpha = TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, RIP_SANYA_EVENT_WHITE_FADE)
+                graphics.white(alpha)
             }
         }
 
@@ -375,6 +388,11 @@ class Nlf2Client : ClientModInitializer {
             shouldRenderTextBox = true
             textBoxSequence = payload.sequence
             textBoxFadeOut = payload.fadeOut
+        }
+        registerPacketReceiver(RIPSanyaEvent) { payload ->
+            ripSanyaEventByeTick = payload.byeTick
+            TICKER_RIP_SANYA.reset()
+            ripSanyaEventEnabled = true
         }
         registerPacketReceiver(RIPVertEvent) { payload ->
             ripVertEventShakeStartTick = payload.shakeStartTick
@@ -451,6 +469,7 @@ class Nlf2Client : ClientModInitializer {
         val OVERLAY_PAUSE_SCREEN: Identifier = getIdentifier("layer/overlay/pause_screen")
         val OVERLAY_TEXT_BOX: Identifier = getIdentifier("layer/overlay/text_box")
         val EVENT_RIP_VERT: Identifier = getIdentifier("layer/event/rip_vert")
+        val EVENT_RIP_SANYA: Identifier = getIdentifier("layer/event/rip_sanya")
     }
 
     object Sprite {

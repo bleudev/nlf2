@@ -67,6 +67,8 @@ const val AMETHYST_DAISY_DISTANCE = 3
 const val RIP_VERT_EVENT_LAG_FADE_IN = 50
 const val RIP_VERT_EVENT_ERASE_DURATION = 80
 
+const val RIP_SANYA_EVENT_WHITE_FADE = 25
+
 const val INTRO_ENABLED = false
 
 const val DEV_EVENT_101 = false

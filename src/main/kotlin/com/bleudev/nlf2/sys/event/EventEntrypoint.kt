@@ -45,6 +45,7 @@ object EventEntrypoint {
 
         add(101, ::OrangeSkinOverlayRemove)
         add(111, ::`RIP Vert(`)
+        add(112, ::`RIP Sanya(`)
         add(140, ::LabOverlay0)
         add(141, ::LabOverlay1)
         add(189, ::EndSerieCrash)

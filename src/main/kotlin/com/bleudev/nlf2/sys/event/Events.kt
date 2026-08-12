@@ -8,10 +8,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
-import com.bleudev.nlf2.custom.packet.payload.ManualUpdateEffect
-import com.bleudev.nlf2.custom.packet.payload.OpenTextBox
-import com.bleudev.nlf2.custom.packet.payload.RIPVertEvent
-import com.bleudev.nlf2.custom.packet.payload.SkyColorEffect
+import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
@@ -430,5 +427,26 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
             clearVertItemsIfNeed(server)
             ticks = -1
         }
+    }
+}
+
+class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (internal) wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.ROUGE)
+        seq.speed(6)
+        seq.add("YOU", 50)
+        seq.wait(40)
+        seq.speed(4)
+        seq.add("I CAN ADD YOU&I CAN REMOVE YOU", 50)
+        seq.speed(5)
+        seq.add("SAY GOODBYE", 50)
+        val bye = seq.start - 30
+        val packets = arrayOf(
+            OpenTextBox(seq, 20),
+            RIPSanyaEvent(bye)
+        )
+        server.sendToEveryone { pl -> packets.takeIf { pl.wantsToListenStory } ?: arrayOf() }
     }
 }
