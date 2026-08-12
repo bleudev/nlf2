@@ -22,6 +22,7 @@ import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
 import com.bleudev.nlf2.sys.util.TextBoxSequence
@@ -269,12 +270,15 @@ class Nlf2Client : ClientModInitializer {
                 }
 
                 graphics.pose().pushMatrix()
-                graphics.pose().translate(
-                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount,
-                    Random.nextDouble(-2.5, 2.5).toFloat() * ripVertShakeAmount
+                if (textBoxEventShake > 0) {
+                    graphics.pose().translate(
+                        Random.nextDouble(-textBoxEventShake, +textBoxEventShake).toFloat(),
+                        Random.nextDouble(-textBoxEventShake, +textBoxEventShake).toFloat()
+                    )
+                }
+                seq.extractRenderState(graphics,
+                    TICKER_TEXT_BOX.delta(seq.start - textBoxFadeOut, textBoxFadeOut).onlyIf(textBoxFadeOut > 0).reverseDelta()
                 )
-                seq.extractRenderState(graphics, TICKER_RIP_VERT.delta(seq.start - textBoxFadeOut, textBoxFadeOut)
-                    .onlyIf(textBoxFadeOut > 0).reverseDelta())
                 graphics.pose().popMatrix()
             }
         }
@@ -301,6 +305,8 @@ class Nlf2Client : ClientModInitializer {
                 graphics.blitAnim(Animation.NOISE, 1 + noise_tick % 5, color = ARGB.color(noiseForce, colors.random()))
                 // ERASE
                 if (TICKER_RIP_VERT - ripVertEventLagStartTick - RIP_VERT_EVENT_LAG_FADE_IN in 0..RIP_VERT_EVENT_ERASE_DURATION) {
+                    if (TICKER_RIP_VERT.ticks.toInt() == ripVertEventLagStartTick + RIP_VERT_EVENT_LAG_FADE_IN + 5)
+                        ClientPlayNetworking.send(RipVertEnd.INSTANCE)
                     webcamEnabled = true
                     Minecraft.getInstance().updateTitle()
                     val font = Minecraft.getInstance().font

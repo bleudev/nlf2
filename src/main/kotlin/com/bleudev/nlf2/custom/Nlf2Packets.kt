@@ -3,6 +3,8 @@ package com.bleudev.nlf2.custom
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.register
@@ -32,6 +34,8 @@ object Nlf2Packets {
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
 
     val SB_UNIT_KILL_BORDER_BLACK_FOG = getIdentifier("packet/sb/unit/kill_border_black_fog")
+    val SB_UNIT_RIP_VERT_END = getIdentifier("packet/sb/unit/rip_vert_end")
+    val SB_UNIT_STORY_END = getIdentifier("packet/sb/unit/story_end")
 
     fun initialize() {
         // Client bound
@@ -63,5 +67,7 @@ object Nlf2Packets {
         c2s.register(JoinSendVersion)
         // Unit
         c2s.register(KillBorderBlackFog)
+        c2s.register(RipVertEnd)
+        c2s.register(StoryEnd)
     }
 }

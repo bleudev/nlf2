@@ -12,12 +12,14 @@ import com.bleudev.nlf2.client.util.canUseKeyboard
 import com.bleudev.nlf2.client.util.canUseMouse
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta
 import de.maxhenkel.voicechat.VoicechatClient
 import de.maxhenkel.voicechat.voice.client.ClientManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
@@ -55,6 +57,7 @@ object StoryAnimation {
             if (ClientManager.getPlayerStateManager().isDisabled != preSavedDisabled) {
                 ClientManager.getPlayerStateManager().isDisabled = preSavedDisabled
             }
+            ClientPlayNetworking.send(StoryEnd.INSTANCE)
         }
         if (t >= endTick + 5) {
             TICKER_STORY.reset()

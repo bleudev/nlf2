@@ -17,6 +17,8 @@ import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
@@ -33,6 +35,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.Version
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -73,17 +76,6 @@ class Nlf2 : ModInitializer {
                     }
                 }
             })
-            scheduledEvents.add(ScheduledEvent(1640) {
-                isStorySpectator = false
-                for (player in server.playerList.players) {
-                    if (player.wantsToListenStory) {
-                        player.setGameMode(GameType.SURVIVAL)
-                    }
-                }
-            })
-            scheduledEvents.add(ScheduledEvent(1700) {
-                causeEvent(111)
-            })
         }
     }
 
@@ -99,6 +91,9 @@ class Nlf2 : ModInitializer {
     data class BorderLoseHeartsInfo(var ticksBeforeLose: Int, var ticksAfterLose: Int)
 
     private var ticks = 0
+    private var sbSendTicks = 0
+    private var ripVertStartTicks = -1
+    private var ripSanyaStartTicks = -1
     private var borderLoseHeartsInfos: HashMap<String, BorderLoseHeartsInfo> = HashMap()
     private lateinit var serverVersion: String
 
@@ -154,6 +149,18 @@ class Nlf2 : ModInitializer {
             player.level().server.nlf2data.onJoin(player)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            if (sbSendTicks > 0) sbSendTicks--
+            if (ripVertStartTicks > 0) ripVertStartTicks--
+            if (ripVertStartTicks == 0) {
+                causeEvent(111)
+                ripVertStartTicks = -1
+            }
+            if (ripSanyaStartTicks > 0) ripSanyaStartTicks--
+            if (ripSanyaStartTicks == 0) {
+                causeEvent(112)
+                ripSanyaStartTicks = -1
+            }
+
             clearVertItemsCludge = server.nlf2data.loreData.noVert
             clearVertItemsIfNeed(server)
             val pl = if (DEV_EVENT_85) server.actor else server.playerList.getPlayer(EVENT85_NICKNAME)
@@ -241,6 +248,8 @@ class Nlf2 : ModInitializer {
                 for (player in server.playerList.players) {
                     if (player.wantsToListenStory) {
                         player.deltaMovement = Vec3.ZERO
+                        player.needsSync = true
+                        player.connection.send(ClientboundSetEntityMotionPacket(player))
                     }
                 }
             }
@@ -266,6 +275,27 @@ class Nlf2 : ModInitializer {
         registerPacketReceiver(KillBorderBlackFog) { _, ctx ->
             if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
             ctx.player().hurtUnknown(9999f)
+        }
+        registerPacketReceiver(RipVertEnd) { _, ctx ->
+            if (sbSendTicks > 0) return@registerPacketReceiver
+            sbSendTicks = 100
+            ctx.server().nlf2data::loreData.transform {
+                it.noVert = true
+                it
+            }
+            clearVertItemsIfNeed(ctx.server())
+            ripSanyaStartTicks = 100
+        }
+        registerPacketReceiver(StoryEnd) { _, ctx ->
+            if (sbSendTicks > 0) return@registerPacketReceiver
+            sbSendTicks = 100
+            isStorySpectator = false
+            for (player in ctx.server().playerList.players) {
+                if (player.wantsToListenStory) {
+                    player.setGameMode(GameType.SURVIVAL)
+                }
+            }
+            ripVertStartTicks = 80
         }
     }
 
