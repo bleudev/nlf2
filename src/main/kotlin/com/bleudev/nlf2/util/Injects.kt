@@ -84,6 +84,7 @@ fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> D
 fun MinecraftServer.sendToEveryone(generator: (ServerPlayer) -> Array<CustomPacketPayload>) {
     for (player in this.playerList.players) player.sendPackets(*generator(player))
 }
+fun MinecraftServer.sendToEveryone(vararg packets: CustomPacketPayload) = sendToEveryone { arrayOf(*packets) } // Cludge
 
 fun Item.Properties.lightningAndFireResistant(): Item.Properties = delayedComponent(DataComponents.DAMAGE_RESISTANT) {
     DamageResistant(it.getOrThrow(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE))

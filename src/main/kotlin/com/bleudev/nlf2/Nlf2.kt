@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
+import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.alwaysTrue
 import com.bleudev.nine_lifes.util.entityIn
 import com.bleudev.nine_lifes.util.lifes
@@ -183,19 +184,20 @@ class Nlf2 : ModInitializer {
                 val pl = if (DEV_STORY_ACTOR) server.actor else server.playerList.getPlayer(EVENT112_NICKNAME)
                 if (pl != null) {
                     val armorStand = NineLifesEntities.WANDERING_ARMOR_STAND.create(pl.level(), EntitySpawnReason.EVENT)
-                    if (armorStand != null) {
-                        armorStand.copyPosition(pl)
-                        pl.level().addFreshEntity(armorStand)
-                    }
+                    armorStand?.copyPosition(pl)
+                    pl.dropAllDeathLoot()
                     if (DEV_BAN_EVENT_112) {
                         // Ban event 112 player
                         server.playerList.bans.add(UserBanListEntry(NameAndId(pl.gameProfile)))
+                        pl.connection.disconnect(Component.literal("GOODBYE"))
                     }
-                    server.playerList.broadcastSystemMessage(
-                        Component.translatable("nlf2.message.event.112.disconnect", pl.gameProfile.name)
+                    server.playerList.broadcastSystemMessage(Component
+                            .translatable("nlf2.message.event.112.disconnect", pl.gameProfile.name)
                             .withStyle(ChatFormatting.YELLOW),
                         false
                     )
+                    server.sendToEveryone(ArmorStandKillEvent.INSTANCE)
+                    armorStand?.let { pl.level().addFreshEntity(it) }
                 }
                 ripSanyaTakingTicks = -1
             }

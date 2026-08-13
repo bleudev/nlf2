@@ -10,7 +10,8 @@
     "EnderEyeItemMixin",
     "MonstersMixin",
     "PlayerListMixin",
-    "PortalShapeMixin"
+    "PortalShapeMixin",
+    "accessor.LivingEntityAccessor"
   ],
   "client": [
     "client.AbstractClientPlayerMixin",
@@ -45,7 +46,6 @@
     "client.SoundEngineMixin",
     "client.TitleScreenMixin",
     "client.WindowMixin",
-    "client.accessor.KeyBindsList$KeyEntryAccessor",
     "client.impl.KeyBindsList$CategoryEntryMixin",
     "client.nine_lifes.NineLifesClientStorageMixin",
     "client.voicechat.AdjustVolumeListMixin"
