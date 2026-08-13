@@ -2,6 +2,7 @@ package com.bleudev.nlf2
 
 import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
+import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
 import com.bleudev.nine_lifes.util.alwaysTrue
@@ -17,6 +18,7 @@ import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
@@ -34,13 +36,18 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.Version
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.players.NameAndId
+import net.minecraft.server.players.UserBanListEntry
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
+import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -62,11 +69,10 @@ val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 class Nlf2 : ModInitializer {
     companion object {
         private var isStorySpectator = false
-        private var storyTicks = -1
+        var ripSanyaBeforeTakeTicks = -1
         private var scheduledEvents: ArrayList<ScheduledEvent> = ArrayList()
 
         fun storyStarted(server: MinecraftServer) {
-            storyTicks = 0
             scheduledEvents.add(ScheduledEvent(30) {
                 isStorySpectator = true
                 for (player in server.playerList.players) {
@@ -93,8 +99,10 @@ class Nlf2 : ModInitializer {
     private var ticks = 0
     private var sbSendRipVertTicks = 0
     private var sbSendRipSanyaTicks = 0
+    private var sbSendRipSanyaTakeStartTicks = 0
     private var ripVertStartTicks = -1
     private var ripSanyaStartTicks = -1
+    private var ripSanyaTakingTicks = -1
     private var borderLoseHeartsInfos: HashMap<String, BorderLoseHeartsInfo> = HashMap()
     private lateinit var serverVersion: String
 
@@ -161,6 +169,35 @@ class Nlf2 : ModInitializer {
             if (ripSanyaStartTicks == 0) {
                 causeEvent(112)
                 ripSanyaStartTicks = -1
+            }
+            if (ripSanyaTakingTicks > 0) {
+                val pl = if (DEV_STORY_ACTOR) server.actor else server.playerList.getPlayer(EVENT112_NICKNAME)
+                if (pl != null) {
+                    pl.setDeltaMovement(0.0, 0.05, 0.0)
+                    pl.needsSync = true
+                    pl.connection.send(ClientboundSetEntityMotionPacket(pl))
+                }
+                ripSanyaTakingTicks--
+            }
+            if (ripSanyaTakingTicks == 0) {
+                val pl = if (DEV_STORY_ACTOR) server.actor else server.playerList.getPlayer(EVENT112_NICKNAME)
+                if (pl != null) {
+                    val armorStand = NineLifesEntities.WANDERING_ARMOR_STAND.create(pl.level(), EntitySpawnReason.EVENT)
+                    if (armorStand != null) {
+                        armorStand.copyPosition(pl)
+                        pl.level().addFreshEntity(armorStand)
+                    }
+                    if (DEV_BAN_EVENT_112) {
+                        // Ban event 112 player
+                        server.playerList.bans.add(UserBanListEntry(NameAndId(pl.gameProfile)))
+                    }
+                    server.playerList.broadcastSystemMessage(
+                        Component.translatable("nlf2.message.event.112.disconnect", pl.gameProfile.name)
+                            .withStyle(ChatFormatting.YELLOW),
+                        false
+                    )
+                }
+                ripSanyaTakingTicks = -1
             }
 
             clearVertItemsCludge = server.nlf2data.loreData.noVert
@@ -277,6 +314,11 @@ class Nlf2 : ModInitializer {
         registerPacketReceiver(KillBorderBlackFog) { _, ctx ->
             if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
             ctx.player().hurtUnknown(9999f)
+        }
+        registerPacketReceiver(RipSanyaTakeStart) {
+            if (sbSendRipSanyaTakeStartTicks > 0) return@registerPacketReceiver
+            sbSendRipSanyaTakeStartTicks = 200
+            ripSanyaTakingTicks = RIP_SANYA_EVENT_SANYA_TAKE
         }
         registerPacketReceiver(RipVertEnd) { _, ctx ->
             if (sbSendRipVertTicks > 0) return@registerPacketReceiver

@@ -3,10 +3,7 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nlf2.DEV_EVENT_101
-import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.Nlf2
-import com.bleudev.nlf2.TELEPORT_LOCATIONS
+import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
@@ -436,5 +433,6 @@ class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (int
             RIPSanyaEvent(bye)
         )
         server.sendToEveryone { pl -> packets.takeIf { pl.wantsToListenStory } ?: arrayOf() }
+        Nlf2.ripSanyaBeforeTakeTicks = bye + RIP_SANYA_EVENT_WHITE_FADE
     }
 }

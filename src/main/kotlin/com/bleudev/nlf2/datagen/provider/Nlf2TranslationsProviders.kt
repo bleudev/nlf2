@@ -10,9 +10,10 @@ import java.util.concurrent.CompletableFuture
 
 class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(packOutput, "en_us", reg) {
     override fun generateTranslations(reg: HolderLookup.Provider, builder: TranslationBuilder) {
-        // Server version disconnect
+        // Message
         builder.add("nlf2.server.disconnect.version.please.update", "Please update the mod")
         builder.add("nlf2.message.item.card.check", "(You have deja vu.)")
+        builder.add("nlf2.message.event.112.disconnect", $$"%1$s was erased")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
         builder.add(Nlf2Items.MANUAL, "Manual")
@@ -48,6 +49,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Server version disconnect
         builder.add("nlf2.server.disconnect.version.please.update", "Пожалуйста, обновите мод")
         builder.add("nlf2.message.item.card.check", "(У вас дежавю.)")
+        builder.add("nlf2.message.event.112.disconnect", $$"%1$s был стёрт")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
         builder.add(Nlf2Items.MANUAL, "Руководство")

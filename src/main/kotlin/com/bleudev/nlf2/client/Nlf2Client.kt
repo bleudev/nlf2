@@ -22,6 +22,7 @@ import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
@@ -341,6 +342,9 @@ class Nlf2Client : ClientModInitializer {
                 if (TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT) {
                     ripSanyaEventEnabled = false
                     return@addLast
+                }
+                if (TICKER_RIP_SANYA.ticks.toInt() == ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) {
+                    ClientPlayNetworking.send(RipSanyaTakeStart.INSTANCE)
                 }
                 val alpha = TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + 20, RIP_SANYA_EVENT_WHITE_FADE)
                 graphics.white(alpha)

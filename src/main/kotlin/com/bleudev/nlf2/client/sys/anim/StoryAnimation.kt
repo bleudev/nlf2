@@ -48,7 +48,6 @@ object StoryAnimation {
     )
 
     fun extractRenderState(graphics: GuiGraphicsExtractor) {
-        println("512x320 ${graphics.guiWidth()}x${graphics.guiHeight()}")
         if (!shouldRenderStory) return
         val t = TICKER_STORY.tick().toInt()
         graphics.black(otherVolume.reverseDelta())
