@@ -79,10 +79,10 @@ const val RIP_SANYA_EVENT_SANYA_TAKE = 200
 const val RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT = 40
 
 // Booleans
-const val INTRO_ENABLED = false
+const val INTRO_ENABLED = true
 
 /// DEV
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
-const val DEV_BAN_EVENT_112 = false
+const val DEV_BAN_EVENT_112 = true
