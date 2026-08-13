@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.getBeforeMeetWaterFluidAmount;
+import static com.bleudev.nlf2.client.util.ClientCallbacksKt.getCanMoveMouseAnyway;
 import static com.bleudev.nlf2.client.util.ClientCallbacksKt.getCanUseMouse;
 
 @Environment(EnvType.CLIENT)
@@ -20,7 +20,7 @@ import static com.bleudev.nlf2.client.util.ClientCallbacksKt.getCanUseMouse;
 public class MouseHandlerMixin {
     @Inject(method = "onMove", at = @At("HEAD"), cancellable = true)
     private void cancelMove(long handle, double xpos, double ypos, CallbackInfo ci) {
-        if (!(getCanUseMouse() || getBeforeMeetWaterFluidAmount() >= 1f)) ci.cancel();
+        if (!(getCanUseMouse() || getCanMoveMouseAnyway())) ci.cancel();
     }
     @Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
     private void cancelScroll(long handle, double xoffset, double yoffset, CallbackInfo ci) {

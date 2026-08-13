@@ -176,6 +176,8 @@ class Nlf2 : ModInitializer {
                 if (pl != null) {
                     pl.setDeltaMovement(0.0, 0.05, 0.0)
                     pl.needsSync = true
+                    // TODO: Normal spectator like movement
+//                    pl.spectatorLikeMovement = true
                     pl.connection.send(ClientboundSetEntityMotionPacket(pl))
                 }
                 ripSanyaTakingTicks--

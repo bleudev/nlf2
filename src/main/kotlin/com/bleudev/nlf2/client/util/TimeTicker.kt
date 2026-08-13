@@ -17,8 +17,10 @@ abstract class Ticker {
         return ((ticks - start).toFloat() / duration).coerceIn(0f, 1f)
     }
     fun delta(start: Int, duration: Int): Float = delta(start.toLong(), duration.toLong())
-    fun delta(start: Long, end: Long, duration: Long): Float = min(delta(start, duration), delta(end - duration, duration).reverseDelta())
+    fun delta(start: Long, end: Long, durationStart: Long, durationEnd: Long): Float = min(delta(start, durationStart), delta(end - durationEnd, durationEnd).reverseDelta())
+    fun delta(start: Long, end: Long, duration: Long): Float = delta(start, end, duration, duration)
     fun delta(start: Int, end: Int, duration: Int): Float = delta(start.toLong(), end.toLong(), duration.toLong())
+    fun delta(start: Int, end: Int, durationStart: Int, durationEnd: Int): Float = delta(start.toLong(), end.toLong(), durationStart.toLong(), durationEnd.toLong())
 
     operator fun compareTo(other: Int) = ticks.compareTo(other)
     operator fun compareTo(other: Long) = ticks.compareTo(other)

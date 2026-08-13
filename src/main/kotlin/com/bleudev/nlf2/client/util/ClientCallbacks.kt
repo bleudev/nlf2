@@ -42,14 +42,39 @@ private val event85var: Boolean get() =
 var canUseMouse: Boolean = true
     get() = listOf(
         event85var,
-        field,
-    ).all{it}
-var canUseKeyboard: Boolean = true
-    get() = listOf(
-        event85var,
+        !ripSanyaBlockKeys,
         field,
     ).all{it}
     set(v) {
         field = v
         KeyMapping.releaseAll()
     }
+val canMoveMouseAnyway: Boolean get() = listOf(
+    beforeMeetWaterFluidAmount >= 1f,
+    ripSanyaBlockKeys,
+).any{it}
+var canUseKeyboard: Boolean = true
+    get() = listOf(
+        event85var,
+        !ripSanyaBlockKeys,
+        field,
+    ).all{it}
+    set(v) {
+        field = v
+        KeyMapping.releaseAll()
+    }
+
+private var prevCanUseKeyboard: Boolean? = null
+private var prevCanUseMouse: Boolean? = null
+fun keyTick() {
+    println(ripSanyaBlockKeys)
+    // Cludge?
+    if (prevCanUseKeyboard == null) prevCanUseKeyboard = canUseKeyboard
+    if (prevCanUseMouse == null) prevCanUseMouse = canUseMouse
+    if (prevCanUseKeyboard != canUseKeyboard || prevCanUseMouse != canUseMouse){
+        KeyMapping.releaseAll()
+        prevCanUseKeyboard = canUseKeyboard
+        prevCanUseMouse = canUseMouse
+    }
+}
+

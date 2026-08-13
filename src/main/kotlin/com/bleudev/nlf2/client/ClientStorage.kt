@@ -14,10 +14,12 @@ import com.bleudev.nlf2.util.reverseDeltaIf
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.Minecraft
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import kotlin.random.Random
 
 @JvmField
 var webcamEnabled: Boolean = false
@@ -41,7 +43,7 @@ private val earthquakeProp: Float get() = listOf(
     else noise_amount,
     manualUpdateEffectAmount / 2,
     textBoxShake.toFloat().onlyIf(ripVertEventEnabled),
-    TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta().onlyIf(ripSanyaEventEnabled && TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) * .7f,
+    TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta().onlyIf(ripSanyaEventEnabled && TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) * .5f,
 ).max()
 val earthquakeStrength: Float get() = earthquakeProp / 8
 val earthquakeSpeed: Float get() = earthquakeProp * 2
@@ -105,6 +107,12 @@ var ripVertEventLagStartTick: Int = -1
 // RIP Sanya Event
 var ripSanyaEventEnabled: Boolean = false
 var ripSanyaEventByeTick: Int = -1
+val ripSanyaRandomAnaglyphAmount: Float get() = (Random.nextFloat() *
+    TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT, 100, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT))
+    .onlyIf(ripSanyaEventEnabled)
+val ripSanyaBlockKeys: Boolean get() = ripSanyaEventEnabled &&
+    TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE &&
+    Minecraft.getInstance().gameProfile.name.equals(if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -146,7 +154,7 @@ var shaderAnaglyphUniformX: Float = 0f
         event101_noise_amount * 0.01f,
         amethyst_daisy_amount * 0.004f,
         (textBoxShake.toFloat() * 0.01f).onlyIf(ripVertEventEnabled),
-        earthquakeProp.onlyIf(ripSanyaEventEnabled) * 0.02f,
+        ripSanyaRandomAnaglyphAmount * 0.025f,
     ).max()
 var shaderAnaglyphUniformY: Float = 0f
     get() = listOf(
@@ -155,7 +163,7 @@ var shaderAnaglyphUniformY: Float = 0f
         event101_noise_amount * 0.005f,
         amethyst_daisy_amount * 0.002f,
         (textBoxShake.toFloat() * 0.008f).onlyIf(ripVertEventEnabled),
-        earthquakeProp.onlyIf(ripSanyaEventEnabled) * 0.02f,
+        ripSanyaRandomAnaglyphAmount * 0.025f,
     ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength
