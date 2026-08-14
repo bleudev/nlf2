@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.bleudev.nlf2.client.ClientStorageKt.deathScreenBlackFogEffect;
-import static com.bleudev.nlf2.client.util.InjectsKt.black;
+import static com.bleudev.nlf2.client.util.ClientInjectsKt.black;
 
 @Environment(EnvType.CLIENT)
 @Mixin(DeathScreen.class)

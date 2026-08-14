@@ -67,7 +67,6 @@ var canUseKeyboard: Boolean = true
 private var prevCanUseKeyboard: Boolean? = null
 private var prevCanUseMouse: Boolean? = null
 fun keyTick() {
-    println(ripSanyaBlockKeys)
     // Cludge?
     if (prevCanUseKeyboard == null) prevCanUseKeyboard = canUseKeyboard
     if (prevCanUseMouse == null) prevCanUseMouse = canUseMouse

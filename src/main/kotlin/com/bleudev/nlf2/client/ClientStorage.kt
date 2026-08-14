@@ -4,6 +4,7 @@ package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.TICKER_RIP_SANYA
 import com.bleudev.nlf2.client.util.TICKER_RIP_VERT
 import com.bleudev.nlf2.client.util.isEvent101Char
@@ -24,6 +25,9 @@ import kotlin.random.Random
 @JvmField
 var webcamEnabled: Boolean = false
 
+// Intro
+@Suppress("SimplifyBooleanWithConstants")
+val introWindowFeaturesEnabled: Boolean get() = INTRO_ENABLED && TICKER_INTRO < 400
 // Join blackness
 var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f

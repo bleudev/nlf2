@@ -29,7 +29,7 @@ object IntroAnimation {
         // Ticker
         val t = TICKER_INTRO.tick()
         // Connect to server
-        if (t >= 400L) {
+        if (t == 400L) {
             val mc = Minecraft.getInstance()
             join_blackness_delay_ticks = 10
             join_blackness = 1f
@@ -43,8 +43,11 @@ object IntroAnimation {
             )
             canUseMouse = true
             canUseKeyboard = true
+            mc.window.removeSizeLimit()
+            mc.window.alwaysOnTop = false
             return
         }
+        if (t >= 400) return
 
         canUseMouse = false
         canUseKeyboard = false
@@ -55,6 +58,8 @@ object IntroAnimation {
 
         // Window features
         if (mc.window.isFullscreen) mc.window.toggleFullScreen()
+        mc.window.sizeLimit(mc.window.width, mc.window.height)
+        mc.window.alwaysOnTop = true
         // NO MUSIC!
         mc.options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(.0)
 

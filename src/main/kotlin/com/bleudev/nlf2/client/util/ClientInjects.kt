@@ -3,7 +3,11 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nine_lifes.api.EmptyPredicate
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nlf2.LOGGER
 import com.bleudev.nlf2.getIdentifier
+import com.mojang.blaze3d.GpuFormat
+import com.mojang.blaze3d.platform.Window
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.core.registries.BuiltInRegistries
@@ -13,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.player.Player
+import org.lwjgl.glfw.GLFW
 import kotlin.random.Random
 
 fun GuiGraphicsExtractor.black(alpha: Float) = overlayWithColor(alpha, 0f, 0f, 0f)
@@ -46,5 +51,35 @@ fun Player.sound(sound: SoundEvent, source: SoundSource, volume: Float = 1f, pit
         )
     } else {
         playSound(sound, volume, pitch)
+    }
+}
+
+// Windows
+fun Window.sizeLimit(minWidth: Int, minHeight: Int, maxWidth: Int, maxHeight: Int) {
+    try {
+        GLFW.glfwSetWindowSizeLimits(handle(), minWidth, minHeight, maxWidth, maxHeight)
+    } catch (e: Exception) {
+        LOGGER.info("Got $e during try to set size limit")
+    }
+}
+fun Window.sizeLimit(width: Int, height: Int) = sizeLimit(width, height, width, height)
+fun Window.removeSizeLimit() {
+    try {
+        val maxSize = RenderSystem.getDevice().deviceInfo.limits.maxTextureSizeForFormat(GpuFormat.RGBA8_UNORM)
+        sizeLimit(-1, -1, maxSize, maxSize)
+    } catch (e: Exception) {
+        LOGGER.info("Got $e during try to remove size limit")
+    }
+}
+var Window.alwaysOnTop: Boolean get() = GLFW.glfwGetWindowAttrib(handle(), GLFW.GLFW_FLOATING) == GLFW.GLFW_TRUE
+set(v) {
+    if (v == alwaysOnTop) return
+    try {
+        if (v) {
+            GLFW.glfwFocusWindow(handle())
+        }
+        GLFW.glfwSetWindowAttrib(handle(), GLFW.GLFW_FLOATING, if (v) GLFW.GLFW_TRUE else GLFW.GLFW_FALSE)
+    } catch (e: Exception) {
+        LOGGER.info("Got $e during try to set always on top $v")
     }
 }

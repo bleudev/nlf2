@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
-import static com.bleudev.nlf2.client.util.InjectsKt.black;
+import static com.bleudev.nlf2.client.util.ClientInjectsKt.black;
 
 @Environment(EnvType.CLIENT)
 @Mixin(GenericMessageScreen.class)
