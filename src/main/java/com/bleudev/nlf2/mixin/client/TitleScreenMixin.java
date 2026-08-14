@@ -10,11 +10,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.bleudev.nlf2.Nlf2ConstKt.INTRO_ENABLED;
+import static com.bleudev.nlf2.client.util.ClientInjectsKt.black;
+
 @Environment(EnvType.CLIENT)
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin {
     @Inject(method = "extractRenderState", at = @At("RETURN"))
     private void renderIntro(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+        if (INTRO_ENABLED) {
+            black(graphics);
+        }
         IntroAnimation.INSTANCE.render(graphics);
     }
 }

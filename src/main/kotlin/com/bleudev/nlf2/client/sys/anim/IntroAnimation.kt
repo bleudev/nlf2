@@ -66,7 +66,7 @@ object IntroAnimation {
         val w = graphics.guiWidth()
         val h = graphics.guiHeight()
         // Background
-        graphics.fill(0, 0, w, h, -0x1000000)
+        graphics.black()
         // ___ frame
         val s = min(w, h) / 4
         graphics.pose().pushMatrix()
