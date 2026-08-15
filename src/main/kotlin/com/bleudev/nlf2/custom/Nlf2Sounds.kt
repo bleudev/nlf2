@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.custom
+package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.util.registerSound
 import net.minecraft.sounds.SoundEvent

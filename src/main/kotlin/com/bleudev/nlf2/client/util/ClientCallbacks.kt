@@ -6,8 +6,8 @@ import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.client.*
-import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
+import com.bleudev.nlf2.custom.Nlf2Sounds
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping

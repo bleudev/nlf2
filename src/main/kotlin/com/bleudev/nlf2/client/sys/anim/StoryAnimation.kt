@@ -4,7 +4,6 @@ package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nlf2.ANIM_Y_REF
-import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.TICKER_STORY
@@ -13,6 +12,7 @@ import com.bleudev.nlf2.client.util.canUseKeyboard
 import com.bleudev.nlf2.client.util.canUseMouse
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
+import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.reverseDelta

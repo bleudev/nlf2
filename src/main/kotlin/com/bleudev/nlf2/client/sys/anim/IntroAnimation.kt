@@ -4,12 +4,12 @@ package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nlf2.INTRO_ENABLED
 import com.bleudev.nlf2.SERVER_ADDRESS
-import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.client.join_blackness
 import com.bleudev.nlf2.client.join_blackness_delay_ticks
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.RelativeSoundInstance
 import com.bleudev.nlf2.client.webcamEnabled
+import com.bleudev.nlf2.custom.Nlf2Sounds
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft

@@ -52,6 +52,5 @@ fun <T : BlockEntity> registerBlockEntity(
 )
 internal fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
     Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, getIdentifier(name), effect)
-// Client
 fun registerSound(name: String, range: Float? = null): SoundEvent = BuiltInRegistries.SOUND_EVENT
     .register(name, SoundEvent(getIdentifier(name), Optional.ofNullable(range)))

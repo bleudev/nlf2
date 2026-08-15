@@ -148,6 +148,7 @@ class Nlf2 : ModInitializer {
         Nlf2Blocks.initialize()
         Nlf2BlockEntities.initialize()
         Nlf2MobEffects.initialize()
+        Nlf2Sounds.initialize()
         ActorCharEntrypoint.initialize()
         serverVersion = FabricLoader.getInstance().getModContainer(MODID).get().metadata.version.friendlyString
 
