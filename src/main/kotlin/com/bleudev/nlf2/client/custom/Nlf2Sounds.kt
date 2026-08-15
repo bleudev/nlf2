@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.client.custom
 
 import com.bleudev.nlf2.util.registerSound
+import net.minecraft.sounds.SoundEvent
 
 object Nlf2Sounds {
     @JvmField
@@ -44,6 +45,25 @@ object Nlf2Sounds {
     @JvmStatic
     fun ripVertSounds() = listOf(
         MUS_MAN_BEFORE
+    )
+    fun allWithSubtitle(): List<SoundEvent> = listOf(
+        BROKE,
+        LAUGH,
+        BORDER_AMBIENT,
+        PAUSE_CUTSCENE_AMBIENT,
+        MUS_STRANGE_NOISE,
+        MUS_MILKICH_APPEARS,
+        MUS_JUKEBOX,
+        MUS_EASTER_EGG,
+        MUS_STORY,
+        MUS_MAN_BEFORE,
+        MUS_MAN_WEIRD,
+        MUS_QUAKE,
+    )
+    fun allWithoutSubtitle(): List<SoundEvent> = listOf(
+        MUS_JUKEBOX_PUZZLE,
+        MUS_MAN_STORY,
+        NOISE,
     )
 
     fun initialize() {}

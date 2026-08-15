@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.datagen.provider
 
+import com.bleudev.nlf2.client.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2MobEffects
@@ -26,21 +27,18 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Mob effects
         builder.add(Nlf2MobEffects.GLIDING.value(), "Gliding")
         // Sounds
-        builder.add("sound.nlf2.broke", "Broke")
-        builder.add("sound.nlf2.laugh", "Strange laugh")
-        builder.add("sound.nlf2.border_ambient", "Strange noise")
-        builder.add("sound.nlf2.pause_cutscene_ambient", "Strange noise")
-        builder.add("sound.nlf2.mus_strange_noise", "Strange noise")
-        builder.add("sound.nlf2.mus_milkich_appears", "12 (Not) lactose-free")
-        builder.add("sound.nlf2.mus_jukebox", "13 The Abandoned World")
-        builder.add("sound.nlf2.mus_easter_egg", "14 Jukeboxing To The Fullest!")
-        builder.add("sound.nlf2.mus_jukebox_puzzle", "")
-        builder.add("sound.nlf2.mus_story", "16 Long time ago")
-        builder.add("sound.nlf2.mus_man_story", "")
-        builder.add("sound.nlf2.noise", "")
-        builder.add("sound.nlf2.mus_man_before", "Strange music")
-        builder.add("sound.nlf2.mus_man_weird", "LOUD MUSIC")
-        builder.add("sound.nlf2.mus_quake", "LOUD EARTHQUAKE")
+        builder.add(Nlf2Sounds.BROKE, "Broke")
+        builder.add(Nlf2Sounds.LAUGH, "Strange laugh")
+        builder.add(Nlf2Sounds.BORDER_AMBIENT, "Strange noise")
+        builder.add(Nlf2Sounds.PAUSE_CUTSCENE_AMBIENT, "Strange noise")
+        builder.add(Nlf2Sounds.MUS_STRANGE_NOISE, "Strange noise")
+        builder.add(Nlf2Sounds.MUS_MILKICH_APPEARS, "12 (Not) lactose-free")
+        builder.add(Nlf2Sounds.MUS_JUKEBOX, "13 The Abandoned World")
+        builder.add(Nlf2Sounds.MUS_EASTER_EGG, "14 Jukeboxing To The Fullest!")
+        builder.add(Nlf2Sounds.MUS_STORY, "16 Long time ago")
+        builder.add(Nlf2Sounds.MUS_MAN_BEFORE, "Strange music")
+        builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "LOUD MUSIC")
+        builder.add(Nlf2Sounds.MUS_QUAKE, "LOUD EARTHQUAKE")
     }
 }
 
@@ -62,13 +60,13 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Mob effects
         builder.add(Nlf2MobEffects.GLIDING.value(), "Планирование")
         // Sounds
-        builder.add("sound.nlf2.broke", "Удар")
-        builder.add("sound.nlf2.laugh", "Странный смех")
-        builder.add("sound.nlf2.border_ambient", "Странный шум")
-        builder.add("sound.nlf2.pause_cutscene_ambient", "Странный шум")
-        builder.add("sound.nlf2.mus_strange_noise", "Странный шум")
-        builder.add("sound.nlf2.mus_man_before", "Странная музыка")
-        builder.add("sound.nlf2.mus_man_weird", "ГРОМКАЯ МУЗЫКА")
-        builder.add("sound.nlf2.mus_quake", "ГРОМКОЕ ЗЕМЛЕТРЯСЕНИЕ")
+        builder.add(Nlf2Sounds.BROKE, "Удар")
+        builder.add(Nlf2Sounds.LAUGH, "Странный смех")
+        builder.add(Nlf2Sounds.BORDER_AMBIENT, "Странный шум")
+        builder.add(Nlf2Sounds.PAUSE_CUTSCENE_AMBIENT, "Странный шум")
+        builder.add(Nlf2Sounds.MUS_STRANGE_NOISE, "Странный шум")
+        builder.add(Nlf2Sounds.MUS_MAN_BEFORE, "Странная музыка")
+        builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "ГРОМКАЯ МУЗЫКА")
+        builder.add(Nlf2Sounds.MUS_QUAKE, "ГРОМКОЕ ЗЕМЛЕТРЯСЕНИЕ")
     }
 }

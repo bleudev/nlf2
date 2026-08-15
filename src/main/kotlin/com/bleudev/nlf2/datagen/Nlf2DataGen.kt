@@ -17,6 +17,7 @@ class Nlf2DataGen : DataGeneratorEntrypoint {
         // Other
         pack.addProvider(::Nlf2ModelProvider)
         pack.addProvider(::Nlf2RecipesProvider)
+        pack.addProvider(::Nlf2SoundsProvider)
         generator.run()
     }
 }
