@@ -36,9 +36,10 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.MUS_JUKEBOX, "13 The Abandoned World")
         builder.add(Nlf2Sounds.MUS_EASTER_EGG, "14 Jukeboxing To The Fullest!")
         builder.add(Nlf2Sounds.MUS_STORY, "16 Long time ago")
-        builder.add(Nlf2Sounds.MUS_MAN_BEFORE, "Strange music")
+        builder.add(Nlf2Sounds.MUS_PART4_BYE_VERT, "Strange music")
         builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "LOUD MUSIC")
         builder.add(Nlf2Sounds.MUS_QUAKE, "LOUD EARTHQUAKE")
+        builder.add(Nlf2Sounds.MUS_PART4_BYE, "17 GOODBYE")
     }
 }
 
@@ -65,7 +66,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.BORDER_AMBIENT, "Странный шум")
         builder.add(Nlf2Sounds.PAUSE_CUTSCENE_AMBIENT, "Странный шум")
         builder.add(Nlf2Sounds.MUS_STRANGE_NOISE, "Странный шум")
-        builder.add(Nlf2Sounds.MUS_MAN_BEFORE, "Странная музыка")
+        builder.add(Nlf2Sounds.MUS_PART4_BYE_VERT, "Странная музыка")
         builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "ГРОМКАЯ МУЗЫКА")
         builder.add(Nlf2Sounds.MUS_QUAKE, "ГРОМКОЕ ЗЕМЛЕТРЯСЕНИЕ")
     }

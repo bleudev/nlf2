@@ -420,13 +420,13 @@ class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (int
         super.cause(causedBy, *args)
         val seq = TextBoxSequence()
         seq.color(TextColorConstants.ROUGE)
-        seq.speed(6)
+        seq.speed(7)
         seq.add("YOU", 50)
         seq.wait(40)
-        seq.speed(4)
-        seq.add("I CAN ADD YOU&I CAN REMOVE YOU", 50)
         seq.speed(5)
-        seq.add("SAY GOODBYE", 50)
+        seq.add("I CAN ADD YOU&I CAN REMOVE YOU", 50)
+        seq.speed(9)
+        seq.add("SAY GOODBYE", 90)
         val bye = seq.start - 30
         val packets = arrayOf(
             OpenTextBox(seq, 20),

@@ -56,8 +56,13 @@ import unknown.depths.r.man.ROHJEN67SW51
 import kotlin.random.Random
 
 class Nlf2Client : ClientModInitializer {
-    class MusManBeforeInstance(private val end: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_MAN_BEFORE) {
+    class MusManBeforeInstance(private val end: Int) : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART4_BYE_VERT) {
         override fun vol(): Float = TICKER_RIP_VERT.delta(0, end, 40).also { println("MUS MAN BEFORE VOLUME IS $it") }
+    }
+    class MusPart4ByeInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART4_BYE) {
+        init {
+            this.looping = false
+        }
     }
     class MusManWeirdInstanceSnippet(private val start: Int, private val mid: Int, sound: SoundEvent) : TickableLoopedAmbientSoundInstance(sound) {
         override fun vol(): Float = TICKER_RIP_VERT.delta(start, 40)
@@ -166,12 +171,18 @@ class Nlf2Client : ClientModInitializer {
                     ripVertEventShakeStartTick.toLong() -> {
                         sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_MAN_WEIRD))
                         sm.play(MusManWeirdInstanceSnippet(ripVertEventShakeStartTick, ripVertEventLagStartTick, Nlf2Sounds.MUS_QUAKE))
-                        sm.stop(Nlf2Sounds.MUS_MAN_BEFORE.location, null)
+                        sm.stop(Nlf2Sounds.MUS_PART4_BYE_VERT.location, null)
                     }
                     in (ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN)..(ripVertEventLagStartTick+RIP_VERT_EVENT_LAG_FADE_IN+RIP_VERT_EVENT_ERASE_DURATION) -> {
                         sm.stop(Nlf2Sounds.MUS_MAN_WEIRD.location, null)
                         sm.stop(Nlf2Sounds.MUS_QUAKE.location, null)
                     }
+                }
+            }
+            // RIP Sanya sounds
+            if (ripSanyaEventEnabled) {
+                if (TICKER_RIP_SANYA.ticks == 1L) {
+                    mc.soundManager.play(MusPart4ByeInstance())
                 }
             }
         }
