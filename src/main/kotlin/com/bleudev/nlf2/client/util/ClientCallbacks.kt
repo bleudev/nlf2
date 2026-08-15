@@ -6,26 +6,27 @@ import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.client.*
+import com.bleudev.nlf2.client.custom.Nlf2Sounds
+import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
 
 val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy || event101_distance <= EVENT101_COMPASS_CRAZY_DISTANCE
-
 val isHoldingCompass: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
     return (!(pl.gameMode()?.isSurvival ?: false) || pl.isHolding(Items.COMPASS)) && !isCompassCrazy
 }
-
 val canOpenChat: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
     return !(pl.gameMode()?.isSurvival ?: false) || pl.gameProfile.name.equals(dataSyncedActor, true)
 }
-
 fun renderHitboxes(entity: Entity): Boolean =
     !(entity is Player && !dataSyncedVisibleActor && dataSyncedActor.equals(entity.gameProfile.name, true))
 fun renderPlayerInTab(name: String): Boolean =
@@ -33,9 +34,12 @@ fun renderPlayerInTab(name: String): Boolean =
     else !(!dataSyncedVisibleActor && name.equals(dataSyncedActor, true))
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 
+// Event 101
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME
 fun isEvent101Char(nickname: String): Boolean = nickname.equals(CURRENT_EVENT101_NICKNAME, true)
 fun isEvent101Char(): Boolean = isEvent101Char(Minecraft.getInstance().gameProfile.name)
+
+// Keyboard / mouse
 
 private val event85var: Boolean get() =
     beforeMeetWaterFluidAmount < 1f || Minecraft.getInstance().player?.let { it.isDeadOrDying || !(it.gameMode()?.isSurvival ?: false) } ?: true
@@ -77,3 +81,25 @@ fun keyTick() {
     }
 }
 
+// Sounds
+private val shouldModifyFinalVolume: Boolean get() = shouldRenderStory
+private var prevShouldModifyFinalVolume: Boolean? = null
+fun getSoundFinalVolume(instance: SoundInstance, original: Float): Float {
+    val identifier = instance.identifier
+    if (shouldRenderStory) {
+        if (identifier !in Nlf2Sounds.storySounds().map(SoundEvent::location)) {
+            return original * StoryAnimation.otherVolume
+        }
+    }
+    return original
+}
+fun volumeTick() {
+    val var10001 = shouldModifyFinalVolume
+    if (prevShouldModifyFinalVolume == null) {
+        prevShouldModifyFinalVolume = var10001
+    }
+    if (var10001 || prevShouldModifyFinalVolume != false) {
+        Minecraft.getInstance().soundManager.soundEngine.refreshAll()
+    }
+    prevShouldModifyFinalVolume = var10001
+}

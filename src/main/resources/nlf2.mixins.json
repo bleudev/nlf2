@@ -14,6 +14,7 @@
     "accessor.LivingEntityAccessor"
   ],
   "client": [
+    "accessor.SoundManagerAccessor",
     "client.AbstractClientPlayerMixin",
     "client.AbstractSoundInstanceMixin",
     "client.AvatarRendererMixin",

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.platform.Window
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.sounds.SoundEngine
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.resources.Identifier
@@ -83,3 +84,6 @@ set(v) {
         LOGGER.info("Got $e during try to set always on top $v")
     }
 }
+
+// Sounds
+fun SoundEngine.refreshAll() = refreshCategoryVolume(SoundSource.MASTER)

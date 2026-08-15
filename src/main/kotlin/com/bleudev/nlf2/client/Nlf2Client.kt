@@ -155,6 +155,7 @@ class Nlf2Client : ClientModInitializer {
             noise_tick++
             ActorCharEntrypointClient.tick()
             keyTick()
+            volumeTick()
 
             // RIP Vert sounds
             if (ripVertEventEnabled) {
