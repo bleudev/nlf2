@@ -1,5 +1,6 @@
 package com.bleudev.nlf2.util
 
+import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
@@ -20,7 +21,8 @@ val VERT_ITEMS = arrayOf<ItemLike>(
     Nlf2Items.CARD,
     Nlf2Items.CHARGED_MANUAL,
     Nlf2Blocks.STRANGE_JUKEBOX,
-    Nlf2Blocks.AMETHYST_OXEYE_DAISY
+    Nlf2Blocks.AMETHYST_OXEYE_DAISY,
+    NineLifesItems.AMETHYST_STICK,
 )
 
 fun modifyContainerItemStackIfNeed(itemStack: ItemStack): ItemStack {
