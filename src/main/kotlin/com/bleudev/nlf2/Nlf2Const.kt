@@ -86,3 +86,8 @@ const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
 const val DEV_BAN_EVENT_112 = true
+
+// Custom dev arguments
+@Suppress("RedundantNullableReturnType")
+@JvmField
+val DEV_ARG_USERNAME: String? = "PlayerDev"

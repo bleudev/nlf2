@@ -38,6 +38,7 @@
     "client.LevelLoadingScreenMixin",
     "client.LoadingOverlayMixin",
     "client.LocalPlayerMixin",
+    "client.MainMixin",
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
     "client.MusicManagerMixin",
