@@ -84,6 +84,13 @@ set(v) {
         LOGGER.info("Got $e during try to set always on top $v")
     }
 }
+fun Window.setPos(xpos: Int, ypos: Int) {
+    try {
+        GLFW.glfwSetWindowPos(handle(), xpos, ypos)
+    } catch (e: Exception) {
+        LOGGER.info("Got $e during try to set pos ($xpos, $ypos)")
+    }
+}
 
 // Sounds
 fun SoundEngine.refreshAll() = refreshCategoryVolume(SoundSource.MASTER)

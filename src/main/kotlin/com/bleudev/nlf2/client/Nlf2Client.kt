@@ -31,6 +31,7 @@ import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
+import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Floats.min
 import com.terraformersmc.modmenu.config.ModMenuConfig
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList
@@ -52,7 +53,9 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.util.ARGB
 import net.minecraft.util.Mth
 import org.joml.Vector4f
+import org.lwjgl.glfw.GLFW
 import unknown.depths.r.man.ROHJEN67SW51
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class Nlf2Client : ClientModInitializer {
@@ -184,6 +187,20 @@ class Nlf2Client : ClientModInitializer {
                 if (TICKER_RIP_SANYA.ticks == 1L) {
                     mc.soundManager.play(MusPart4ByeInstance())
                 }
+            }
+            // RIP Sanya window shake
+            val maxDxy = ripSanyaShakeWindowStrength.lerp(0f, RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY.toFloat()).roundToInt()
+            if (maxDxy > 0) {
+                val w = mc.window
+                w.toggleFullScreen()
+                w.alwaysOnTop = true
+                GLFW.glfwSetInputMode(w.handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED)
+                w.sizeLimit(WINDOW_WIDTH_DEFAULT, WINDOW_HEIGHT_DEFAULT)
+                val dx = Random.nextInt(-maxDxy, maxDxy)
+                val dy = Random.nextInt(-maxDxy, maxDxy)
+                w.setPos(MONITOR_WIDTH / 2 + dx, MONITOR_HEIGHT / 2 + dy)
+                w.setTitle("!!!") // Sync title
+                mc.gui.setScreen(null)
             }
         }
         ClientTickEvents.END_LEVEL_TICK.register {
@@ -358,7 +375,10 @@ class Nlf2Client : ClientModInitializer {
                 if (TICKER_RIP_SANYA.ticks.toInt() == ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) {
                     ClientPlayNetworking.send(RipSanyaTakeStart.INSTANCE)
                 }
-                val alpha = TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + 20, RIP_SANYA_EVENT_WHITE_FADE)
+                val alpha = max(
+                    TICKER_RIP_SANYA.delta(ripSanyaEventByeTick, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + 20, RIP_SANYA_EVENT_WHITE_FADE),
+                    ripSanyaShakeWindowStrength,
+                )
                 graphics.white(alpha)
             }
         }

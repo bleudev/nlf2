@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.getIntroWindowFeaturesEnabled;
-import static com.bleudev.nlf2.client.ClientStorageKt.webcamEnabled;
+import static com.bleudev.nlf2.client.ClientStorageKt.*;
+import static com.bleudev.nlf2.client.util.TimeTickerKt.TICKER_RIP_SANYA;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Window.class)
@@ -26,7 +26,7 @@ public abstract class WindowMixin {
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/DisplayData;isFullscreen()Z"))
     private boolean setInitFullscreen(boolean original) {
-        if (getIntroWindowFeaturesEnabled()) {
+        if (getWindowBlockFullscreen()) {
             return false;
         } else {
             return original;
@@ -40,6 +40,15 @@ public abstract class WindowMixin {
     private void modifyTitle(String title, Operation<Void> original) {
         String var10001 = title.replace("Minecraft*", "Minecraft");
         var10001 = var10001.replace("Minecraft", "\"Minecraft\"");
+        if (getRipSanyaBlockKeys()) {
+            int var10002 = ((int) TICKER_RIP_SANYA.getTicks()) % 80;
+            if (var10002 < 40) {
+                var10001 = "ATTENTION";
+            }
+            else {
+                var10001 = "ERASING IS IN PROCESS";
+            }
+        }
         if (webcamEnabled) {
             var10001 = "EYES ARE WATCHING";
         }
@@ -47,7 +56,7 @@ public abstract class WindowMixin {
     }
     @Inject(method = "toggleFullScreen", at = @At("HEAD"), cancellable = true)
     private void cancelFullscreen(CallbackInfo ci) {
-        if (getIntroWindowFeaturesEnabled()) {
+        if (getWindowBlockFullscreen()) {
             this.fullscreen = false;
             ci.cancel();
         }

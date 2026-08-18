@@ -10,18 +10,30 @@ import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.bleudev.nlf2.client.ClientStorageKt.*;
+import static com.bleudev.nlf2.client.util.ClientCallbacksKt.getCanUseKeyboard;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PauseScreen.class)
-public class PauseScreenMixin extends Screen {
+public abstract class PauseScreenMixin extends Screen {
+    @Shadow
+    public abstract void onClose();
+
     protected PauseScreenMixin(Component title) {
         super(title);
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void doNotSoftLock(CallbackInfo ci) {
+        if (!getCanUseKeyboard()) {
+            this.onClose();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -34,7 +46,7 @@ public class PauseScreenMixin extends Screen {
     }
 
     @Inject(method = "onClose", at = @At("TAIL"))
-    public void onClose(CallbackInfo ci) {
+    public void onCloseMixin(CallbackInfo ci) {
         webcamEnabled = false;
         Minecraft.getInstance().updateTitle();
         pause_screen_red_screen_effect = false;

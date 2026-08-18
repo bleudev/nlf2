@@ -7,6 +7,12 @@ import net.minecraft.world.phys.Vec3
 const val ANIM_X_REF = 384 // Unused?
 const val ANIM_Y_REF = 240
 
+// Window
+const val WINDOW_WIDTH_DEFAULT = 854
+const val WINDOW_HEIGHT_DEFAULT = 480
+const val MONITOR_WIDTH = 1920
+const val MONITOR_HEIGHT = 1080
+
 // Address
 private const val SERVER_OUT_ADDRESS: String = "pink.fnode.me:19164"
 private const val SERVER_IN_ADDRESS: String = "pink.in.fnode.me:19164"
@@ -77,6 +83,7 @@ const val RIP_VERT_EVENT_ERASE_DURATION = 80
 const val RIP_SANYA_EVENT_WHITE_FADE = 25
 const val RIP_SANYA_EVENT_SANYA_TAKE = 700
 const val RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT = 40
+const val RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY = 20
 
 // Booleans
 const val INTRO_ENABLED = false

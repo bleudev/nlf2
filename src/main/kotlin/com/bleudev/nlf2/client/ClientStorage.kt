@@ -27,7 +27,10 @@ var webcamEnabled: Boolean = false
 
 // Intro
 @Suppress("SimplifyBooleanWithConstants")
-val introWindowFeaturesEnabled: Boolean get() = INTRO_ENABLED && TICKER_INTRO < 400
+val windowBlockFullscreen: Boolean get() = listOf(
+    INTRO_ENABLED && TICKER_INTRO < 400,
+    ripSanyaShakeWindowStrength > 0,
+).any{it}
 // Join blackness
 var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f
@@ -117,6 +120,9 @@ val ripSanyaRandomAnaglyphAmount: Float get() = (Random.nextFloat() *
 val ripSanyaBlockKeys: Boolean get() = ripSanyaEventEnabled &&
     TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE &&
     Minecraft.getInstance().gameProfile.name.equals(if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
+val ripSanyaShakeWindowStrength: Float get() =
+    TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, RIP_SANYA_EVENT_SANYA_TAKE)
+    .onlyIf(ripSanyaBlockKeys)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
