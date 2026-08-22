@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.client.util
 
+import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
-import com.bleudev.nlf2.util.reverseDelta
 import kotlin.math.min
 
 abstract class Ticker {

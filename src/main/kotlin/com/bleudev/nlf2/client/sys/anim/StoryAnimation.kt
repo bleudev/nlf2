@@ -3,6 +3,7 @@
 package com.bleudev.nlf2.client.sys.anim
 
 import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.ANIM_Y_REF
 import com.bleudev.nlf2.client.shouldRenderStory
 import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
@@ -16,7 +17,6 @@ import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.hueToTriple
-import com.bleudev.nlf2.util.reverseDelta
 import de.maxhenkel.voicechat.VoicechatClient
 import de.maxhenkel.voicechat.voice.client.ClientManager
 import net.fabricmc.api.EnvType

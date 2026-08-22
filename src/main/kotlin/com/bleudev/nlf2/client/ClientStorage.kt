@@ -3,6 +3,7 @@
 package com.bleudev.nlf2.client
 
 import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.TICKER_INTRO
 import com.bleudev.nlf2.client.util.TICKER_RIP_SANYA
@@ -10,7 +11,6 @@ import com.bleudev.nlf2.client.util.TICKER_RIP_VERT
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.onlyIf
-import com.bleudev.nlf2.util.reverseDelta
 import com.bleudev.nlf2.util.reverseDeltaIf
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment

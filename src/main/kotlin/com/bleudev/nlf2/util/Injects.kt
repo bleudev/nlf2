@@ -3,6 +3,7 @@ package com.bleudev.nlf2.util
 import com.bleudev.nine_lifes.api.Transformer
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
+import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.DEV_STORY_ACTOR
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
@@ -123,7 +124,6 @@ fun <T> List<T>.with(vararg values: T): List<T> {
     cp.addAll(values)
     return cp.toList()
 }
-fun Float.reverseDelta(max: Float = 1f): Float = max - this
 fun Float.reverseDeltaIf(condition: Boolean, max: Float = 1f): Float = if (condition) reverseDelta(max) else this
 fun Float.onlyIf(condition: Boolean, default: Float = 0f): Float = if (condition) this else default
 fun Float.hueToTriple(): Triple<Float, Float, Float> {

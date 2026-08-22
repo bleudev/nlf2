@@ -6,6 +6,7 @@ import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
@@ -29,7 +30,6 @@ import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
-import com.bleudev.nlf2.util.reverseDelta
 import com.github.sarxos.webcam.Webcam
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Floats.min
@@ -89,9 +89,10 @@ class Nlf2Client : ClientModInitializer {
         }
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             if (!ripSanyaEventEnabled) return@register current
-            ARGB.srgbLerp(min(
-                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, 0),
-                TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta()
+            ARGB.srgbLerp(TICKER_RIP_SANYA.delta(
+                ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE,
+                ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT,
+                0, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT
             ), current, 0xffff0000.toInt())
         }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
