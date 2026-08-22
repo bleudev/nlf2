@@ -58,6 +58,7 @@ val TICKER_TEXT_BOX = TimeTicker()
 val TICKER_RIP_VERT = TimeTicker()
 @JvmField
 val TICKER_RIP_SANYA = TimeTicker()
+val TICKER_UNKNOWN_RAINBOW_NAME_TAG = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()

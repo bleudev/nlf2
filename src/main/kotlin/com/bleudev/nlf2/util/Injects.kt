@@ -126,3 +126,18 @@ fun <T> List<T>.with(vararg values: T): List<T> {
 fun Float.reverseDelta(max: Float = 1f): Float = max - this
 fun Float.reverseDeltaIf(condition: Boolean, max: Float = 1f): Float = if (condition) reverseDelta(max) else this
 fun Float.onlyIf(condition: Boolean, default: Float = 0f): Float = if (condition) this else default
+fun Float.hueToTriple(): Triple<Float, Float, Float> {
+    var h = this % 1f
+    if (h < 0) h += 1f
+
+    val rgb = FloatArray(3)
+    val offsets = floatArrayOf(0f, 4f, 2f)
+
+    for (i in offsets.indices) {
+        val value = (h * 6f + offsets[i]) % 6f
+        val result = kotlin.math.abs(value - 3f) - 1f
+        rgb[i] = result.coerceIn(0f, 1f)
+    }
+
+    return Triple(rgb[0], rgb[1], rgb[2])
+}

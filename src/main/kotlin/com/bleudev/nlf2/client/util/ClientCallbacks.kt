@@ -5,15 +5,19 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
+import com.bleudev.nlf2.UNKNOWN_RAINBOW_NAME_TAG_DURATION
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
+import com.bleudev.nlf2.util.hueToTriple
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvent
+import net.minecraft.util.ARGB
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
@@ -33,6 +37,18 @@ fun renderPlayerInTab(name: String): Boolean =
     if (dataSyncedMeetState % 2 == 0) name.equals(Minecraft.getInstance().gameProfile.name, true)
     else !(!dataSyncedVisibleActor && name.equals(dataSyncedActor, true))
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
+fun modifyPlayerNameTag(original: Component?): Component? {
+    val name = original?.string ?: return original
+    val t = TICKER_UNKNOWN_RAINBOW_NAME_TAG.tick()
+    if (dataSyncedActor.equals(name, true) && dataSyncedActorLoreChar == "unknown") {
+        val (r, g, b) = ((t % UNKNOWN_RAINBOW_NAME_TAG_DURATION).toFloat() / UNKNOWN_RAINBOW_NAME_TAG_DURATION).coerceIn(0f, 1f).hueToTriple()
+        return Component.literal("???").withColor(ARGB.colorFromFloat(1f, r, g, b))
+    }
+    return original
+}
+fun renderPlayerNameTag(name: String): Boolean {
+    return dataSyncedActor.equals(name, true) && dataSyncedActorLoreChar == "unknown"
+}
 
 // Event 101
 val CURRENT_EVENT101_NICKNAME: String get() = if (DEV_EVENT_101) dataSyncedActor else EVENT101_NICKNAME

@@ -15,6 +15,7 @@ import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.util.hueToTriple
 import com.bleudev.nlf2.util.reverseDelta
 import de.maxhenkel.voicechat.VoicechatClient
 import de.maxhenkel.voicechat.voice.client.ClientManager
@@ -335,22 +336,6 @@ object StoryAnimation {
     private fun Int.circley(duration: Int, offset: Int): Float {
         val angle = (((this + offset) % duration).toFloat() / duration) * 2 * PI
         return sin(angle).toFloat() * .3f
-    }
-
-    private fun Float.hueToTriple(): Triple<Float, Float, Float> {
-        var h = this % 1f
-        if (h < 0) h += 1f
-
-        val rgb = FloatArray(3)
-        val offsets = floatArrayOf(0f, 4f, 2f)
-
-        for (i in offsets.indices) {
-            val value = (h * 6f + offsets[i]) % 6f
-            val result = kotlin.math.abs(value - 3f) - 1f
-            rgb[i] = result.coerceIn(0f, 1f)
-        }
-
-        return Triple(rgb[0], rgb[1], rgb[2])
     }
 
     private fun GuiGraphicsExtractor.anim(sprite: Sprite, alpha: Float, rgb: Int, x: Float, y: Float, size: Float = 1f) {
