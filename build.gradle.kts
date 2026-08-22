@@ -55,6 +55,7 @@ dependencies {
     implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
     implementation("maven.modrinth:xaeros-world-map:${project.property("xaeros_world_map_version")}")
     implementation("maven.modrinth:simple-voice-chat:fabric-${project.property("voice_chat_version")}")
+    implementation(files("libs/ModSync-${project.property("modsync_version")}.jar"))
 
     include(implementation("com.github.sarxos:webcam-capture:0.3.12")!!)
     include(implementation("com.nativelibs4java:bridj:0.7.0")!!)
@@ -112,12 +113,6 @@ publishing {
             from(components["java"])
         }
     }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }
