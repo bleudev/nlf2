@@ -16,8 +16,10 @@ import java.util.function.Function;
 public class PlayerListMixin {
     @Inject(method = "broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Z)V", at = @At("HEAD"), cancellable = true)
     private void modifyBroadcastSystemMessage(Component message, Function<ServerPlayer, Component> playerMessages, boolean overlay, CallbackInfo ci) {
-        String key = ((TranslatableContents) message.getContents()).getKey();
-        if (List.of("multiplayer.player.joined", "multiplayer.player.left").contains(key)) ci.cancel();
-        else if (key.startsWith("death.")) ci.cancel();
+        if (message.getContents() instanceof TranslatableContents contents) {
+            String key = contents.getKey();
+            if (List.of("multiplayer.player.joined", "multiplayer.player.left").contains(key)) ci.cancel();
+            else if (key.startsWith("death.")) ci.cancel();
+        }
     }
 }

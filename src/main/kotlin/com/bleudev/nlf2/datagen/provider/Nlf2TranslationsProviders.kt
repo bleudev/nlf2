@@ -15,6 +15,8 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.server.disconnect.version.please.update", "Please update the mod")
         builder.add("nlf2.message.item.card.check", "(You have deja vu.)")
         builder.add("nlf2.message.event.112.disconnect", $$"%1$s was erased")
+        builder.add("multiplayer.player.joined.unknown", "??? joined the game")
+        builder.add("multiplayer.player.left.unknown", "??? left the game")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Puzzle?")
         builder.add(Nlf2Items.MANUAL, "Manual")
@@ -49,6 +51,8 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.server.disconnect.version.please.update", "Пожалуйста, обновите мод")
         builder.add("nlf2.message.item.card.check", "(У вас дежавю.)")
         builder.add("nlf2.message.event.112.disconnect", $$"%1$s был стёрт")
+        builder.add("multiplayer.player.joined.unknown", "??? присоединился к игре")
+        builder.add("multiplayer.player.left.unknown", "??? покинул игру")
         // Items
         builder.add(Nlf2Items.WD_PUZZLE, "Головоломка?")
         builder.add(Nlf2Items.MANUAL, "Руководство")

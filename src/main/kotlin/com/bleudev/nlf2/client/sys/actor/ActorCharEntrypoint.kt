@@ -1,10 +1,7 @@
 package com.bleudev.nlf2.client.sys.actor
 
 import com.bleudev.nlf2.client.sys.actor.chars.*
-import com.bleudev.nlf2.client.sys.actor.chars.res.Event101Char
-import com.bleudev.nlf2.client.sys.actor.chars.res.GhostChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.InvChar
-import com.bleudev.nlf2.client.sys.actor.chars.res.RougeEyesBleugame
+import com.bleudev.nlf2.client.sys.actor.chars.res.*
 
 object ActorCharEntrypoint {
     internal val chars: HashMap<String, ActorChar> = HashMap()
@@ -39,5 +36,6 @@ object ActorCharEntrypoint {
         chars["inv"] = InvChar()
         chars["ghost"] = GhostChar()
         chars["event101"] = Event101Char()
+        chars["unknown"] = UnknownChar()
     }
 }

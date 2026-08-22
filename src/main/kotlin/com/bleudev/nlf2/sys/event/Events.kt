@@ -2,12 +2,14 @@
 
 package com.bleudev.nlf2.sys.event
 
+import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
+import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
@@ -18,6 +20,7 @@ import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.sys.util.TextColorConstants
 import com.bleudev.nlf2.util.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.ChatFormatting
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.chat.Component
@@ -26,6 +29,9 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
+import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -123,23 +129,82 @@ class MeetAfterMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         }
     }
 }
-class MeetBeforeFakeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_fake_waflla_wip") {
+class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_unknown_wip") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
+        server.playerList.broadcastSystemMessage(
+            Component.translatable("multiplayer.player.joined.unknown").withStyle(ChatFormatting.YELLOW),
+            false
+        )
         server.nlf2data::loreData.transform {
-            // TODO: Fake waflla
-            it.actorChar = "mask_waflla"
+            it.actorChar = "unknown"
             it
         }
     }
 }
-class MeetAfterFakeWaflla(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_fake_waflla_wip") {
-    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
-        super.cause(causedBy, *args)
-        // TODO: Fake waflla disappear
-        server.nlf2data::loreData.transform {
-            it
+class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_unknown_wip") {
+    override fun tick() {
+        super.tick()
+        var message: Component? = null
+        when (ticks) {
+            20 -> {
+                message = Component.literal("<???> Привет ребята")
+            }
+            100 -> {
+                message = Component.literal("<???> О, Милкич!")
+            }
+            180 -> {
+                message = Component.literal("<???> Ты меня запомнил?")
+            }
+            340 -> {
+                message = Component.literal("<???> Что-то я вас не слышу")
+            }
+            370 -> {
+                message = Component.literal("<???> Ща")
+            }
+            430 -> {
+                message = Component.literal("<???> Что-то с Войс Чатом")
+            }
+            460 -> {
+                for (player in server.playerList.players) {
+                    player.addEffect(MobEffectInstance(MobEffects.DARKNESS, 300, 1, false, false))
+                }
+            }
+            500 -> {
+                message = Component.literal("<???> ?")
+            }
+            560 -> {
+                message = Component.literal("<???> Почему потемнело")
+            }
+            640 -> {
+                message = Component.literal("<???> Ой")
+            }
+            660 -> {
+                FI_RedSpectacularEffect(server, "").cause(null)
+                for (player in server.playerList.players) {
+                    player.sound(Nlf2Sounds.LAUGH, SoundSource.AMBIENT, 1f, .9f)
+                }
+                server.nlf2data::loreData.transform {
+                    it.actorChar = "inv"
+                    it
+                }
+                message = Component.translatable("multiplayer.player.left.unknown").withStyle(ChatFormatting.YELLOW)
+            }
+            670 -> {
+                replaceWithStand()
+                ticks = -1
+            }
         }
+        if (message != null) {
+            server.playerList.broadcastSystemMessage(message, false)
+        }
+    }
+
+    private fun replaceWithStand() {
+        val actor = server.actor ?: return
+        val stand = NineLifesEntities.WANDERING_ARMOR_STAND.create(actor.level(), EntitySpawnReason.EVENT) ?: return
+        stand.copyPosition(actor)
+        actor.level().addFreshEntity(stand)
     }
 }
 class MeetBeforeBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_boberobo") {
