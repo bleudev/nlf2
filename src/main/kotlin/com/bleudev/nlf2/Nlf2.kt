@@ -325,10 +325,8 @@ class Nlf2 : ModInitializer {
                         it
                     }
                     // THE END!
-                    for (player in server.playerList.players) {
-                        player.connection.disconnect(Component.literal("THE END"))
-                    }
                     server.clearPostBattleEffects()
+                    server.halt(false)
                 }
                 server.actor?.foodData?.foodLevel = 10
             } else {

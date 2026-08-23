@@ -544,7 +544,7 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                     it.inBattle = true
                     it
                 }
-                server.actor?.addEffect(MobEffectInstance(MobEffects.RESISTANCE, Int.MAX_VALUE, 3, false, false))
+                server.actor?.addEffect(MobEffectInstance(MobEffects.RESISTANCE, Int.MAX_VALUE, 10, false, false))
                 val bossBar = server.customBossEvents.create(
                     overworld.random,
                     BATTLE_BOSS_BAR,
