@@ -309,8 +309,10 @@ class Nlf2 : ModInitializer {
                 server.customBossEvents.get(BATTLE_BOSS_BAR)?.let { bossBar ->
                     if (battleTicks in 0..BATTLE_BOSSBAR_FADE_IN_DURATION) {
                         bossBar.progress = (battleTicks.toFloat() / BATTLE_BOSSBAR_FADE_IN_DURATION).coerceIn(0f, 1f)
+                        server.actor?.setGameMode(GameType.CREATIVE)
                     } else {
                         battleTicks = -1
+                        server.actor?.setGameMode(GameType.SURVIVAL)
                         server.actor?.let {
                             bossBar.setValue(it.health.toInt())
                             bossBar.setMax(it.maxHealth.toInt())
