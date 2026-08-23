@@ -23,12 +23,14 @@ object Nlf2Packets {
     val RIP_SANYA_EVENT = getIdentifier("packet/rip_sanya_event")
     val RIP_VERT_EVENT = getIdentifier("packet/rip_vert_event")
     val SKY_COLOR_EFFECT = getIdentifier("packet/sky_color_effect")
+    val START_WHITENESS_SCREEN_ADVANCED = getIdentifier("packet/start_whiteness_screen_advanced")
     val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
 
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
     val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
     val UNIT_EVENT101_SCREEN_EFFECT_CLEAR = getIdentifier("packet/unit/event101_screen_effect_clear")
+    val UNIT_START_BATTLE = getIdentifier("packet/unit/start_battle")
     val UNIT_STORY_START = getIdentifier("packet/unit/story_start")
     val UNIT_STRANGE_JUKEBOX_MUSIC_STOP = getIdentifier("packet/unit/strange_jukebox_music_stop")
 
@@ -54,12 +56,14 @@ object Nlf2Packets {
         s2c.register(RIPSanyaEvent)
         s2c.register(RIPVertEvent)
         s2c.register(SkyColorEffect)
+        s2c.register(StartWhitenessScreenAdvanced)
         s2c.register(StrangeJukeboxRainbowControl)
         // Unit
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
         s2c.register(CrashClientPayload)
         s2c.register(Event101ScreenEffectClear)
+        s2c.register(StartBattle)
         s2c.register(StoryStart)
         s2c.register(StrangeJukeboxMusicStop)
 

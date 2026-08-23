@@ -72,6 +72,8 @@ class Nlf2Client : ClientModInitializer {
         override fun pit(): Float = TICKER_RIP_VERT.delta(mid, mid + 60).lerp(1f, 2f)
     }
 
+    class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
+
     override fun onInitializeClient() {
         ActorCharEntrypoint.initialize()
         tryHideMod()
@@ -392,6 +394,17 @@ class Nlf2Client : ClientModInitializer {
                 graphics.black(TICKER_RIP_SANYA.delta(0, 100) * .5f)
             }
         }
+        HudElementRegistry.addLast(Layer.OVERLAY_WHITENESS_ADVANCED) { graphics, _ ->
+            if (whitenessAdvancedEnabled) {
+                val t = TICKER_WHITENESS_ADVANCED.tick()
+                if (t > whitenessAdvancedDuration) {
+                    whitenessAdvancedEnabled = false
+                    return@addLast
+                }
+                val alpha = TICKER_WHITENESS_ADVANCED.delta(0, whitenessAdvancedDuration, whitenessAdvancedFadeIn, whitenessAdvancedFadeOut)
+                graphics.white(alpha)
+            }
+        }
 
         // Packets
         registerPacketReceiver(BeforeMeetWaterFluid) { payload ->
@@ -473,6 +486,13 @@ class Nlf2Client : ClientModInitializer {
             skyColorEffectEndDuration = payload.endDuration
             skyColorEffectColor = payload.color
         }
+        registerPacketReceiver(StartWhitenessScreenAdvanced) { payload ->
+            TICKER_WHITENESS_ADVANCED.reset()
+            whitenessAdvancedEnabled = true
+            whitenessAdvancedDuration = payload.duration
+            whitenessAdvancedFadeIn = payload.fadeIn
+            whitenessAdvancedFadeOut = payload.fadeOut
+        }
         registerPacketReceiver(StrangeJukeboxRainbowControl) { payload ->
             rainbowTicks = if (payload.start) 0 else -1
         }
@@ -494,6 +514,9 @@ class Nlf2Client : ClientModInitializer {
 
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
+        }
+        registerPacketReceiver(StartBattle) { _, ctx ->
+            ctx.client().soundManager.play(MusPart5BattleInstance())
         }
         registerPacketReceiver(StoryStart) {
             TICKER_STORY.reset()
@@ -538,6 +561,7 @@ class Nlf2Client : ClientModInitializer {
         val EVENT_RIP_VERT: Identifier = getIdentifier("layer/event/rip_vert")
         val EVENT_RIP_SANYA: Identifier = getIdentifier("layer/event/rip_sanya")
         val EVENT_RIP_SANYA_BEFORE_BOX: Identifier = getIdentifier("layer/event/rip_sanya/before_box")
+        val OVERLAY_WHITENESS_ADVANCED: Identifier = getIdentifier("layer/overlay/whiteness_advanced")
     }
 
     object Sprite {

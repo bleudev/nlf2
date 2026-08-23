@@ -42,6 +42,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "LOUD MUSIC")
         builder.add(Nlf2Sounds.MUS_QUAKE, "LOUD EARTHQUAKE")
         builder.add(Nlf2Sounds.MUS_PART4_BYE, "17 GOODBYE")
+        builder.add(Nlf2Sounds.MUS_PART5_BATTLE, "18 Last chance")
     }
 }
 

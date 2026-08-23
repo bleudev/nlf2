@@ -127,6 +127,11 @@ val unknownRainbowEffectColor: Int get() {
     val (r, g, b) = ((TICKER_UNKNOWN_RAINBOW_EFFECT.ticks % UNKNOWN_RAINBOW_NAME_TAG_DURATION).toFloat() / UNKNOWN_RAINBOW_NAME_TAG_DURATION).coerceIn(0f, 1f).hueToTriple()
     return ARGB.colorFromFloat(1f, r, g, b)
 }
+// Whiteness advanced
+var whitenessAdvancedEnabled: Boolean = false
+var whitenessAdvancedDuration: Int = -1
+var whitenessAdvancedFadeIn: Int = -1
+var whitenessAdvancedFadeOut: Int = -1
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

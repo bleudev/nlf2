@@ -13,6 +13,7 @@ import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
+import com.bleudev.nlf2.custom.packet.payload.unit.StartBattle
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
@@ -480,7 +481,7 @@ class `RIP Vert(`(server: MinecraftServer) : Nlf2Event(server, "RIP VERT( (inter
     }
 }
 
-class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (internal) wip") {
+class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (internal)") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         val seq = TextBoxSequence()
@@ -499,5 +500,38 @@ class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (int
         )
         server.sendToEveryone { pl -> packets.takeIf { pl.wantsToListenStory } ?: arrayOf() }
         Nlf2.ripSanyaBeforeTakeTicks = bye + RIP_SANYA_EVENT_WHITE_FADE
+    }
+}
+
+class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.sendToEveryone { arrayOf(StartWhitenessScreenAdvanced(50, 20, 20)) }
+    }
+
+    override fun tick() {
+        super.tick()
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.ROUGE)
+        seq.speed(3)
+        seq.add("ROUGE!", 60)
+        val seqEnd = seq.start
+        println("EXPOSURE $ticks $seqEnd")
+        when (ticks) {
+            25 -> {
+                server.nlf2data::loreData.transform {
+                    it.actorChar = "rouge"
+                    it.visibleActor = false
+                    it
+                }
+            }
+            70 -> {
+                server.sendToEveryone { arrayOf(OpenTextBox(seq, 0)) }
+            }
+            150 -> {
+                server.sendToEveryone { arrayOf(StartBattle.INSTANCE) }
+                server.playerList.broadcastSystemMessage(Component.literal("DEBUG START BATTLE"), false)
+            }
+        }
     }
 }
