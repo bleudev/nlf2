@@ -24,6 +24,7 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.StoryEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.BorderBlackFogStart
 import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
+import com.bleudev.nlf2.custom.packet.payload.unit.EndBattle
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
@@ -56,6 +57,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.gamerules.GameRule
 import net.minecraft.world.level.gamerules.GameRules
 import net.minecraft.world.phys.Vec3
 import org.slf4j.Logger
@@ -69,6 +71,8 @@ val LOGGER: Logger = LoggerFactory.getLogger(MODID)
 
 class Nlf2 : ModInitializer {
     companion object {
+        var battleTicks: Int = -1
+
         private var isStorySpectator = false
         var ripSanyaBeforeTakeTicks = -1
         private var scheduledEvents: ArrayList<ScheduledEvent> = ArrayList()
@@ -83,6 +87,11 @@ class Nlf2 : ModInitializer {
                     }
                 }
             })
+        }
+
+        fun MinecraftServer.clearPostBattleEffects() {
+            actor?.removeAllEffects()
+            sendToEveryone { arrayOf(EndBattle.INSTANCE) }
         }
     }
 
@@ -265,12 +274,7 @@ class Nlf2 : ModInitializer {
             scheduledEvents.forEach(ScheduledEvent::tick)
             scheduledEvents.removeAll { it.remainingTicks <= 0 }
             // Game rules
-            if (server.gameRules.get(GameRules.SHOW_ADVANCEMENT_MESSAGES)) {
-                server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server) //
-            }
-            if (server.gameRules.get(GameRules.PLAYERS_SLEEPING_PERCENTAGE) != 1) {
-                server.gameRules.set(GameRules.PLAYERS_SLEEPING_PERCENTAGE, 1, server)
-            }
+            gameRulesTick(server)
             // Charge manual
             val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
             for (level in server.allLevels) {
@@ -297,6 +301,38 @@ class Nlf2 : ModInitializer {
                         player.needsSync = true
                         player.connection.send(ClientboundSetEntityMotionPacket(player))
                     }
+                }
+            }
+            // Battle
+            if (battleTicks >= 0) battleTicks++
+            if (server.nlf2data.loreData.inBattle) {
+                server.customBossEvents.get(BATTLE_BOSS_BAR)?.let { bossBar ->
+                    if (battleTicks in 0..BATTLE_BOSSBAR_FADE_IN_DURATION) {
+                        bossBar.progress = (battleTicks.toFloat() / BATTLE_BOSSBAR_FADE_IN_DURATION).coerceIn(0f, 1f)
+                    } else {
+                        battleTicks = -1
+                        server.actor?.let {
+                            bossBar.setValue(it.health.toInt())
+                            bossBar.setMax(it.maxHealth.toInt())
+                        }
+                    }
+                }
+                if (server.actor?.isDeadOrDying == true) {
+                    server.nlf2data::loreData.transform {
+                        it.inBattle = false
+                        it
+                    }
+                    // THE END!
+                    for (player in server.playerList.players) {
+                        player.connection.disconnect(Component.literal("THE END"))
+                    }
+                    server.clearPostBattleEffects()
+                }
+                server.actor?.foodData?.foodLevel = 10
+            } else {
+                server.customBossEvents.get(BATTLE_BOSS_BAR)?.let {
+                    it.removeAllPlayers()
+                    server.customBossEvents.remove(it)
                 }
             }
         }
@@ -348,6 +384,21 @@ class Nlf2 : ModInitializer {
             }
             ripVertStartTicks = 80
         }
+    }
+
+    private fun gameRulesTick(server: MinecraftServer) {
+        val rules = server.gameRules
+        operator fun <T : Any> GameRules.set(rule: GameRule<T>, value: T) {
+            if (get(rule) != value) {
+                set(rule, value, server)
+            }
+        }
+        rules[GameRules.SHOW_ADVANCEMENT_MESSAGES] = false //
+        rules[GameRules.PLAYERS_SLEEPING_PERCENTAGE] = 1
+
+        val bl = server.nlf2data.loreData.inBattle
+        rules[GameRules.SPAWN_MOBS] = !bl
+        rules[GameRules.FALL_DAMAGE] = !bl
     }
 
     private fun <T : CustomPacketPayload> registerPacketReceiver(packet: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ServerPlayNetworking.Context) -> Unit) =

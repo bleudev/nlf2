@@ -6,13 +6,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class CrashClientPayload : CustomPacketPayload {
+class CrashClient : CustomPacketPayload {
     private constructor()
 
-    companion object : PacketPayloadCompanion<CrashClientPayload> {
+    companion object : PacketPayloadCompanion<CrashClient> {
         override val identifier = Nlf2Packets.UNIT_CRASH_CLIENT
-        val INSTANCE = CrashClientPayload()
-        override val codec: StreamCodec<RegistryFriendlyByteBuf, CrashClientPayload> = StreamCodec.unit(INSTANCE)
+        val INSTANCE = CrashClient()
+        override val codec: StreamCodec<RegistryFriendlyByteBuf, CrashClient> = StreamCodec.unit(INSTANCE)
     }
 
     override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> = type

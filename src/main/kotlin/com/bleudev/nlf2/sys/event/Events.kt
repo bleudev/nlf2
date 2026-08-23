@@ -5,13 +5,14 @@ package com.bleudev.nlf2.sys.event
 import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.Nlf2.Companion.battleTicks
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
-import com.bleudev.nlf2.custom.packet.payload.unit.CrashClientPayload
+import com.bleudev.nlf2.custom.packet.payload.unit.CrashClient
 import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
 import com.bleudev.nlf2.custom.packet.payload.unit.StartBattle
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
@@ -30,10 +31,12 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
+import net.minecraft.world.BossEvent
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
@@ -281,7 +284,7 @@ class EndSerieCrash(server: MinecraftServer) : Nlf2Event(server, "end_serie_cras
         super.cause(causedBy, *args)
         server.sendToEveryone { player ->
             if (player.isActor) return@sendToEveryone arrayOf()
-            return@sendToEveryone arrayOf(CrashClientPayload.INSTANCE)
+            return@sendToEveryone arrayOf(CrashClient.INSTANCE)
         }
     }
 }
@@ -515,8 +518,7 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
         seq.color(TextColorConstants.ROUGE)
         seq.speed(3)
         seq.add("ROUGE!", 60)
-        val seqEnd = seq.start
-        println("EXPOSURE $ticks $seqEnd")
+        val overworld = server.overworld()
         when (ticks) {
             25 -> {
                 server.nlf2data::loreData.transform {
@@ -524,13 +526,40 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                     it.visibleActor = false
                     it
                 }
+                for (player in server.playerList.players) {
+                    player.teleportTo(BATTLE_ARENA_LOCATION.x, BATTLE_ARENA_LOCATION.y, BATTLE_ARENA_LOCATION.z)
+                }
+                for (entity in overworld.allEntities.filterNotNull()) {
+                    if (entity !is Player) {
+                        entity.kill(overworld)
+                    }
+                }
             }
             70 -> {
                 server.sendToEveryone { arrayOf(OpenTextBox(seq, 0)) }
             }
             150 -> {
+                battleTicks = 0
+                server.nlf2data::loreData.transform {
+                    it.inBattle = true
+                    it
+                }
+                server.actor?.addEffect(MobEffectInstance(MobEffects.RESISTANCE, Int.MAX_VALUE, 3, false, false))
+                val bossBar = server.customBossEvents.create(
+                    overworld.random,
+                    BATTLE_BOSS_BAR,
+                    Component.literal("ROUGE").withStyle(ChatFormatting.RED)
+                )
+                for (player in server.playerList.players) {
+                    bossBar.addPlayer(player)
+                }
+                bossBar.color = BossEvent.BossBarColor.RED
+                bossBar.overlay = BossEvent.BossBarOverlay.PROGRESS
+                bossBar.progress = 0f
+
                 server.sendToEveryone { arrayOf(StartBattle.INSTANCE) }
                 server.playerList.broadcastSystemMessage(Component.literal("DEBUG START BATTLE"), false)
+                ticks = -1
             }
         }
     }

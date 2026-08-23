@@ -27,6 +27,7 @@ object DebugEntrypoint {
         add(101, ::OrangeSkinOverlay)
         add(110) { FI_NoVert(it, false) }
         add(111) { FI_NoVert(it, true) }
+        add(999, ::EndBattle)
     }
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {

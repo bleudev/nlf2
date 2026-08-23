@@ -497,8 +497,11 @@ class Nlf2Client : ClientModInitializer {
             rainbowTicks = if (payload.start) 0 else -1
         }
 
-        registerPacketReceiver(CrashClientPayload) {
+        registerPacketReceiver(CrashClient) {
             throw ROHJEN67SW51("\nYOU...\nREACHED...\n\nTHE END")
+        }
+        registerPacketReceiver(EndBattle) { _, ctx ->
+            ctx.client().soundManager.stop(Nlf2Sounds.MUS_PART5_BATTLE.location, SoundSource.AMBIENT)
         }
 
         registerPacketReceiver(BorderBlackFogStart) {

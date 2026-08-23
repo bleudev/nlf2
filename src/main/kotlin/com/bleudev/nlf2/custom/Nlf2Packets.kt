@@ -29,6 +29,7 @@ object Nlf2Packets {
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
     val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
+    val UNIT_END_BATTLE = getIdentifier("packet/unit/end_battle")
     val UNIT_EVENT101_SCREEN_EFFECT_CLEAR = getIdentifier("packet/unit/event101_screen_effect_clear")
     val UNIT_START_BATTLE = getIdentifier("packet/unit/start_battle")
     val UNIT_STORY_START = getIdentifier("packet/unit/story_start")
@@ -61,7 +62,8 @@ object Nlf2Packets {
         // Unit
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
-        s2c.register(CrashClientPayload)
+        s2c.register(CrashClient)
+        s2c.register(EndBattle)
         s2c.register(Event101ScreenEffectClear)
         s2c.register(StartBattle)
         s2c.register(StoryStart)

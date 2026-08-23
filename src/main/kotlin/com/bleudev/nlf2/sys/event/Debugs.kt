@@ -2,6 +2,7 @@
 
 package com.bleudev.nlf2.sys.event
 
+import com.bleudev.nlf2.Nlf2.Companion.clearPostBattleEffects
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.transform
@@ -48,5 +49,16 @@ class ResetVisibleActor(server: MinecraftServer) : Nlf2Event(server, "reset_visi
             it.visibleActor = false
             it
         }
+    }
+}
+
+class EndBattle(server: MinecraftServer) : Nlf2Event(server, "end_battle") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.inBattle = false
+            it
+        }
+        server.clearPostBattleEffects()
     }
 }

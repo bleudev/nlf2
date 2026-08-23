@@ -25,6 +25,8 @@ val SERVER_ADDRESS: String get() = Minecraft.getInstance().gameProfile.name.lowe
 // Identifiers
 /// Modificators
 val MOD_BORDER_LOSE_HEARTS = getIdentifier("border_lose_hearts_modify")
+/// Boss bar events
+val BATTLE_BOSS_BAR = getIdentifier("battle_boss_bar")
 
 // Nicknames
 @JvmField
@@ -48,6 +50,7 @@ val TELEPORT_LOCATIONS = mapOf(
 const val EVENT112_NICKNAME = "Samivarence"
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
+val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0)
 
 // Ticks / durations
 const val BORDER_LOSE_HEARTS_BEFORE_DURATION = 200
@@ -86,6 +89,8 @@ const val RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT = 40
 const val RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY = 20
 
 const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
+
+const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
 
 // Booleans
 const val INTRO_ENABLED = false
