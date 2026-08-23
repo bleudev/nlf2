@@ -20,6 +20,7 @@
     "client.AvatarRendererMixin",
     "client.AvatarRenderStateMixin",
     "client.BorderStatusMixin",
+    "client.ChatComponentMixin",
     "client.ClientWaypointManagerMixin",
     "client.CloudRendererMixin",
     "client.CompassAngleStateMixin",

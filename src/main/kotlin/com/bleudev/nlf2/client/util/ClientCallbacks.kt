@@ -5,11 +5,9 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.UNKNOWN_RAINBOW_NAME_TAG_DURATION
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
-import com.bleudev.nlf2.util.hueToTriple
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
@@ -17,7 +15,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvent
-import net.minecraft.util.ARGB
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
@@ -39,15 +36,20 @@ fun renderPlayerInTab(name: String): Boolean =
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 fun modifyPlayerNameTag(original: Component?): Component? {
     val name = original?.string ?: return original
-    val t = TICKER_UNKNOWN_RAINBOW_NAME_TAG.tick()
     if (dataSyncedActor.equals(name, true) && dataSyncedActorLoreChar == "unknown") {
-        val (r, g, b) = ((t % UNKNOWN_RAINBOW_NAME_TAG_DURATION).toFloat() / UNKNOWN_RAINBOW_NAME_TAG_DURATION).coerceIn(0f, 1f).hueToTriple()
-        return Component.literal("???").withColor(ARGB.colorFromFloat(1f, r, g, b))
+        return Component.literal("???").withColor(unknownRainbowEffectColor)
     }
     return original
 }
 fun renderPlayerNameTag(name: String): Boolean {
     return dataSyncedActor.equals(name, true) && dataSyncedActorLoreChar == "unknown"
+}
+fun modifyMessage(message: Component): Component {
+    val text = message.string
+    if (text.startsWith("<???>")) {
+        return message.copy().withColor(unknownRainbowEffectColor)
+    }
+    return message
 }
 
 // Event 101

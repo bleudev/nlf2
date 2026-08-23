@@ -165,6 +165,10 @@ class Nlf2Client : ClientModInitializer {
             keyTick()
             volumeTick()
 
+            // Unknown rainbow effect
+            TICKER_UNKNOWN_RAINBOW_EFFECT.tick()
+            mc.gui.hud.chat.rescaleChat()
+
             // RIP Vert sounds
             if (ripVertEventEnabled) {
                 val sm = mc.soundManager

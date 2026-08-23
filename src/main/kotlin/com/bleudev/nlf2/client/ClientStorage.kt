@@ -5,17 +5,16 @@ package com.bleudev.nlf2.client
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.*
-import com.bleudev.nlf2.client.util.TICKER_INTRO
-import com.bleudev.nlf2.client.util.TICKER_RIP_SANYA
-import com.bleudev.nlf2.client.util.TICKER_RIP_VERT
-import com.bleudev.nlf2.client.util.isEvent101Char
+import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.sys.util.TextBoxSequence
+import com.bleudev.nlf2.util.hueToTriple
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDeltaIf
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
+import net.minecraft.util.ARGB
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
@@ -123,6 +122,11 @@ val ripSanyaBlockKeys: Boolean get() = ripSanyaEventEnabled &&
 val ripSanyaShakeWindowStrength: Float get() =
     TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, RIP_SANYA_EVENT_SANYA_TAKE)
     .onlyIf(ripSanyaBlockKeys)
+// Unknown
+val unknownRainbowEffectColor: Int get() {
+    val (r, g, b) = ((TICKER_UNKNOWN_RAINBOW_EFFECT.ticks % UNKNOWN_RAINBOW_NAME_TAG_DURATION).toFloat() / UNKNOWN_RAINBOW_NAME_TAG_DURATION).coerceIn(0f, 1f).hueToTriple()
+    return ARGB.colorFromFloat(1f, r, g, b)
+}
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
