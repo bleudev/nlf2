@@ -11,6 +11,7 @@
     "MonstersMixin",
     "PlayerListMixin",
     "PortalShapeMixin",
+    "ServerPlayerMixin",
     "accessor.LivingEntityAccessor"
   ],
   "client": [
