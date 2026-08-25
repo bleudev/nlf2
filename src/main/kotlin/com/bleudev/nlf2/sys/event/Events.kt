@@ -142,6 +142,7 @@ class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0,
         )
         server.nlf2data::loreData.transform {
             it.actorChar = "unknown"
+            it.visibleActor = true
             it
         }
     }
@@ -190,6 +191,7 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
                 }
                 server.nlf2data::loreData.transform {
                     it.actorChar = "inv"
+                    it.visibleActor = false
                     it
                 }
                 message = Component.translatable("multiplayer.player.left.unknown").withStyle(ChatFormatting.YELLOW)
@@ -211,18 +213,17 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         actor.level().addFreshEntity(stand)
     }
 }
-class MeetBeforeBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_boberobo") {
+class MeetBeforeYnc(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_ync") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
-            // TODO: Boberobo appear
-            it.actorChar = "mask_boberobo"
+            it.actorChar = PART4_LAST_MEET_MASK
             it.visibleActor = true
             it
         }
     }
 }
-class MeetAfterBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_boberobo")
+class MeetAfterYnc(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_ync")
 
 open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {

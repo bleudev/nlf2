@@ -5,6 +5,7 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
+import com.bleudev.nlf2.PART4_LAST_MEET_MASK
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
@@ -30,9 +31,13 @@ val canOpenChat: Boolean get() {
 }
 fun renderHitboxes(entity: Entity): Boolean =
     !(entity is Player && !dataSyncedVisibleActor && dataSyncedActor.equals(entity.gameProfile.name, true))
-fun renderPlayerInTab(name: String): Boolean =
-    if (dataSyncedMeetState % 2 == 0) name.equals(Minecraft.getInstance().gameProfile.name, true)
-    else !(!dataSyncedVisibleActor && name.equals(dataSyncedActor, true))
+fun renderPlayerInTab(name: String): Boolean {
+    if (dataSyncedMeetState % 2 == 0) return name.equals(Minecraft.getInstance().gameProfile.name, true)
+    if (name.equals(dataSyncedActor, true)) {
+        return dataSyncedVisibleActor && dataSyncedActorLoreChar == PART4_LAST_MEET_MASK
+    }
+    return true
+}
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 fun modifyPlayerNameTag(original: Component?): Component? {
     val name = original?.string ?: return original

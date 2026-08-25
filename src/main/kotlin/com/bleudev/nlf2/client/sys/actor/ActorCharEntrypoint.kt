@@ -24,6 +24,7 @@ object ActorCharEntrypoint {
         chars["mask_sam"] = PlayerMaskChar("samivarence")
         chars["mask_milkich"] = PlayerMaskChar("milkich22397")
         chars["mask_boberobo"] = PlayerMaskChar("boberobo7")
+        chars["mask_ync"] = PlayerMaskChar("ync27")
         // Visible only for bleugame
         chars["rouge_eyes_bleugame"] = RougeEyesBleugame()
         // Masks invisible for target

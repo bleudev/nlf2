@@ -36,10 +36,12 @@ val SUPPORTED_NICKNAMES = listOf(
     "samivarence",
     "milkich22397",
     "waflla_kek",
+    "ync27",
 )
 val SLIM_SKINS = listOf(
     "samivarence",
     "waflla_kek",
+    "ync27",
 )
 val TELEPORT_LOCATIONS = mapOf(
     "bleugame" to Vec3(587.0, 65.0, 706.0),
@@ -91,6 +93,8 @@ const val RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY = 20
 
 const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
 
+const val PART4_LAST_MEET_MASK = "mask_ync"
+
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
 
 // Booleans
@@ -105,4 +109,5 @@ const val DEV_BAN_EVENT_112 = true
 // Custom dev arguments
 @Suppress("RedundantNullableReturnType")
 @JvmField
-val DEV_ARG_USERNAME: String? = null
+val DEV_ARG_USERNAME: String? = "PlayerDev"
+//val DEV_ARG_USERNAME: String? = null
