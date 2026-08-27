@@ -7,6 +7,7 @@ import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.PART4_LAST_MEET_MASK
 import com.bleudev.nlf2.client.*
+import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import net.fabricmc.api.EnvType
@@ -29,8 +30,13 @@ val canOpenChat: Boolean get() {
     val pl = Minecraft.getInstance().player ?: return false
     return !(pl.gameMode()?.isSurvival ?: false) || pl.gameProfile.name.equals(dataSyncedActor, true)
 }
-fun renderHitboxes(entity: Entity): Boolean =
-    !(entity is Player && !dataSyncedVisibleActor && dataSyncedActor.equals(entity.gameProfile.name, true))
+fun renderHitboxes(entity: Entity): Boolean {
+    if (entity is Player) {
+        val ch = current(entity.gameProfile.name)
+        return ch?.renderHitboxes ?: true
+    }
+    return true
+}
 fun renderPlayerInTab(name: String): Boolean {
     if (dataSyncedMeetState % 2 == 0) return name.equals(Minecraft.getInstance().gameProfile.name, true)
     if (name.equals(dataSyncedActor, true)) {

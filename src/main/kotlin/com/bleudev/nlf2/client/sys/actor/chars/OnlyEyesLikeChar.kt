@@ -6,4 +6,5 @@ open class OnlyEyesLikeChar(protected val char: String?) : ActorChar {
         if (char == null) return super.eyes(client)
         return "entity/player/eyes/$char/$client"
     }
+    override val isInvisible: Boolean get() = true
 }

@@ -10,6 +10,8 @@ interface ActorChar {
     fun overlay(client: String): String = EMPTY_TEXTURE
 
     val isInvisible: Boolean get() = false
+    val hideArmor: Boolean get() = true
+    val renderHitboxes: Boolean get() = false
 
     companion object {
         const val EMPTY_TEXTURE = "entity/player/empty"

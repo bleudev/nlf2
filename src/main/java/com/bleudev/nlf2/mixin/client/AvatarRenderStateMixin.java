@@ -24,7 +24,7 @@ public class AvatarRenderStateMixin implements IAvatarRenderState {
     }
 
     @Unique
-    private boolean armor = false;
+    private boolean armor = true;
 
     @Override
     public boolean nlf2$shouldRenderArmor() {

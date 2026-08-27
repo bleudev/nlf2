@@ -28,4 +28,6 @@ class Event101Char : ActorChar {
     override fun eyes(client: String): String =
         if (overlay == overlays[0]) "entity/player/eyes/event101" else "entity/player/empty"
     override fun overlay(client: String): String = overlay ?: "entity/player/empty"
+    override val hideArmor: Boolean get() = false
+    override val renderHitboxes: Boolean get() = true
 }

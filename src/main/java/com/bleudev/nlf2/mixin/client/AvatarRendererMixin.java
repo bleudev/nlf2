@@ -79,14 +79,14 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
 
             var ch = current(nickname);
             if (ch != null && ch.isInvisible()) {
-                renderState.nlf2$setShouldRenderArmor(false);
                 state.isInvisible = true;
                 state.leftHandItemState.clear();
                 state.leftHandItemStack = ItemStack.EMPTY;
                 state.rightHandItemState.clear();
                 state.rightHandItemStack = ItemStack.EMPTY;
-            } else {
-                renderState.nlf2$setShouldRenderArmor(true);
+            }
+            if (ch != null) {
+                renderState.nlf2$setShouldRenderArmor(!ch.getHideArmor());
             }
         }
     }
