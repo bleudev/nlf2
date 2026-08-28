@@ -22,6 +22,7 @@ class UnknownMeet(@MagicConstant(valuesFromClass = State::class) val state: Int)
     object State {
         const val BEFORE_MEET = 0
         const val AFTER_MEET = 1
-        const val AFTER_ERASE = 2
+        const val AFTER_DARKNESS = 2
+        const val AFTER_ERASE = 3
     }
 }

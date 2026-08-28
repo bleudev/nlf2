@@ -173,6 +173,9 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
                     player.addEffect(MobEffectInstance(MobEffects.DARKNESS, 300, 1, false, false))
                 }
             }
+            400 -> {
+                server.sendToEveryone { arrayOf(UnknownMeet(UnknownMeet.State.AFTER_DARKNESS)) }
+            }
             420 -> {
                 message = Component.literal("<???> ?")
             }

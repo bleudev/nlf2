@@ -72,7 +72,30 @@ class Nlf2Client : ClientModInitializer {
         override fun vol(): Float = TICKER_RIP_VERT.delta(start, 40)
         override fun pit(): Float = TICKER_RIP_VERT.delta(mid, mid + 60).lerp(1f, 2f)
     }
-    class MusPart4UnknownAppearsInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART4_UNKNOWN_APPEARS)
+    class AudioHolySheepInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.AUDIO_HOLY_SHEEP) {
+        private var v = 1f
+        override fun vol(): Float = v
+        override fun pit(): Float = .8f
+
+        override fun tick() {
+            if (t in 0..<40) {
+                t++
+                v = (t.toFloat() / 40).reverseDelta()
+            }
+            super.tick()
+        }
+
+        companion object {
+            internal var t = -1
+
+            fun onMeet() {
+                t = 0
+            }
+        }
+    }
+    class MusPart4UnknownAppearsInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART4_UNKNOWN_APPEARS) {
+        override fun pit(): Float = if (unknownMeetDarkness) .5f else 1f
+    }
     class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
 
     override fun onInitializeClient() {
@@ -176,9 +199,9 @@ class Nlf2Client : ClientModInitializer {
             TICKER_UNKNOWN_RAINBOW_EFFECT.tick()
             mc.gui.hud.chat.rescaleChat()
 
+            val sm = mc.soundManager
             // RIP Vert sounds
             if (ripVertEventEnabled) {
-                val sm = mc.soundManager
                 when (TICKER_RIP_VERT.ticks) {
                     1L -> {
                         sm.play(MusManBeforeInstance(ripVertEventShakeStartTick))
@@ -213,6 +236,11 @@ class Nlf2Client : ClientModInitializer {
                 w.setPos(MONITOR_WIDTH / 2 + dx, MONITOR_HEIGHT / 2 + dy)
                 w.setTitle("!!!") // Sync title
                 mc.gui.setScreen(null)
+            }
+            // Unknown meet sounds
+            if (AudioHolySheepInstance.t == 40) {
+                AudioHolySheepInstance.t = 41 // Prevent next time
+                sm.play(MusPart4UnknownAppearsInstance())
             }
         }
         ClientTickEvents.END_LEVEL_TICK.register {
@@ -506,9 +534,11 @@ class Nlf2Client : ClientModInitializer {
         registerPacketReceiver(UnknownMeet) { payload, ctx ->
             val sm = ctx.client().soundManager
             when (payload.state) {
-                UnknownMeet.State.AFTER_MEET -> sm.play(MusPart4UnknownAppearsInstance())
+                UnknownMeet.State.BEFORE_MEET -> sm.play(AudioHolySheepInstance())
+                UnknownMeet.State.AFTER_MEET -> AudioHolySheepInstance.onMeet()
                 UnknownMeet.State.AFTER_ERASE -> Nlf2Sounds.unknownMeetSounds().forEach { sm.stop(it.location, SoundSource.AMBIENT) }
             }
+            unknownMeetDarkness = payload.state == UnknownMeet.State.AFTER_DARKNESS
         }
 
         registerPacketReceiver(CrashClient) {

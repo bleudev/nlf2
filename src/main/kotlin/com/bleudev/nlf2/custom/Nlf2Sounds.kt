@@ -20,6 +20,7 @@ object Nlf2Sounds {
     val MUS_QUAKE = registerSound("mus_quake")
     val MUS_PART4_BYE_VERT = registerSound("mus_part4_bye_vert")
     val MUS_PART4_BYE = registerSound("mus_part4_bye")
+    val AUDIO_HOLY_SHEEP = registerSound("audio_holy_sheep")
     val MUS_PART4_UNKNOWN_APPEARS = registerSound("mus_part4_unknown_appears")
     val MUS_JUKEBOX_SLEEP = registerSound("mus_jukebox_sleep")
     val MUS_PART5_BATTLE = registerSound("mus_part5_battle")
@@ -35,7 +36,7 @@ object Nlf2Sounds {
     fun storySounds() = listOf(
         MUS_STORY, MUS_MAN_STORY, NOISE
     )
-    fun unknownMeetSounds() = listOf(MUS_PART4_UNKNOWN_APPEARS)
+    fun unknownMeetSounds() = listOf(AUDIO_HOLY_SHEEP, MUS_PART4_UNKNOWN_APPEARS)
     fun allWithSubtitle(): List<SoundEvent> = listOf(
         BROKE,
         LAUGH,
@@ -58,6 +59,7 @@ object Nlf2Sounds {
         MUS_JUKEBOX_PUZZLE,
         MUS_MAN_STORY,
         NOISE,
+        AUDIO_HOLY_SHEEP
     )
 
     fun initialize() {}
