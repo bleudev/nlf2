@@ -86,6 +86,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         JUKEBOX_PUZZLE("jukebox_puzzle", Nlf2Sounds.MUS_JUKEBOX_PUZZLE, 900, 1f, 1f, .5f, false),
         JUKEBOX("jukebox", Nlf2Sounds.MUS_JUKEBOX, 1660, 1f, 1f, .7f, true),
         EASTER_EGG("easter_egg", Nlf2Sounds.MUS_EASTER_EGG, 650, 0.7f, 1.1f, .5f, false),
+        JUKEBOX_SLEEP("jukebox_sleep", Nlf2Sounds.MUS_JUKEBOX_SLEEP, 573, 1f, 1f, .2f, true),
         NULL("null_cludge", Nlf2Sounds.MUS_JUKEBOX, 0, 1f, 1f, 0f, false);
 
         override fun getSerializedName(): String = mus_name

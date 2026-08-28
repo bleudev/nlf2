@@ -8,6 +8,7 @@ import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.client.custom.Nlf2ParticleProviders
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
@@ -75,6 +76,7 @@ class Nlf2Client : ClientModInitializer {
     class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
 
     override fun onInitializeClient() {
+        Nlf2ParticleProviders.initialize()
         ActorCharEntrypoint.initialize()
         tryHideMod()
         their.validateAll()

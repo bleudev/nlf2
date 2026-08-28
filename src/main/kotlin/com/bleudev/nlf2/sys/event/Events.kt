@@ -307,6 +307,7 @@ open class FI_ForceJukeboxMus(server: MinecraftServer, val mus: StrangeJukeboxBl
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.forceJukeboxMus = mus
+            it.jukeboxSleep = mus == StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP
             it
         }
     }
@@ -315,6 +316,7 @@ open class FI_ForceJukeboxMus(server: MinecraftServer, val mus: StrangeJukeboxBl
 class ForceJukeboxNull(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.NULL)
 class ForceJukeboxStrangeNoise(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.STRANGE_NOISE)
 class ForceJukeboxMilkichAppears(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.MILKICH_APPEARS)
+class ForceJukeboxSleep(server: MinecraftServer) : FI_ForceJukeboxMus(server, StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP)
 
 open class FI_RedSpectacularEffect(server: MinecraftServer, appearsName: String) : Nlf2Event(server, "red_${appearsName}_spectacularly") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {

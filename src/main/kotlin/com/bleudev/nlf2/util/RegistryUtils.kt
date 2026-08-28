@@ -5,6 +5,9 @@ import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
+import net.minecraft.core.particles.ParticleOptions
+import net.minecraft.core.particles.ParticleType
+import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -52,5 +55,9 @@ fun <T : BlockEntity> registerBlockEntity(
 )
 internal fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
     Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, getIdentifier(name), effect)
+internal fun registerParticleType(name: String, particleType: SimpleParticleType): SimpleParticleType =
+    Registry.register(BuiltInRegistries.PARTICLE_TYPE, getIdentifier(name), particleType)
+internal fun <T : ParticleOptions> registerParticleType(name: String, particleType: ParticleType<T>): ParticleType<T> =
+    Registry.register(BuiltInRegistries.PARTICLE_TYPE, getIdentifier(name), particleType)
 fun registerSound(name: String, range: Float? = null): SoundEvent = BuiltInRegistries.SOUND_EVENT
     .register(name, SoundEvent(getIdentifier(name), Optional.ofNullable(range)))

@@ -58,6 +58,7 @@ object EventEntrypoint {
         add(340, ::ForceJukeboxNull)
         add(341, ::ForceJukeboxStrangeNoise)
         add(342, ::ForceJukeboxMilkichAppears)
+        add(343, ::ForceJukeboxSleep)
         // Final battle events
         add(998, ::RougeExposure)
         add(999, ::RougeGoingCrazy)

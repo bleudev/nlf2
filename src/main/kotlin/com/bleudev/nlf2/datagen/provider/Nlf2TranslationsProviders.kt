@@ -14,6 +14,8 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Message
         builder.add("nlf2.server.disconnect.version.please.update", "Please update the mod")
         builder.add("nlf2.message.item.card.check", "(You have deja vu.)")
+        builder.add("nlf2.message.block.strange_jukebox.sleep.0", "(In sleep mode.)")
+        builder.add("nlf2.message.block.strange_jukebox.sleep.1", "(...It sleeps.)")
         builder.add("nlf2.message.event.112.disconnect", $$"%1$s was erased")
         builder.add("multiplayer.player.joined.unknown", "??? joined the game")
         builder.add("multiplayer.player.left.unknown", "??? left the game")
@@ -38,12 +40,13 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.MUS_MILKICH_APPEARS, "12 (Not) lactose-free")
         builder.add(Nlf2Sounds.MUS_JUKEBOX, "13 The Abandoned World")
         builder.add(Nlf2Sounds.MUS_EASTER_EGG, "14 Jukeboxing To The Fullest!")
-        builder.add(Nlf2Sounds.MUS_STORY, "16 Long time ago")
+        builder.add(Nlf2Sounds.MUS_JUKEBOX_SLEEP, "17 Juke box")
+        builder.add(Nlf2Sounds.MUS_STORY, "18 Long time ago")
         builder.add(Nlf2Sounds.MUS_PART4_BYE_VERT, "Strange music")
         builder.add(Nlf2Sounds.MUS_MAN_WEIRD, "LOUD MUSIC")
         builder.add(Nlf2Sounds.MUS_QUAKE, "LOUD EARTHQUAKE")
-        builder.add(Nlf2Sounds.MUS_PART4_BYE, "17 GOODBYE")
-        builder.add(Nlf2Sounds.MUS_PART5_BATTLE, "18 Last chance")
+        builder.add(Nlf2Sounds.MUS_PART4_BYE, "19 GOODBYE")
+        builder.add(Nlf2Sounds.MUS_PART5_BATTLE, "20 Last chance")
     }
 }
 
@@ -52,6 +55,8 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         // Server version disconnect
         builder.add("nlf2.server.disconnect.version.please.update", "Пожалуйста, обновите мод")
         builder.add("nlf2.message.item.card.check", "(У вас дежавю.)")
+        builder.add("nlf2.message.block.strange_jukebox.sleep.0", "(В спящем режиме.)")
+        builder.add("nlf2.message.block.strange_jukebox.sleep.1", "(...Он спит.)")
         builder.add("nlf2.message.event.112.disconnect", $$"%1$s был стёрт")
         builder.add("multiplayer.player.joined.unknown", "??? присоединился к игре")
         builder.add("multiplayer.player.left.unknown", "??? покинул игру")

@@ -3,6 +3,7 @@ package com.bleudev.nlf2.custom.world.level.block.entity
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2BlockEntities
 import com.bleudev.nlf2.custom.Nlf2Items
+import com.bleudev.nlf2.custom.Nlf2ParticleTypes
 import com.bleudev.nlf2.custom.packet.payload.StrangeJukeboxRainbowControl
 import com.bleudev.nlf2.custom.packet.payload.unit.StrangeJukeboxMusicStop
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
@@ -12,6 +13,7 @@ import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
@@ -37,6 +39,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     private var duration: Int = 100000
     var cardConsumed: Boolean = false
     private var cardOwner: Player? = null
+    private var sinceLastTurningOn: Int = 0
 
     val rainbowedPlayers: ArrayList<String> = ArrayList()
 
@@ -63,7 +66,12 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             updatePlayer(level, on, mus)
         }
         if (on && t % 20 == 0) spawnMusicParticles(level, pos)
-        if (on) t++
+        if (on) {
+            t++
+            sinceLastTurningOn++
+        } else {
+            sinceLastTurningOn = 0
+        }
 
         if (t >= duration) {
             if (on && !mus.loop) {
@@ -87,6 +95,21 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
                 }
             }
             if (t == endTime) level.server?.sendToEveryone { arrayOf(StrangeJukeboxRainbowControl(false)) }
+        }
+        if (on && mus == StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP) {
+            fun send(c: Component) {
+                for (player in level.players()) {
+                    if (player.distanceToSqr(Vec3.atCenterOf(pos)) <= 10*10) {
+                        player.sendOverlayMessage(c)
+                    }
+                }
+            }
+            if (sinceLastTurningOn == 20) {
+                send(Component.translatable("nlf2.message.block.strange_jukebox.sleep.0"))
+            }
+            if (sinceLastTurningOn == 80) {
+                send(Component.translatable("nlf2.message.block.strange_jukebox.sleep.1"))
+            }
         }
     }
 
@@ -142,9 +165,11 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
 
     private fun spawnMusicParticles(level: LevelAccessor, blockPos: BlockPos) {
         if (level is ServerLevel) {
+            val bl = blockState.getValue(MUS) == StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP
+
             val pos = Vec3.atBottomCenterOf(blockPos).add(0.0, 1.2, 0.0)
-            val randomColor = level.getRandom().nextInt(4).toFloat() / 24.0f
-            level.sendParticles(ParticleTypes.NOTE, pos.x(), pos.y(), pos.z(), 0, randomColor.toDouble(), 0.0, 0.0, 1.0)
+            val xDist = level.getRandom().nextInt(4).toFloat() / 24.0f
+            level.sendParticles(if (bl) Nlf2ParticleTypes.SLEEP else ParticleTypes.NOTE, pos.x(), pos.y(), pos.z(), 0, xDist.toDouble(), 0.0, 0.0, 1.0)
         }
     }
 

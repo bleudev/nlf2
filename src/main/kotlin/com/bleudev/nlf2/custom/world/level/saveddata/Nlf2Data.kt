@@ -72,6 +72,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
         var visibleActor: Boolean = false,
         var inBattle: Boolean = false,
         var battleSecond: Boolean = false,
+        var jukeboxSleep: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
