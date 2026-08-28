@@ -72,7 +72,7 @@ class Nlf2Client : ClientModInitializer {
         override fun vol(): Float = TICKER_RIP_VERT.delta(start, 40)
         override fun pit(): Float = TICKER_RIP_VERT.delta(mid, mid + 60).lerp(1f, 2f)
     }
-
+    class MusPart4UnknownAppearsInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART4_UNKNOWN_APPEARS)
     class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
 
     override fun onInitializeClient() {
@@ -502,6 +502,13 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(StrangeJukeboxRainbowControl) { payload ->
             rainbowTicks = if (payload.start) 0 else -1
+        }
+        registerPacketReceiver(UnknownMeet) { payload, ctx ->
+            val sm = ctx.client().soundManager
+            when (payload.state) {
+                UnknownMeet.State.AFTER_MEET -> sm.play(MusPart4UnknownAppearsInstance())
+                UnknownMeet.State.AFTER_ERASE -> Nlf2Sounds.unknownMeetSounds().forEach { sm.stop(it.location, SoundSource.AMBIENT) }
+            }
         }
 
         registerPacketReceiver(CrashClient) {

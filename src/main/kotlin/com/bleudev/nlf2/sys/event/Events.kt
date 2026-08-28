@@ -132,7 +132,7 @@ class MeetAfterMilkich(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         }
     }
 }
-class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_unknown_wip") {
+class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_unknown") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         server.playerList.broadcastSystemMessage(
@@ -144,6 +144,7 @@ class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0,
             it.visibleActor = true
             it
         }
+        server.sendToEveryone { arrayOf(UnknownMeet(UnknownMeet.State.BEFORE_MEET)) }
     }
 }
 class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_unknown_wip") {
@@ -152,38 +153,36 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         var message: Component? = null
         when (ticks) {
             20 -> {
+                server.sendToEveryone { arrayOf(UnknownMeet(UnknownMeet.State.AFTER_MEET)) }
                 message = Component.literal("<???> Привет ребята")
             }
             100 -> {
-                message = Component.literal("<???> О, Милкич!")
+                message = Component.literal("<???> Вы меня запомнили?")
             }
-            180 -> {
-                message = Component.literal("<???> Ты меня запомнил?")
-            }
-            340 -> {
+            260 -> {
                 message = Component.literal("<???> Что-то я вас не слышу")
             }
-            370 -> {
+            290 -> {
                 message = Component.literal("<???> Ща")
             }
-            430 -> {
+            350 -> {
                 message = Component.literal("<???> Что-то с Войс Чатом")
             }
-            460 -> {
+            380 -> {
                 for (player in server.playerList.players) {
                     player.addEffect(MobEffectInstance(MobEffects.DARKNESS, 300, 1, false, false))
                 }
             }
-            500 -> {
+            420 -> {
                 message = Component.literal("<???> ?")
             }
-            560 -> {
+            480 -> {
                 message = Component.literal("<???> Почему потемнело")
             }
-            640 -> {
+            560 -> {
                 message = Component.literal("<???> Ой")
             }
-            660 -> {
+            580 -> {
                 FI_RedSpectacularEffect(server, "").cause(null)
                 for (player in server.playerList.players) {
                     player.sound(Nlf2Sounds.LAUGH, SoundSource.AMBIENT, 1f, .9f)
@@ -194,8 +193,9 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
                     it
                 }
                 message = Component.translatable("multiplayer.player.left.unknown").withStyle(ChatFormatting.YELLOW)
+                server.sendToEveryone { arrayOf(UnknownMeet(UnknownMeet.State.AFTER_ERASE)) }
             }
-            670 -> {
+            590 -> {
                 replaceWithStand()
                 ticks = -1
             }
