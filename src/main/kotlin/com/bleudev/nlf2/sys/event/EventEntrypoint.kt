@@ -60,6 +60,7 @@ object EventEntrypoint {
         add(342, ::ForceJukeboxMilkichAppears)
         // Final battle events
         add(998, ::RougeExposure)
+        add(999, ::RougeGoingCrazy)
     }
 
     fun cause(causedBy: ServerPlayer?, id: Int, vararg args: Any?): Boolean {

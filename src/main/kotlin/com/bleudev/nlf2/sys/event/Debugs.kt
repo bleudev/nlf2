@@ -57,6 +57,7 @@ class EndBattle(server: MinecraftServer) : Nlf2Event(server, "end_battle") {
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
             it.inBattle = false
+            it.battleSecond = false
             it
         }
         server.clearPostBattleEffects()

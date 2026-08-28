@@ -12,6 +12,7 @@ import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.*
+import com.bleudev.nlf2.custom.Nlf2Commands.causeDebug
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.packet.payload.BeforeMeetWaterFluid
 import com.bleudev.nlf2.custom.packet.payload.DistanceUpdate
@@ -92,6 +93,10 @@ class Nlf2 : ModInitializer {
         fun MinecraftServer.clearPostBattleEffects() {
             actor?.removeAllEffects()
             sendToEveryone { arrayOf(EndBattle.INSTANCE) }
+            val team = scoreboard.getPlayerTeam("bleuers")
+            if (team != null) {
+                scoreboard.removePlayerTeam(team)
+            }
         }
     }
 
@@ -320,13 +325,13 @@ class Nlf2 : ModInitializer {
                     }
                 }
                 if (server.actor?.isDeadOrDying == true) {
-                    server.nlf2data::loreData.transform {
-                        it.inBattle = false
-                        it
-                    }
-                    // THE END!
-                    server.clearPostBattleEffects()
+                    // THE END!!!
+                    causeDebug(999)
                     server.halt(false)
+                    return@register
+                }
+                if (!server.nlf2data.loreData.battleSecond && server.actor?.health?.let { it <= 10f } == true) {
+                    causeEvent(999)
                 }
                 server.actor?.foodData?.foodLevel = 10
             } else {

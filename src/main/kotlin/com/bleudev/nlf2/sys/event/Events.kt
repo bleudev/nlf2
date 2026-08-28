@@ -3,6 +3,7 @@
 package com.bleudev.nlf2.sys.event
 
 import com.bleudev.nine_lifes.custom.NineLifesEntities
+import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.sendPacket
 import com.bleudev.nlf2.*
 import com.bleudev.nlf2.Nlf2.Companion.battleTicks
@@ -515,10 +516,6 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
 
     override fun tick() {
         super.tick()
-        val seq = TextBoxSequence()
-        seq.color(TextColorConstants.ROUGE)
-        seq.speed(3)
-        seq.add("ROUGE!", 60)
         val overworld = server.overworld()
         when (ticks) {
             25 -> {
@@ -527,8 +524,23 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                     it.visibleActor = false
                     it
                 }
+                val team = server.scoreboard.addPlayerTeam("bleuers")
+                team.isAllowFriendlyFire = false
                 for (player in server.playerList.players) {
-                    player.teleportTo(BATTLE_ARENA_LOCATION.x, BATTLE_ARENA_LOCATION.y, BATTLE_ARENA_LOCATION.z)
+                    fun rd(): Double {
+                        if (player.isActor) return 0.0
+                        var d = (player.random.nextFloat() - .5f) * 2
+                        if (d >= -.25f && d <= .25f) d = if (d < 0) -.25f else .25f
+                        return d.lerp(-3f, 3f).toDouble()
+                    }
+                    player.teleportTo(
+                        BATTLE_ARENA_LOCATION.x + rd(),
+                        BATTLE_ARENA_LOCATION.y,
+                        BATTLE_ARENA_LOCATION.z + rd()
+                    )
+                    if (!player.isActor) {
+                        server.scoreboard.addPlayerToTeam(player.scoreboardName, team)
+                    }
                 }
                 for (entity in overworld.allEntities.filterNotNull()) {
                     if (entity !is Player) {
@@ -537,6 +549,10 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                 }
             }
             70 -> {
+                val seq = TextBoxSequence()
+                seq.color(TextColorConstants.ROUGE)
+                seq.speed(3)
+                seq.add("ROUGE!", 60)
                 server.sendToEveryone { arrayOf(OpenTextBox(seq, 0)) }
             }
             150 -> {
@@ -545,7 +561,7 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                     it.inBattle = true
                     it
                 }
-                server.actor?.addEffect(MobEffectInstance(MobEffects.RESISTANCE, Int.MAX_VALUE, 10, false, false))
+                server.actor?.addEffect(MobEffectInstance(MobEffects.RESISTANCE, -1, 3, false, false))
                 val bossBar = server.customBossEvents.create(
                     overworld.random,
                     BATTLE_BOSS_BAR,
@@ -559,9 +575,27 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
                 bossBar.progress = 0f
 
                 server.sendToEveryone { arrayOf(StartBattle.INSTANCE) }
-                server.playerList.broadcastSystemMessage(Component.literal("DEBUG START BATTLE"), false)
                 ticks = -1
             }
         }
+    }
+}
+
+class RougeGoingCrazy(server: MinecraftServer) : Nlf2Event(server, "rouge_going_crazy_internal") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.battleSecond = true
+            it
+        }
+        val seq = TextBoxSequence()
+        seq.color(TextColorConstants.ROUGE)
+        seq.speed(2)
+        seq.add("IT IS MY WORLD", 40)
+        seq.add("YOU WILL NEVER", 0)
+        seq.add("DEFEAT ME", 40)
+        seq.wait(40)
+        seq.add("I WILL PUNISH YOU", 40)
+        server.sendToEveryone { arrayOf(OpenTextBox(seq, 0)) }
     }
 }

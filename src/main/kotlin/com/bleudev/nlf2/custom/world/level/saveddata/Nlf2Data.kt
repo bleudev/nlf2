@@ -71,6 +71,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
         var noVert: Boolean = false,
         var visibleActor: Boolean = false,
         var inBattle: Boolean = false,
+        var battleSecond: Boolean = false,
     ) {
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
@@ -87,6 +88,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
                 Codec.BOOL.fieldOf("noVert").forGetter(LoreData::noVert),
                 Codec.BOOL.fieldOf("visibleActor").forGetter(LoreData::visibleActor),
                 Codec.BOOL.fieldOf("inBattle").forGetter(LoreData::inBattle),
+                Codec.BOOL.fieldOf("battleSecond").forGetter(LoreData::battleSecond),
             ).apply(it, ::LoreData) }
         }
     }
