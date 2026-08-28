@@ -24,6 +24,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.CHARGED_MANUAL, "Charged manual")
         builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Strange jukebox")
         builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Amethyst oxeye daisy")
+        builder.add(Nlf2Blocks.ARENA_BLOCK, "Arena block")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Mob effects
@@ -61,6 +62,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Items.CHARGED_MANUAL, "Заряженное руководство")
         builder.add(Nlf2Blocks.STRANGE_JUKEBOX, "Странный проигрыватель")
         builder.add(Nlf2Blocks.AMETHYST_OXEYE_DAISY, "Аметистовая ромашка")
+        builder.add(Nlf2Blocks.ARENA_BLOCK, "Блок арены")
         // Creative mode tabs
         builder.add("creativeModeTab.nlf2.general", "Nine Lifes 2")
         // Mob effects

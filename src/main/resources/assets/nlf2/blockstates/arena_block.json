@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "glitch=false": [
+      {
+        "model": "nlf2:block/arena_block"
+      },
+      {
+        "model": "nlf2:block/arena_block_mirrored"
+      },
+      {
+        "model": "nlf2:block/arena_block",
+        "y": 180
+      },
+      {
+        "model": "nlf2:block/arena_block_mirrored",
+        "y": 180
+      }
+    ],
+    "glitch=true": [
+      {
+        "model": "nlf2:block/arena_block_glitch"
+      },
+      {
+        "model": "nlf2:block/arena_block_glitch_mirrored"
+      },
+      {
+        "model": "nlf2:block/arena_block_glitch",
+        "y": 180
+      },
+      {
+        "model": "nlf2:block/arena_block_glitch_mirrored",
+        "y": 180
+      }
+    ]
+  }
+}

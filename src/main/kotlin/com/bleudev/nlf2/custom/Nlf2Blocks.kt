@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.world.level.block.AmethystOxeyeDaisy
+import com.bleudev.nlf2.custom.world.level.block.ArenaBlock
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.util.registerBlock
 import net.minecraft.world.level.block.Blocks
@@ -18,6 +19,12 @@ object Nlf2Blocks {
         "amethyst_oxeye_daisy",
         ::AmethystOxeyeDaisy,
         BlockBehaviour.Properties.ofFullCopy(Blocks.OXEYE_DAISY),
+        true
+    )
+    val ARENA_BLOCK = registerBlock(
+        "arena_block",
+        ::ArenaBlock,
+        BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK),
         true
     )
 
