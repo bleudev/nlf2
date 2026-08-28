@@ -49,6 +49,7 @@
     "client.PanoramaMixin",
     "client.PauseScreenMixin",
     "client.PlayerTabOverlayMixin",
+    "client.SkyRendererMixin",
     "client.SoundEngineMixin",
     "client.TitleScreenMixin",
     "client.WindowMixin",

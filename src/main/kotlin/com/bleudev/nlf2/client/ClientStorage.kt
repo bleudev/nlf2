@@ -120,8 +120,9 @@ var ripSanyaEventByeTick: Int = -1
 val ripSanyaRandomAnaglyphAmount: Float get() = (Random.nextFloat() *
     TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT, 100, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT))
     .onlyIf(ripSanyaEventEnabled)
-val ripSanyaBlockKeys: Boolean get() = ripSanyaEventEnabled &&
-    TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE &&
+val ripSanyaTaking: Boolean get() = ripSanyaEventEnabled &&
+    TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE
+val ripSanyaBlockKeys: Boolean get() = ripSanyaTaking &&
     Minecraft.getInstance().gameProfile.name.equals(if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
 val ripSanyaShakeWindowStrength: Float get() =
     TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, RIP_SANYA_EVENT_SANYA_TAKE)
@@ -142,6 +143,15 @@ val battleRedSkyDelta: Float get() = TICKER_BATTLE.delta(0, 50).onlyIf(battleEna
 // Battle second
 var battleSecondEnabled: Boolean = false
 val battleSecondDelta: Float get() = cos(TICKER_BATTLE_SECOND.ticks.toFloat()).normalize(-1f, 1f) * TICKER_BATTLE_SECOND.delta(0, 40).onlyIf(battleSecondEnabled)
+// Sun effects
+val sunShakeStrength: Float get() = listOf(
+    1f.onlyIf(ripSanyaTaking),
+    battleSecondDelta,
+).max()
+val sunGlitchEffectEnabled: Boolean get() = listOf(
+    ripSanyaTaking,
+    battleSecondEnabled,
+).any{it}
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
