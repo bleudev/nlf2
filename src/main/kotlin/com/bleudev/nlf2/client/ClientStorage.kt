@@ -8,6 +8,7 @@ import com.bleudev.nlf2.*
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.hueToTriple
+import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
 import com.bleudev.nlf2.util.reverseDeltaIf
 import net.fabricmc.api.EnvType
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import kotlin.math.cos
 import kotlin.random.Random
 
 @JvmField
@@ -50,6 +52,7 @@ private val earthquakeProp: Float get() = listOf(
     manualUpdateEffectAmount / 2,
     textBoxShake.toFloat().onlyIf(ripVertEventEnabled),
     TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE, RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT).reverseDelta().onlyIf(ripSanyaEventEnabled && TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE) * .5f,
+    battleSecondDelta.lerp(.8f, 1.2f) / 6,
 ).max()
 val earthquakeStrength: Float get() = earthquakeProp / 8
 val earthquakeSpeed: Float get() = earthquakeProp * 2
@@ -64,7 +67,8 @@ var borderLagTicks: Int = 0
 val blackFogEffect: Float get() = borderBlackFog.onlyIf(dataSyncedBorderState == 2)
 val cloudAlphaDelta: Float get() = listOf(
     borderBlackFog.onlyIf(dataSyncedBorderState == 2).reverseDelta(),
-    beforeMeetWaterFluidAmount.reverseDelta()
+    beforeMeetWaterFluidAmount.reverseDelta(),
+    battleRedSkyDelta.reverseDelta(),
 ).min()
 // Pause screen cutscene
 @JvmField
@@ -132,6 +136,12 @@ var whitenessAdvancedEnabled: Boolean = false
 var whitenessAdvancedDuration: Int = -1
 var whitenessAdvancedFadeIn: Int = -1
 var whitenessAdvancedFadeOut: Int = -1
+// Battle
+var battleEnabled: Boolean = false
+val battleRedSkyDelta: Float get() = TICKER_BATTLE.delta(0, 50).onlyIf(battleEnabled)
+// Battle second
+var battleSecondEnabled: Boolean = false
+val battleSecondDelta: Float get() = cos(TICKER_BATTLE_SECOND.ticks.toFloat()).normalize(-1f, 1f) * TICKER_BATTLE_SECOND.delta(0, 40).onlyIf(battleSecondEnabled)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

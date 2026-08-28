@@ -26,6 +26,7 @@ object Nlf2Packets {
     val START_WHITENESS_SCREEN_ADVANCED = getIdentifier("packet/start_whiteness_screen_advanced")
     val STRANGE_JUKEBOX_RAINBOW_CONTROL = getIdentifier("packet/strange_jukebox_rainbow_control")
 
+    val UNIT_BATTLE_SECOND_START = getIdentifier("packet/unit/battle_second_start")
     val UNIT_BORDER_BLACK_FOG_START = getIdentifier("packet/unit/border_black_fog_start")
     val UNIT_CANCEL_BORDER_BLACK_FOG = getIdentifier("packet/unit/cancel_border_black_fog")
     val UNIT_CRASH_CLIENT = getIdentifier("packet/unit/crash_client")
@@ -60,6 +61,7 @@ object Nlf2Packets {
         s2c.register(StartWhitenessScreenAdvanced)
         s2c.register(StrangeJukeboxRainbowControl)
         // Unit
+        s2c.register(BattleSecondStart)
         s2c.register(BorderBlackFogStart)
         s2c.register(CancelBorderBlackFog)
         s2c.register(CrashClient)

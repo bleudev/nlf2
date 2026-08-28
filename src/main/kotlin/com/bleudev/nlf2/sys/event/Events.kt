@@ -13,9 +13,7 @@ import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
-import com.bleudev.nlf2.custom.packet.payload.unit.CrashClient
-import com.bleudev.nlf2.custom.packet.payload.unit.Event101ScreenEffectClear
-import com.bleudev.nlf2.custom.packet.payload.unit.StartBattle
+import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.custom.packet.payload.unit.StoryStart
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
@@ -592,10 +590,13 @@ class RougeGoingCrazy(server: MinecraftServer) : Nlf2Event(server, "rouge_going_
         seq.color(TextColorConstants.ROUGE)
         seq.speed(2)
         seq.add("IT IS MY WORLD", 40)
-        seq.add("YOU WILL NEVER", 0)
+        seq.add("YOU WILL NEVER", 10)
         seq.add("DEFEAT ME", 40)
         seq.wait(40)
         seq.add("I WILL PUNISH YOU", 40)
-        server.sendToEveryone { arrayOf(OpenTextBox(seq, 0)) }
+        server.sendToEveryone { arrayOf(
+            OpenTextBox(seq, 0),
+            BattleSecondStart.INSTANCE
+        ) }
     }
 }

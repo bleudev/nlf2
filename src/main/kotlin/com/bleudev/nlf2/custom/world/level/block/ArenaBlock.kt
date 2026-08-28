@@ -19,7 +19,7 @@ class ArenaBlock(properties: Properties) : Block(properties) {
     }
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        level.setBlockAndUpdate(pos, state.setValue(GLITCH, random.nextFloat() <= .2f))
+        level.setBlockAndUpdate(pos, state.setValue(GLITCH, random.nextFloat() <= .1f))
     }
 
     companion object {

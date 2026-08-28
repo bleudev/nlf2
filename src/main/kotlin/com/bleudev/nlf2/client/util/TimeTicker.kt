@@ -60,6 +60,8 @@ val TICKER_RIP_VERT = TimeTicker()
 val TICKER_RIP_SANYA = TimeTicker()
 val TICKER_UNKNOWN_RAINBOW_EFFECT = TimeTicker()
 val TICKER_WHITENESS_ADVANCED = TimeTicker()
+val TICKER_BATTLE_SECOND = TimeTicker()
+val TICKER_BATTLE = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()

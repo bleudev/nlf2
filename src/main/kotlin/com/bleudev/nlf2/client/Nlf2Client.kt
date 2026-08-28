@@ -108,6 +108,9 @@ class Nlf2Client : ClientModInitializer {
             current.lerp(Vector4f(0f, 0f, 0f, 1f), beforeMeetWaterFluidAmount)
         }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(Vector4f(1f, 0f, 0f, 1f), battleRedSkyDelta / 2 * battleSecondDelta.lerp(1f, 1.5f))
+        }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
             if (!ripSanyaEventEnabled) return@register current
             current.lerp(Vector4f(1f, 0f, 0f, 1f), min(
                 TICKER_RIP_SANYA.delta(ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE, 0),
@@ -221,6 +224,8 @@ class Nlf2Client : ClientModInitializer {
             if (beforeMeetWaterFluidIn) {
                 if (beforeMeetWaterFluidTicks < BEFORE_MEET_WATER_FLUID_TICKS) beforeMeetWaterFluidTicks++
             } else if (beforeMeetWaterFluidTicks > 0) beforeMeetWaterFluidTicks--
+            if (battleEnabled) TICKER_BATTLE.tick()
+            if (battleSecondEnabled) TICKER_BATTLE_SECOND.tick()
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
@@ -502,8 +507,14 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(EndBattle) { _, ctx ->
             ctx.client().soundManager.stop(Nlf2Sounds.MUS_PART5_BATTLE.location, SoundSource.AMBIENT)
+            battleSecondEnabled = false
+            battleEnabled = false
         }
 
+        registerPacketReceiver(BattleSecondStart) {
+            TICKER_BATTLE_SECOND.reset()
+            battleSecondEnabled = true
+        }
         registerPacketReceiver(BorderBlackFogStart) {
             if (borderBlackFogTicks == -1) {
                 borderBlackFogTicks = BORDER_BLACK_FOG_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DURATION + BORDER_BLACK_FOG_KILL_TRANS_DELAY
@@ -520,6 +531,8 @@ class Nlf2Client : ClientModInitializer {
         }
         registerPacketReceiver(StartBattle) { _, ctx ->
             ctx.client().soundManager.play(MusPart5BattleInstance())
+            TICKER_BATTLE.reset()
+            battleEnabled = true
         }
         registerPacketReceiver(StoryStart) {
             TICKER_STORY.reset()
