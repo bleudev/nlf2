@@ -34,8 +34,8 @@ object EventEntrypoint {
         add(85, ::MeetAfterMilkich)
         add(86, ::MeetBeforeUnknown)
         add(87, ::MeetAfterUnknown)
-        add(88, ::MeetBeforeYnc)
-        add(89, ::MeetAfterYnc)
+        add(88, ::MeetBeforeBoberobo)
+        add(89, ::MeetAfterBoberobo)
         // Manual updating
         add(92, ::Manual0)
         add(93, ::Manual1)

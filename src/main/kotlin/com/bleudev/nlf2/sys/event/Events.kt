@@ -147,7 +147,7 @@ class MeetBeforeUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 0,
         server.sendToEveryone { arrayOf(UnknownMeet(UnknownMeet.State.BEFORE_MEET)) }
     }
 }
-class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_unknown_wip") {
+class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_unknown") {
     override fun tick() {
         super.tick()
         var message: Component? = null
@@ -215,7 +215,7 @@ class MeetAfterUnknown(server: MinecraftServer) : FI_MeetStateChange(server, 1, 
         actor.level().addFreshEntity(stand)
     }
 }
-class MeetBeforeYnc(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_ync") {
+class MeetBeforeBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 0, "meet_before_boberobo") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         server.nlf2data::loreData.transform {
@@ -225,7 +225,15 @@ class MeetBeforeYnc(server: MinecraftServer) : FI_MeetStateChange(server, 0, "me
         }
     }
 }
-class MeetAfterYnc(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_ync")
+class MeetAfterBoberobo(server: MinecraftServer) : FI_MeetStateChange(server, 1, "meet_after_boberobo") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::loreData.transform {
+            it.compassCrazy = true
+            it
+        }
+    }
+}
 
 open class FI_ManualUpdate(server: MinecraftServer, val manualId: Int, name: String) : Nlf2Event(server, name) {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
