@@ -13,6 +13,9 @@ interface ActorChar {
     val hideArmor: Boolean get() = true
     val renderHitboxes: Boolean get() = false
 
+    // Instanceof based booleans
+    val isMask: Boolean get() = this is PlayerMaskChar || this is InvisibleForOnePlayerMask
+
     companion object {
         const val EMPTY_TEXTURE = "entity/player/empty"
     }

@@ -5,7 +5,6 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
-import com.bleudev.nlf2.PART4_LAST_MEET_MASK
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
@@ -40,7 +39,7 @@ fun renderHitboxes(entity: Entity): Boolean {
 fun renderPlayerInTab(name: String): Boolean {
     if (dataSyncedMeetState % 2 == 0) return name.equals(Minecraft.getInstance().gameProfile.name, true)
     if (name.equals(dataSyncedActor, true)) {
-        return dataSyncedVisibleActor && dataSyncedActorLoreChar == PART4_LAST_MEET_MASK
+        return dataSyncedVisibleActor && current(name)?.isMask == true
     }
     return true
 }
