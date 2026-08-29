@@ -38,5 +38,6 @@ object ActorCharEntrypoint {
         chars["ghost"] = GhostChar()
         chars["event101"] = Event101Char()
         chars["unknown"] = UnknownChar()
+        chars["rip_sanya"] = RipSanyaChar()
     }
 }

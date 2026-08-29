@@ -67,10 +67,12 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
     @Inject(method = "extractRenderState*", at = @At("TAIL"))
     private void setStateNickname(AvatarLike entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
         String nickname = null;
-        if (entity instanceof Player player)
+        if (entity instanceof Player player) {
             nickname = player.getGameProfile().name();
-        if (entity instanceof Mannequin mannequin)
+        }
+        if (entity instanceof Mannequin mannequin) {
             nickname = mannequin.getProfile().name().orElse(null);
+        }
 
         if (nickname != null) {
             nickname = nickname.toLowerCase();
@@ -78,14 +80,17 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             renderState.nlf2$setNickname(nickname);
 
             var ch = current(nickname);
-            if (ch != null && ch.isInvisible()) {
-                state.isInvisible = true;
-                state.leftHandItemState.clear();
-                state.leftHandItemStack = ItemStack.EMPTY;
-                state.rightHandItemState.clear();
-                state.rightHandItemStack = ItemStack.EMPTY;
-            }
             if (ch != null) {
+                if (ch.isInvisible()) {
+                    state.isInvisible = true;
+                    state.leftHandItemState.clear();
+                    state.leftHandItemStack = ItemStack.EMPTY;
+                    state.rightHandItemState.clear();
+                    state.rightHandItemStack = ItemStack.EMPTY;
+                } else if (ch.isForceVisible()) {
+                    state.isInvisible = false;
+                    state.isSpectator = false;
+                }
                 renderState.nlf2$setShouldRenderArmor(!ch.getHideArmor());
             }
         }

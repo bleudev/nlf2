@@ -1,10 +1,9 @@
 package com.bleudev.nlf2.client.sys.actor
 
+import com.bleudev.nlf2.DEV_STORY_ACTOR
+import com.bleudev.nlf2.EVENT112_NICKNAME
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
-import com.bleudev.nlf2.client.dataSyncedActor
-import com.bleudev.nlf2.client.dataSyncedActorLoreChar
-import com.bleudev.nlf2.client.dataSyncedEvent101
-import com.bleudev.nlf2.client.dataSyncedSimulateNickname
+import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.chars
 import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
 import com.bleudev.nlf2.client.util.isEvent101Char
@@ -43,6 +42,10 @@ object ActorCharEntrypointClient {
         if (client == actor && client !in SUPPORTED_NICKNAMES) client = "bleugame"
 
         if (!dataSyncedEvent101 && isEvent101Char(entity)) return PrepareData(client, entity, chars["event101"])
+        if (ripSanyaTaking && entity.equals(
+            if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
+        )
+            return PrepareData(client, entity, chars["rip_sanya"])
         // Other event specific chars...
         if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])
         return PrepareData(client, entity, null)

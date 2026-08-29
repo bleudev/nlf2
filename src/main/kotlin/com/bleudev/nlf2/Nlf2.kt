@@ -195,8 +195,10 @@ class Nlf2 : ModInitializer {
                     pl.noPhysics = true
                     pl.setOnGround(false)
                     pl.isNoGravity = true
-                    // TODO: Normal spectator like movement
                     pl.connection.send(ClientboundSetEntityMotionPacket(pl))
+                    if (!pl.isSpectator) {
+                        pl.setGameMode(GameType.SPECTATOR)
+                    }
                 }
                 ripSanyaTakingTicks--
             }
