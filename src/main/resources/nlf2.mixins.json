@@ -55,7 +55,8 @@
     "client.WindowMixin",
     "client.impl.KeyBindsList$CategoryEntryMixin",
     "client.nine_lifes.NineLifesClientStorageMixin",
-    "client.voicechat.AdjustVolumeListMixin"
+    "client.voicechat.AdjustVolumeListMixin",
+    "client.voicechat.RenderEventsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

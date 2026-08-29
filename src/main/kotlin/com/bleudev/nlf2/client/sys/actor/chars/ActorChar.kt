@@ -13,6 +13,7 @@ interface ActorChar {
     val isForceVisible: Boolean get() = false
     val hideArmor: Boolean get() = true
     val renderHitboxes: Boolean get() = false
+    val isForceNameTagVoiceDisconnected: Boolean get() = false
 
     // Instanceof based booleans
     val isMask: Boolean get() = this is PlayerMaskChar || this is InvisibleForOnePlayerMask
