@@ -14,8 +14,8 @@ const val MONITOR_WIDTH = 1920
 const val MONITOR_HEIGHT = 1080
 
 // Address
-private const val SERVER_OUT_ADDRESS: String = "pink.fnode.me:19164"
-private const val SERVER_IN_ADDRESS: String = "pink.in.fnode.me:19164"
+private const val SERVER_OUT_ADDRESS: String = "white.fnode.me:8336"
+private const val SERVER_IN_ADDRESS: String = "white.in.fnode.me:8336"
 private val IN_ADDRESS_NICKNAMES = listOf(
     "crockomd",
 )
@@ -43,17 +43,18 @@ val SLIM_SKINS = listOf(
     "waflla_kek",
     "ync27",
 )
-val TELEPORT_LOCATIONS = mapOf(
-    "bleugame" to Vec3(587.0, 65.0, 706.0),
-    "crockomd" to Vec3(601.0, 65.0, 818.0),
-    "samivarence" to Vec3(564.0, 70.0, 575.0),
-    "milkich22397" to Vec3(530.0, 127.0, 865.0),
+val TELEPORT_LOCATIONS: Map<String, Vec3> = mapOf(
+//    "bleugame" to Vec3(587.0, 65.0, 706.0),
+//    "crockomd" to Vec3(601.0, 65.0, 818.0),
+//    "samivarence" to Vec3(564.0, 70.0, 575.0),
+//    "milkich22397" to Vec3(530.0, 127.0, 865.0),
 )
 const val EVENT112_NICKNAME = "Samivarence"
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
-val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0) // Singleplayer test
+//val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0) // Singleplayer test
 //val BATTLE_ARENA_LOCATION = Vec3(22.0, 72.0 + 2, -98.0) // Server test
+val BATTLE_ARENA_LOCATION = Vec3(411.0, 63.0 + 2, 572.0)
 
 // Ticks / durations
 const val BORDER_LOSE_HEARTS_BEFORE_DURATION = 200
@@ -93,21 +94,21 @@ const val RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY = 20
 
 const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
 
-const val PART4_LAST_MEET_MASK = "mask_ync"
+const val PART4_LAST_MEET_MASK = "mask_boberobo"
 
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
 
 // Booleans
-const val INTRO_ENABLED = false
+const val INTRO_ENABLED = true
 
 /// DEV
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
-const val DEV_BAN_EVENT_112 = true
+const val DEV_BAN_EVENT_112 = false
 
 // Custom dev arguments
 @Suppress("RedundantNullableReturnType", "RedundantSuppression")
 @JvmField
-val DEV_ARG_USERNAME: String? = "PlayerDev"
-//val DEV_ARG_USERNAME: String? = null
+//val DEV_ARG_USERNAME: String? = "PlayerDev"
+val DEV_ARG_USERNAME: String? = null
