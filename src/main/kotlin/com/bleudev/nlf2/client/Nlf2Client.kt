@@ -195,6 +195,10 @@ class Nlf2Client : ClientModInitializer {
             keyTick()
             volumeTick()
 
+            if (ripSanyaEventEnabled) {
+                TICKER_RIP_SANYA.tick()
+            }
+
             // Unknown rainbow effect
             TICKER_UNKNOWN_RAINBOW_EFFECT.tick()
             mc.gui.hud.chat.rescaleChat()
@@ -409,7 +413,6 @@ class Nlf2Client : ClientModInitializer {
         }
         HudElementRegistry.addLast(Layer.EVENT_RIP_SANYA) { graphics, _ ->
             if (ripSanyaEventEnabled) {
-                TICKER_RIP_SANYA.tick()
                 if (TICKER_RIP_SANYA >= ripSanyaEventByeTick + RIP_SANYA_EVENT_WHITE_FADE + RIP_SANYA_EVENT_SANYA_TAKE + RIP_SANYA_EVENT_SANYA_TAKE_FADE_OUT) {
                     ripSanyaEventEnabled = false
                     return@addLast

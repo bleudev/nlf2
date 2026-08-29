@@ -34,6 +34,10 @@ abstract class Ticker {
     override fun hashCode(): Int = ticks.hashCode()
 }
 
+class SimpleTicker : Ticker() {
+    override fun tick(): Long = ++ticks
+}
+
 open class TimeTicker : Ticker() {
     private var start: Long = System.currentTimeMillis()
 
@@ -57,7 +61,7 @@ val TICKER_STORY = object : TimeTicker() {
 val TICKER_TEXT_BOX = TimeTicker()
 val TICKER_RIP_VERT = TimeTicker()
 @JvmField
-val TICKER_RIP_SANYA = TimeTicker()
+val TICKER_RIP_SANYA = SimpleTicker()
 val TICKER_UNKNOWN_RAINBOW_EFFECT = TimeTicker()
 val TICKER_WHITENESS_ADVANCED = TimeTicker()
 val TICKER_BATTLE_SECOND = TimeTicker()
