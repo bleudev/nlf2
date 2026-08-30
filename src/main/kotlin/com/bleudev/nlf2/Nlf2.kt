@@ -333,10 +333,13 @@ class Nlf2 : ModInitializer {
                     server.halt(false)
                     return@register
                 }
-                if (!server.nlf2data.loreData.battleSecond && server.actor?.health?.let { it <= 10f } == true) {
-                    causeEvent(999)
+                server.actor?.let { actor ->
+                    if (!server.nlf2data.loreData.battleSecond && actor.health <= (actor.maxHealth / 2)) {
+                        causeEvent(999)
+                    }
+                    actor.foodData.foodLevel = 10
+                    actor.getAttribute(Attributes.MAX_HEALTH)?.baseValue = 60.0
                 }
-                server.actor?.foodData?.foodLevel = 10
             } else {
                 server.customBossEvents.get(BATTLE_BOSS_BAR)?.let {
                     it.removeAllPlayers()
