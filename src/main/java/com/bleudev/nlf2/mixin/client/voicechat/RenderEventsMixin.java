@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.RenderEvents;
+import de.maxhenkel.voicechat.voice.client.TalkCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -36,8 +37,18 @@ public class RenderEventsMixin {
     private boolean renderIconEvenIfEntityIsClient(Entity instance, Object obj, Operation<Boolean> original) {
         return !isEntityForceDisconnected(instance) && original.call(instance, obj);
     }
+    @SuppressWarnings("NameDoesntMatchTargetClass")
+    @WrapOperation(method = "onRenderName", at = @At(value = "INVOKE", target = "Lde/maxhenkel/voicechat/voice/client/TalkCache;isWhispering(Ljava/util/UUID;)Z"))
+    private boolean forceDisconnectPlayer0(TalkCache instance, UUID entityId, Operation<Boolean> original, @Local(name = "entity") Entity entity) {
+        return !isEntityForceDisconnected(entity) && original.call(instance, entityId);
+    }
+    @SuppressWarnings("NameDoesntMatchTargetClass")
+    @WrapOperation(method = "onRenderName", at = @At(value = "INVOKE", target = "Lde/maxhenkel/voicechat/voice/client/TalkCache;isTalking(Ljava/util/UUID;)Z"))
+    private boolean forceDisconnectPlayer1(TalkCache instance, UUID entityId, Operation<Boolean> original, @Local(name = "entity") Entity entity) {
+        return !isEntityForceDisconnected(entity) && original.call(instance, entityId);
+    }
     @WrapOperation(method = "onRenderName", at = @At(value = "INVOKE", target = "Lde/maxhenkel/voicechat/voice/client/ClientPlayerStateManager;isPlayerDisconnected(Ljava/util/UUID;)Z"))
-    private boolean forceDisconnectPlayer(ClientPlayerStateManager instance, UUID playerId, Operation<Boolean> original, @Local(name = "entity") Entity entity) {
+    private boolean forceDisconnectPlayer2(ClientPlayerStateManager instance, UUID playerId, Operation<Boolean> original, @Local(name = "entity") Entity entity) {
         return isEntityForceDisconnected(entity) || original.call(instance, playerId);
     }
 }
