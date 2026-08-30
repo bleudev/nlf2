@@ -12,7 +12,8 @@
     "PlayerListMixin",
     "PortalShapeMixin",
     "ServerPlayerMixin",
-    "accessor.LivingEntityAccessor"
+    "accessor.LivingEntityAccessor",
+    "nine_lifes.NineLifesMixin"
   ],
   "client": [
     "accessor.SoundManagerAccessor",
