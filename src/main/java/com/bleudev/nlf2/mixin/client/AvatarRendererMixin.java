@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -83,13 +84,16 @@ public abstract class AvatarRendererMixin<AvatarLike extends Avatar & ClientAvat
             if (ch != null) {
                 if (ch.isInvisible()) {
                     state.isInvisible = true;
+                } else if (ch.isForceVisible()) {
+                    state.isInvisible = false;
+                    state.isSpectator = false;
+                }
+                if (ch.isInvisible() || ch.getHideHandItems()) {
                     state.leftHandItemState.clear();
                     state.leftHandItemStack = ItemStack.EMPTY;
                     state.rightHandItemState.clear();
                     state.rightHandItemStack = ItemStack.EMPTY;
-                } else if (ch.isForceVisible()) {
-                    state.isInvisible = false;
-                    state.isSpectator = false;
+                    state.rightArmPose = HumanoidModel.ArmPose.EMPTY;
                 }
                 renderState.nlf2$setShouldRenderArmor(!ch.getHideArmor());
             }

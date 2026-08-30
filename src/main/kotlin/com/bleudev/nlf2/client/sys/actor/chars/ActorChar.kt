@@ -12,6 +12,7 @@ interface ActorChar {
     val isInvisible: Boolean get() = false
     val isForceVisible: Boolean get() = false
     val hideArmor: Boolean get() = true
+    val hideHandItems: Boolean get() = false
     val renderHitboxes: Boolean get() = false
     val isForceNameTagVoiceDisconnected: Boolean get() = false
 

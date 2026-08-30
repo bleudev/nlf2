@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HumanoidArmorLayer.class)
 public class HumanoidArmorLayerMixin<S extends HumanoidRenderState> {
     @Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
-    private void cancelRenderArmor(PoseStack p1, SubmitNodeCollector p2, ItemStack p3, EquipmentSlot p4, int p5, final S state, CallbackInfo ci) {
+    private void cancelRenderArmor(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack itemStack, EquipmentSlot slot, int lightCoords, final S state, CallbackInfo ci) {
         if (!((IHumanoidRenderState) state).nlf2$shouldRenderArmor()) ci.cancel();
     }
 }

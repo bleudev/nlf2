@@ -12,6 +12,7 @@ object ActorCharEntrypoint {
         chars.clear()
         // Vessel like
         chars["rouge"] = VesselLikeChar("rouge")
+        chars["rouge_battle"] = RougeBattleChar()
         chars["vert"] = VesselLikeChar("vert")
         chars["vessel"] = VesselLikeChar(null)
         // Only eyes

@@ -531,7 +531,7 @@ class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure
         when (ticks) {
             25 -> {
                 server.nlf2data::loreData.transform {
-                    it.actorChar = "rouge"
+                    it.actorChar = "rouge_battle"
                     it.visibleActor = false
                     it
                 }
