@@ -5,6 +5,7 @@ package com.bleudev.nlf2.client.util
 import com.bleudev.nlf2.DEV_EVENT_101
 import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
+import com.bleudev.nlf2.UNKNOWN_GAME_PROFILE
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
@@ -13,6 +14,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvent
@@ -36,13 +38,22 @@ fun renderHitboxes(entity: Entity): Boolean {
     }
     return true
 }
-fun renderPlayerInTab(name: String): Boolean {
+private fun renderPlayerInTab(name: String): Boolean {
     if (dataSyncedMeetState % 2 == 0) return name.equals(Minecraft.getInstance().gameProfile.name, true)
     if (name.equals(dataSyncedActor, true)) {
         return dataSyncedVisibleActor && current(name)?.isMask == true
     }
     return true
 }
+fun modifyPlayerTabEntries(original: List<PlayerInfo>): List<PlayerInfo> {
+    val nw = ArrayList(original)
+    nw.removeIf { playerInfo -> !renderPlayerInTab(playerInfo.profile.name) }
+    if (dataSyncedActorLoreChar == "unknown") {
+        nw.add(PlayerInfo(UNKNOWN_GAME_PROFILE, false))
+    }
+    return nw.toList()
+}
+
 fun renderPlayerInVoiceChat(name: String): Boolean = renderPlayerInTab(name)
 fun modifyPlayerNameTag(original: Component?): Component? {
     val name = original?.string ?: return original
