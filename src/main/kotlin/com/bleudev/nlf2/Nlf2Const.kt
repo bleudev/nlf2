@@ -1,7 +1,9 @@
 package com.bleudev.nlf2
 
+import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.Minecraft
+import net.minecraft.world.level.ItemLike
 import net.minecraft.world.phys.Vec3
 import java.util.*
 
@@ -103,6 +105,14 @@ const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
 const val PART4_LAST_MEET_MASK = "mask_boberobo"
 
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
+
+// Rainbow tooltip + highlight items
+@JvmField
+val RAINBOW_ITEMS_CHECKER: (ItemLike) -> Boolean = { it.asItem() in listOf(
+    Nlf2Blocks.STRANGE_JUKEBOX.asItem(),
+    Nlf2Blocks.ARENA_BLOCK.asItem(),
+    Nlf2Blocks.COMPUTER.asItem(),
+)}
 
 // Booleans
 const val INTRO_ENABLED = false
