@@ -32,6 +32,15 @@ val windowBlockFullscreen: Boolean get() = listOf(
     INTRO_ENABLED && TICKER_INTRO < 400,
     ripSanyaShakeWindowStrength > 0,
 ).any{it}
+var windowBlockedClose: Boolean = false
+    get() {
+        if (windowBlockFullscreen) {
+            return field
+        } else {
+            field = false
+            return false
+        }
+    }
 // Join blackness
 var join_blackness_delay_ticks: Int = 10
 var join_blackness: Float = 1f

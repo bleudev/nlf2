@@ -38,6 +38,11 @@ public abstract class WindowMixin {
     }
     @WrapMethod(method = "setTitle")
     private void modifyTitle(String title, Operation<Void> original) {
+        if (getWindowBlockedClose()) {
+            original.call("YOU CANNOT");
+            return;
+        }
+
         String var10001 = title.replace("Minecraft*", "Minecraft");
         var10001 = var10001.replace("Minecraft", "\"Minecraft\"");
         if (getRipSanyaBlockKeys()) {
