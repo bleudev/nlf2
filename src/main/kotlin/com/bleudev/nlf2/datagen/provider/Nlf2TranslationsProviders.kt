@@ -41,7 +41,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.MUS_MILKICH_APPEARS, "12 (Not) lactose-free")
         builder.add(Nlf2Sounds.MUS_JUKEBOX, "13 The Abandoned World")
         builder.add(Nlf2Sounds.MUS_EASTER_EGG, "14 Jukeboxing To The Fullest!")
-        builder.add(Nlf2Sounds.MUS_PART4_UNKNOWN_APPEARS, "16 ???")
+        builder.add(Nlf2Sounds.MUS_PART4_UNKNOWN_APPEARS, "16 Familiar intruder")
         builder.add(Nlf2Sounds.MUS_JUKEBOX_SLEEP, "17 Juke box")
         builder.add(Nlf2Sounds.MUS_STORY, "18 Long time ago")
         builder.add(Nlf2Sounds.MUS_PART4_BYE_VERT, "Strange music")
