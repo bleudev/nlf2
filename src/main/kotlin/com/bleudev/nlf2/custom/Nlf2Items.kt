@@ -26,6 +26,8 @@ object Nlf2Items {
                     CHARGED_MANUAL,
                     Nlf2Blocks.STRANGE_JUKEBOX,
                     Nlf2Blocks.AMETHYST_OXEYE_DAISY,
+                    Nlf2Blocks.ARENA_BLOCK,
+                    Nlf2Blocks.COMPUTER,
                 )
 
                 for (var2 in var1) {

@@ -105,7 +105,7 @@ const val PART4_LAST_MEET_MASK = "mask_boberobo"
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
 
 // Booleans
-const val INTRO_ENABLED = true
+const val INTRO_ENABLED = false
 
 /// DEV
 const val DEV_EVENT_101 = false
