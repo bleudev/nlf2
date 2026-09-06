@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 object Nlf2Packets {
     val BEFORE_MEET_WATER_FLUID = getIdentifier("packet/before_meet_water_fluid")
     val CLIENT_NLF2_DATA_SYNC = getIdentifier("packet/client_nlf2_data_sync")
+    val COMPUTER_MESSAGE_SYNC = getIdentifier("packet/computer_message_sync")
     val DISTANCE_UPDATE = getIdentifier("packet/distance_update")
     val JOIN_DISCONNECT_VERSION = getIdentifier("packet/join_disconnect_version")
     val MANUAL_UPDATE_EFFECT = getIdentifier("packet/manual_update_effect")
@@ -50,6 +51,7 @@ object Nlf2Packets {
         // Normal
         s2c.register(BeforeMeetWaterFluid)
         s2c.register(ClientNlf2DataSync)
+        s2c.register(ComputerMessageSync)
         s2c.register(DistanceUpdate)
         s2c.register(JoinDisconnectVersion)
         s2c.register(ManualUpdateEffect)

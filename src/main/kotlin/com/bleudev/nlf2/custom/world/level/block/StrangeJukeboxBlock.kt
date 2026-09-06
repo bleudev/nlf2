@@ -43,7 +43,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         level: Level,
         blockState: BlockState,
         type: BlockEntityType<T>
-    ): BlockEntityTicker<T>? = createTickerHelper(type, Nlf2BlockEntities.STRANGE_JUKEBOX_ENTITY, StrangeJukeboxBlockEntity::tick)
+    ): BlockEntityTicker<T>? = createTickerHelper(type, Nlf2BlockEntities.STRANGE_JUKEBOX, StrangeJukeboxBlockEntity::tick)
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(ON, MUS)
     }

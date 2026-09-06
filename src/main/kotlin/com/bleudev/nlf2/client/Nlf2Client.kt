@@ -8,6 +8,7 @@ import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.reverseDelta
 import com.bleudev.nlf2.*
+import com.bleudev.nlf2.client.custom.Nlf2BlockEntityRenderers
 import com.bleudev.nlf2.client.custom.Nlf2ParticleProviders
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
@@ -47,6 +48,8 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
@@ -98,8 +101,14 @@ class Nlf2Client : ClientModInitializer {
     }
     class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
 
+    companion object {
+        private var computerMessages: HashMap<BlockPos, List<Component>> = HashMap()
+        fun getComputerMessage(pos: BlockPos): List<Component> = computerMessages[pos] ?: emptyList()
+    }
+
     override fun onInitializeClient() {
         Nlf2ParticleProviders.initialize()
+        Nlf2BlockEntityRenderers.initialize()
         ActorCharEntrypoint.initialize()
         tryHideMod()
         their.validateAll()
@@ -477,6 +486,9 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedVisibleActor = payload.visibleActor
 
             TIMER_MASK.reset()
+        }
+        registerPacketReceiver(ComputerMessageSync) { payload ->
+            computerMessages[payload.pos] = payload.lines
         }
         registerPacketReceiver(DistanceUpdate) { payload ->
             val maxBlocks = 50.0

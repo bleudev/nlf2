@@ -8,12 +8,15 @@ import com.bleudev.nlf2.DEV_STORY_ACTOR
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.mojang.brigadier.builder.ArgumentBuilder
+import io.netty.buffer.ByteBuf
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -110,6 +113,21 @@ val ServerPlayer.wantsToListenStory: Boolean
 // Color
 fun Int.normalize(rgbTarget: Int = 0) =
     if (ARGB.alphaFloat(this) >= 1f) this else ARGB.srgbLerp(ARGB.alphaFloat(this), ARGB.color(1f, rgbTarget), this)
+
+// Serialization
+fun <B : ByteBuf, F : Any, S : Any> StreamCodec<B, F>.pair(second: StreamCodec<B, S>): StreamCodec<B, Pair<F, S>> = object : StreamCodec<B, Pair<F, S>> {
+    override fun encode(output: B, value: Pair<F, S>) {
+        this@pair.encode(output, value.first)
+        second.encode(output, value.second)
+    }
+
+    override fun decode(input: B): Pair<F, S> {
+        val f = this@pair.decode(input)
+        val s = second.decode(input)
+        return f to s
+    }
+}
+fun <B : ByteBuf, V : Any> StreamCodec<B, V>.list(): StreamCodec<B, List<V>> = ByteBufCodecs.list<B, V>().apply(this)
 
 // Other
 fun Vec3.toBlockPos(): BlockPos = BlockPos(x.toInt(), y.toInt(), z.toInt())
