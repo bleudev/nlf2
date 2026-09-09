@@ -10,6 +10,7 @@ import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.MUS
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.ON
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
+import com.bleudev.nlf2.util.breakVertBlockIfNeed
 import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
@@ -44,6 +45,9 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     val rainbowedPlayers: ArrayList<String> = ArrayList()
 
     internal fun tick(level: Level, pos: BlockPos, state: BlockState) {
+        if (breakVertBlockIfNeed(level, pos, state)) {
+            return
+        }
         val on = state.getValue(ON)
         var mus = state.getValue(MUS)
 
