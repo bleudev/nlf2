@@ -1,6 +1,7 @@
 package com.bleudev.nlf2
 
 import com.bleudev.nlf2.custom.Nlf2Blocks
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.Minecraft
 import net.minecraft.world.level.ItemLike
@@ -112,6 +113,7 @@ val RAINBOW_ITEMS_CHECKER: (ItemLike) -> Boolean = { it.asItem() in listOf(
     Nlf2Blocks.STRANGE_JUKEBOX.asItem(),
     Nlf2Blocks.ARENA_BLOCK.asItem(),
     Nlf2Blocks.COMPUTER.asItem(),
+    Nlf2Items.CARD,
 )}
 
 // Booleans
