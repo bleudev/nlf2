@@ -11,6 +11,7 @@ import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.M
 import com.bleudev.nlf2.custom.world.level.block.StrangeJukeboxBlock.Companion.ON
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
 import com.bleudev.nlf2.util.breakVertBlockIfNeed
+import com.bleudev.nlf2.util.openRange
 import com.bleudev.nlf2.util.sendToEveryone
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
@@ -41,6 +42,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     var cardConsumed: Boolean = false
     private var cardOwner: Player? = null
     private var sinceLastTurningOn: Int = 0
+    private var sleepTryCount: Int = -1
 
     val rainbowedPlayers: ArrayList<String> = ArrayList()
 
@@ -100,19 +102,72 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             }
             if (t == endTime) level.server?.sendToEveryone { arrayOf(StrangeJukeboxRainbowControl(false)) }
         }
-        if (on && mus == StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP) {
-            fun send(c: Component) {
-                for (player in level.players()) {
-                    if (player.distanceToSqr(Vec3.atCenterOf(pos)) <= 10*10) {
-                        player.sendOverlayMessage(c)
+        if (on) {
+            if (mus == StrangeJukeboxBlock.SelectedMus.JUKEBOX_SLEEP) {
+                if (sinceLastTurningOn == 1) {
+                    sleepTryCount++
+                }
+
+                fun send(c: Component) {
+                    for (player in level.players()) {
+                        if (player.distanceToSqr(Vec3.atCenterOf(pos)) <= 10*10) {
+                            player.sendOverlayMessage(c)
+                        }
                     }
                 }
+                var message: Component? = null
+                when (sleepTryCount) {
+                    0 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.0.0")
+                        }
+                        if (sinceLastTurningOn == 80) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.0.1")
+                        }
+                    }
+                    1 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.1.0")
+                        }
+                        if (sinceLastTurningOn == 80) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.1.1")
+                        }
+                        if (sinceLastTurningOn == 140) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.1.2")
+                        }
+                    }
+                    2 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.2.0")
+                        }
+                    }
+                    3 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.3.0")
+                        }
+                    }
+                    4 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.4.0")
+                        }
+                    }
+                    5 -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.5.0")
+                        }
+                    }
+                    in 6.openRange() -> {
+                        if (sinceLastTurningOn == 20) {
+                            message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.6.0")
+                        }
+                    }
+                }
+                if (message != null) {
+                    send(message)
+                }
             }
-            if (sinceLastTurningOn == 20) {
-                send(Component.translatable("nlf2.message.block.strange_jukebox.sleep.0"))
-            }
-            if (sinceLastTurningOn == 80) {
-                send(Component.translatable("nlf2.message.block.strange_jukebox.sleep.1"))
+            else {
+                sleepTryCount = -1
             }
         }
     }

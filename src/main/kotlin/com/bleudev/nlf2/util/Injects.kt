@@ -142,6 +142,9 @@ fun <T> List<T>.with(vararg values: T): List<T> {
     cp.addAll(values)
     return cp.toList()
 }
+fun Int.openRange(): IntRange = this..Int.MAX_VALUE
+
+// Float delta transforms
 fun Float.reverseDeltaIf(condition: Boolean, max: Float = 1f): Float = if (condition) reverseDelta(max) else this
 fun Float.onlyIf(condition: Boolean, default: Float = 0f): Float = if (condition) this else default
 fun Float.normalize(min: Float, max: Float): Float = (this - min) / (max - min)
