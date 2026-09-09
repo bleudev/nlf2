@@ -65,8 +65,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         hand: InteractionHand,
         hitResult: BlockHitResult
     ): InteractionResult {
-        if (!state.getValue(MUS).isFree) return InteractionResult.TRY_WITH_EMPTY_HAND
-        if (itemStack.`is`(Nlf2Items.CARD)) {
+        if (itemStack.`is`(Nlf2Items.CARD) && state.getValue(MUS).isFree) {
             val entity = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity) ?: return InteractionResult.PASS
             if (!entity.cardConsumed && !state.getValue(ON)) {
                 player.consumeOneItemInHand(hand)
