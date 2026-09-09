@@ -589,7 +589,12 @@ class Nlf2Client : ClientModInitializer {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
         }
         registerPacketReceiver(ScaryVoicePhrase) { _, ctx ->
-            ctx.client().soundManager.play(ScaryVoiceInstance(Nlf2Sounds.scaryVoiceSounds().random()))
+            var s = Nlf2Sounds.scaryVoiceSounds().random()
+            while (s == prevScarySound) {
+                s = Nlf2Sounds.scaryVoiceSounds().random()
+            }
+            ctx.client().soundManager.play(ScaryVoiceInstance(s))
+            prevScarySound = s
         }
         registerPacketReceiver(StartBattle) { _, ctx ->
             ctx.client().soundManager.play(MusPart5BattleInstance())

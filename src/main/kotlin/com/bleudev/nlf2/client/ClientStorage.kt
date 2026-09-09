@@ -15,6 +15,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.util.ARGB
 import org.jetbrains.annotations.Range
 import java.nio.file.Files
@@ -162,6 +163,8 @@ val sunGlitchEffectEnabled: Boolean get() = listOf(
     ripSanyaTaking,
     battleSecondEnabled,
 ).any{it}
+// Scary sounds
+var prevScarySound: SoundEvent? = null
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
