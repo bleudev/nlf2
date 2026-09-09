@@ -15,8 +15,10 @@ import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.PlayerInfo
+import net.minecraft.client.resources.sounds.Sound
 import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
@@ -123,6 +125,13 @@ fun keyTick() {
 // Sounds
 private val shouldModifyFinalVolume: Boolean get() = shouldRenderStory
 private var prevShouldModifyFinalVolume: Boolean? = null
+fun modifySoundSubtitle(sound: Sound, current: Component): Component = modifySoundSubtitle(sound.location, current)
+fun modifySoundSubtitle(soundId: Identifier, current: Component): Component {
+    if (soundId in Nlf2Sounds.scaryVoiceSounds().map { it.location }) {
+        return current.copy().withColor(0xffff0000.toInt())
+    }
+    return current
+}
 fun getSoundFinalVolume(instance: SoundInstance, original: Float): Float {
     val identifier = instance.identifier
     if (shouldRenderStory) {

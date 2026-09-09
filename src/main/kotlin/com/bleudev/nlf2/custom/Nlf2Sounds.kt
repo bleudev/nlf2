@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.util.registerSound
+import com.bleudev.nlf2.util.with
 import net.minecraft.sounds.SoundEvent
 
 object Nlf2Sounds {
@@ -24,6 +25,10 @@ object Nlf2Sounds {
     val MUS_PART4_UNKNOWN_APPEARS = registerSound("mus_part4_unknown_appears")
     val MUS_JUKEBOX_SLEEP = registerSound("mus_jukebox_sleep")
     val MUS_PART5_BATTLE = registerSound("mus_part5_battle")
+    val SCARY_VOICE_GIVE_IT = registerSound("scary_voice_give_it")
+    val SCARY_VOICE_GIVE_UP = registerSound("scary_voice_give_up")
+    val SCARY_VOICE_MY_WORLD = registerSound("scary_voice_my_world")
+    val SCARY_VOICE_WHY_YOU = registerSound("scary_voice_why_you")
 
     fun allJukeboxMusic() = listOf(
         MUS_STRANGE_NOISE,
@@ -37,6 +42,12 @@ object Nlf2Sounds {
         MUS_STORY, MUS_MAN_STORY, NOISE
     )
     fun unknownMeetSounds() = listOf(AUDIO_HOLY_SHEEP, MUS_PART4_UNKNOWN_APPEARS)
+    fun scaryVoiceSounds() = listOf(
+        SCARY_VOICE_GIVE_IT,
+        SCARY_VOICE_GIVE_UP,
+        SCARY_VOICE_MY_WORLD,
+        SCARY_VOICE_WHY_YOU,
+    )
     fun allWithSubtitle(): List<SoundEvent> = listOf(
         BROKE,
         LAUGH,
@@ -54,7 +65,7 @@ object Nlf2Sounds {
         MUS_PART4_UNKNOWN_APPEARS,
         MUS_JUKEBOX_SLEEP,
         MUS_PART5_BATTLE,
-    )
+    ).with(*scaryVoiceSounds().toTypedArray())
     fun allWithoutSubtitle(): List<SoundEvent> = listOf(
         MUS_JUKEBOX_PUZZLE,
         MUS_MAN_STORY,

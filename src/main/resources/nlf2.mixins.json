@@ -54,6 +54,7 @@
     "client.PlayerTabOverlayMixin",
     "client.SkyRendererMixin",
     "client.SoundEngineMixin",
+    "client.SubtitleOverlayMixin",
     "client.TitleScreenMixin",
     "client.WindowMixin",
     "client.impl.KeyBindsList$CategoryEntryMixin",

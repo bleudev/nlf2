@@ -57,6 +57,10 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.MUS_QUAKE, "LOUD EARTHQUAKE")
         builder.add(Nlf2Sounds.MUS_PART4_BYE, "19 GOODBYE")
         builder.add(Nlf2Sounds.MUS_PART5_BATTLE, "20 Last chance")
+        builder.add(Nlf2Sounds.SCARY_VOICE_GIVE_IT, "GIVE IT")
+        builder.add(Nlf2Sounds.SCARY_VOICE_GIVE_UP, "GIVE UP")
+        builder.add(Nlf2Sounds.SCARY_VOICE_MY_WORLD, "IT IS MY WORLD")
+        builder.add(Nlf2Sounds.SCARY_VOICE_WHY_YOU, "WHY YOU?")
     }
 }
 
