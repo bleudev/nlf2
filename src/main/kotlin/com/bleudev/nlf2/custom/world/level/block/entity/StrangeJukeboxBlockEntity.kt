@@ -26,7 +26,10 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.storage.ValueInput
+import net.minecraft.world.level.storage.ValueOutput
 import net.minecraft.world.phys.Vec3
+import java.util.*
 
 
 class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Nlf2BlockEntities.STRANGE_JUKEBOX, pos, state) {
@@ -40,11 +43,29 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     private var t: Int = 0
     private var duration: Int = 100000
     var cardConsumed: Boolean = false
-    private var cardOwner: Player? = null
+    private var cardOwner: UUID? = null
     private var sinceLastTurningOn: Int = 0
     private var sleepTryCount: Int = -1
 
     val rainbowedPlayers: ArrayList<String> = ArrayList()
+
+    override fun loadAdditional(input: ValueInput) {
+        val card = input.childOrEmpty("card")
+        this.cardConsumed = card.getBooleanOr("consumed", false)
+        card.getStringOr("owner", "null").let {
+            this.cardOwner = if (it == "null") null else UUID.fromString(it)
+        }
+
+        this.sleepTryCount = input.getIntOr("sleep_try_count", -1)
+    }
+
+    override fun saveAdditional(output: ValueOutput) {
+        val card = output.child("card")
+        card.putBoolean("consumed", this.cardConsumed)
+        card.putString("owner", this.cardOwner.toString())
+
+        output.putInt("sleep_try_count", this.sleepTryCount)
+    }
 
     internal fun tick(level: Level, pos: BlockPos, state: BlockState) {
         if (breakVertBlockIfNeed(level, pos, state)) {
@@ -183,10 +204,10 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
                     state = state.setValue(MUS, StrangeJukeboxBlock.SelectedMus.newMus(it.server, card))
                     if (card) {
                         cardConsumed = true
-                        cardOwner = player
+                        cardOwner = player.uuid
                     }
                 } else {
-                    tryReturnCard(player)
+                    tryReturnCard(level, player)
                 }
             }
             level.setBlockAndUpdate(pos, state)
@@ -204,12 +225,12 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             level.server?.sendToEveryone { arrayOf(
                 StrangeJukeboxRainbowControl(false), StrangeJukeboxMusicStop.INSTANCE
             ) }
-            tryReturnCard()
+            tryReturnCard(level)
         }
     }
 
-    private fun tryReturnCard(player: Player? = null) {
-        val player = player ?: cardOwner
+    private fun tryReturnCard(level: Level, player: Player? = null) {
+        val player = player ?: cardOwner?.let { level.getPlayerByUUID(it) }
         if (cardConsumed) {
             cardConsumed = false
             if (player == null) return
