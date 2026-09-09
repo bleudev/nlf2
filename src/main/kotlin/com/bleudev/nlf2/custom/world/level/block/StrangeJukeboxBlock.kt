@@ -65,6 +65,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         hand: InteractionHand,
         hitResult: BlockHitResult
     ): InteractionResult {
+        if (!state.getValue(MUS).isFree) return InteractionResult.TRY_WITH_EMPTY_HAND
         if (itemStack.`is`(Nlf2Items.CARD)) {
             val entity = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity) ?: return InteractionResult.PASS
             if (!entity.cardConsumed && !state.getValue(ON)) {
@@ -92,6 +93,7 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         override fun getSerializedName(): String = mus_name
 
         val pitch: Float get() = if (min_pitch == max_pitch) min_pitch else Random.nextDouble(min_pitch.toDouble(), max_pitch.toDouble()).toFloat()
+        val isFree: Boolean get() = this in listOf(JUKEBOX_PUZZLE, JUKEBOX, EASTER_EGG, NULL)
 
         companion object {
             fun newMus(server: MinecraftServer, card: Boolean = false): SelectedMus {
