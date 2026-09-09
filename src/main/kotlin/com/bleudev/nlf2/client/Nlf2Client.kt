@@ -100,6 +100,11 @@ class Nlf2Client : ClientModInitializer {
         override fun pit(): Float = if (unknownMeetDarkness) .5f else 1f
     }
     class MusPart5BattleInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_PART5_BATTLE)
+    class ScaryVoiceInstance(sound: SoundEvent) : TickableLoopedAmbientSoundInstance(sound) {
+        init {
+            this.looping = false
+        }
+    }
 
     companion object {
         private var computerMessages: HashMap<BlockPos, List<Component>> = HashMap()
@@ -582,6 +587,9 @@ class Nlf2Client : ClientModInitializer {
 
         registerPacketReceiver(Event101ScreenEffectClear) {
             event101screenEffectClearTicks = EVENT101_SCREEN_EFFECT_CLEAR_DURATION
+        }
+        registerPacketReceiver(ScaryVoicePhrase) { _, ctx ->
+            ctx.client().soundManager.play(ScaryVoiceInstance(Nlf2Sounds.scaryVoiceSounds().random()))
         }
         registerPacketReceiver(StartBattle) { _, ctx ->
             ctx.client().soundManager.play(MusPart5BattleInstance())

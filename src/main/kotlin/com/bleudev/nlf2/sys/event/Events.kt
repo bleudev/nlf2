@@ -613,3 +613,11 @@ class RougeGoingCrazy(server: MinecraftServer) : Nlf2Event(server, "rouge_going_
         ) }
     }
 }
+
+class ScaryVoice(server: MinecraftServer) : Nlf2Event(server, "scary_voice_wip") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        val player = if (DEV_EVENT_888) server.actor else server.playerList.getPlayer(EVENT888_NICKNAME)
+        player?.sendPacket(ScaryVoicePhrase.INSTANCE)
+    }
+}

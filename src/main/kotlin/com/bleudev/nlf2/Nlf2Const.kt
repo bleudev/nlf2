@@ -57,6 +57,8 @@ val TELEPORT_LOCATIONS: Map<String, Vec3> = mapOf(
 const val EVENT112_NICKNAME = "Samivarence"
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
+const val EVENT888_NICKNAME = "bleugame"
+
 //val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0) // Singleplayer test
 //val BATTLE_ARENA_LOCATION = Vec3(22.0, 72.0 + 2, -98.0) // Server test
 val BATTLE_ARENA_LOCATION = Vec3(411.0, 63.0 + 2, 572.0) // Actual server test
@@ -124,9 +126,10 @@ const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
 const val DEV_BAN_EVENT_112 = false
+const val DEV_EVENT_888 = true
 
 // Custom dev arguments
 @Suppress("RedundantNullableReturnType", "RedundantSuppression")
 @JvmField
-//val DEV_ARG_USERNAME: String? = "PlayerDev"
-val DEV_ARG_USERNAME: String? = null
+val DEV_ARG_USERNAME: String? = "PlayerDev"
+//val DEV_ARG_USERNAME: String? = null
