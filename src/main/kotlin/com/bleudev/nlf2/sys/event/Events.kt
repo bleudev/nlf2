@@ -10,6 +10,7 @@ import com.bleudev.nlf2.Nlf2.Companion.battleTicks
 import com.bleudev.nlf2.client.custom.gui.screens.ManualId
 import com.bleudev.nlf2.client.util.sound
 import com.bleudev.nlf2.custom.Nlf2Blocks
+import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
@@ -522,6 +523,7 @@ class `RIP Sanya(`(server: MinecraftServer) : Nlf2Event(server, "RIP SANYA( (int
 class RougeExposure(server: MinecraftServer) : Nlf2Event(server, "rouge_exposure") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
+        causeEvent(889)
         server.sendToEveryone { arrayOf(StartWhitenessScreenAdvanced(50, 20, 20)) }
     }
 
@@ -614,10 +616,27 @@ class RougeGoingCrazy(server: MinecraftServer) : Nlf2Event(server, "rouge_going_
     }
 }
 
-class ScaryVoice(server: MinecraftServer) : Nlf2Event(server, "scary_voice_wip") {
+class ScaryVoiceEnable(server: MinecraftServer) : Nlf2Event(server, "scary_voice_enable") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data.scaryVoiceData.enable(server)
+    }
+}
+
+class ScaryVoice(server: MinecraftServer) : Nlf2Event(server, "scary_voice_internal") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         val player = if (DEV_EVENT_888) server.actor else server.playerList.getPlayer(EVENT888_NICKNAME)
         player?.sendPacket(ScaryVoicePhrase.INSTANCE)
+    }
+}
+
+class ScaryVoiceDisable(server: MinecraftServer) : Nlf2Event(server, "scary_voice_disable") {
+    override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
+        super.cause(causedBy, *args)
+        server.nlf2data::scaryVoiceData.transform {
+            it.enabled = false
+            it
+        }
     }
 }

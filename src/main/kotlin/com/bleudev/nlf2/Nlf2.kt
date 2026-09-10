@@ -223,6 +223,13 @@ class Nlf2 : ModInitializer {
                 }
                 ripSanyaTakingTicks = -1
             }
+            server.nlf2data.scaryVoiceData.tick({causeEvent(888)}, server)
+            // TODO: Remove debug
+            for (player in server.playerList.players) {
+                val d = server.nlf2data.scaryVoiceData
+                player.sendOverlayMessage(Component.literal("${d.enabled} ${d.currentTick} ${d.targetTick}"))
+            }
+            // End debug
 
             clearVertItemsCludge = server.nlf2data.loreData.noVert
             clearVertItemsIfNeed(server)

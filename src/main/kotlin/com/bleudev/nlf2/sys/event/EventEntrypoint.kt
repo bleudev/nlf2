@@ -12,8 +12,8 @@ object EventEntrypoint {
     fun initialize(server: MinecraftServer) {
         if (initialized) return
         initialized = true
-        fun add(id: Int, constr: (MinecraftServer) -> Nlf2Event) {
-            val ev = constr(server)
+        fun add(id: Int, factory: (MinecraftServer) -> Nlf2Event) {
+            val ev = factory(server)
             events[id] = ev
             names[id] = ev.name
         }
@@ -60,7 +60,9 @@ object EventEntrypoint {
         add(342, ::ForceJukeboxMilkichAppears)
         add(343, ::ForceJukeboxSleep)
         // Scary voice
+        add(887, ::ScaryVoiceEnable)
         add(888, ::ScaryVoice)
+        add(889, ::ScaryVoiceDisable)
         // Final battle events
         add(998, ::RougeExposure)
         add(999, ::RougeGoingCrazy)

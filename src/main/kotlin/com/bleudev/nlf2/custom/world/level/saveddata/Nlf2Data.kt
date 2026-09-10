@@ -13,9 +13,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
+import kotlin.random.Random
 
 
-class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerData> = mapOf(), var serverToSync: MinecraftServer? = null) : SavedData() {
+class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerData> = mapOf(), scaryVoiceData: ScaryVoiceData = ScaryVoiceData(), var serverToSync: MinecraftServer? = null) : SavedData() {
     private fun ServerPlayer.sync() {
         sendPacket(ClientNlf2DataSync(
             loreData.actor,
@@ -40,6 +41,12 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
             setDirty()
             serverToSync?.sync()
         }
+    var scaryVoiceData: ScaryVoiceData = scaryVoiceData
+        set(value) {
+            field = value
+            setDirty()
+            serverToSync?.sync()
+        }
 
     private val varPlayers: HashMap<String, PlayerData> = HashMap(playersData)
     val players: Map<String, PlayerData> get() = varPlayers.toMap()
@@ -59,7 +66,8 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
     }
 
     class LoreData(
-        var actor: String = "", var actorChar: String = "null",
+        var actor: String = "",
+        var actorChar: String = "null",
         var borderState: Int = BorderStates.STANDARD,
         var meetState: Int = 0,
         var labOverlayState: Int = 0,
@@ -105,10 +113,48 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
         }
     }
 
+    class ScaryVoiceData(var enabled: Boolean = false, var currentTick: Int = 0, var targetTick: Int = 0) {
+        fun enable(server: MinecraftServer? = null) {
+            this.enabled = true
+            this.currentTick = 0
+            setNewTarget()
+            sync(server)
+        }
+        fun tick(onReach: () -> Unit, server: MinecraftServer? = null) {
+            if (this.enabled) {
+                this.currentTick++
+                if (this.currentTick >= this.targetTick) {
+                    onReach()
+                    this.currentTick = 0
+                    setNewTarget()
+                }
+                sync(server)
+            }
+        }
+        private fun sync(server: MinecraftServer?) {
+            if (server != null) {
+                server.nlf2data.scaryVoiceData = this
+            }
+        }
+
+        private fun setNewTarget() {
+            this.targetTick = Random.nextInt(600, 1200)
+        }
+
+        companion object {
+            val CODEC: Codec<ScaryVoiceData> = RecordCodecBuilder.create { it.group(
+                Codec.BOOL.fieldOf("enabled").forGetter(ScaryVoiceData::enabled),
+                Codec.INT.fieldOf("current_tick").forGetter(ScaryVoiceData::currentTick),
+                Codec.INT.fieldOf("target_tick").forGetter(ScaryVoiceData::targetTick),
+            ).apply(it, ::ScaryVoiceData) }
+        }
+    }
+
     companion object {
         val CODEC: Codec<Nlf2Data> = RecordCodecBuilder.create { it.group(
             LoreData.CODEC.fieldOf("lore").forGetter(Nlf2Data::loreData),
             Codec.unboundedMap(Codec.STRING, PlayerData.CODEC).fieldOf("players").forGetter(Nlf2Data::players),
+            ScaryVoiceData.CODEC.fieldOf("scary_voice").forGetter(Nlf2Data::scaryVoiceData),
         ).apply(it, ::Nlf2Data) }
         val TYPE: SavedDataType<Nlf2Data> = SavedDataType(getIdentifier("data"), ::Nlf2Data, CODEC,
             DataFixTypes.SAVED_DATA_MAP_DATA)
@@ -122,4 +168,4 @@ object BorderStates {
 }
 
 val MinecraftServer.nlf2data: Nlf2Data
-    get() = dataStorage.computeIfAbsent(Nlf2Data.TYPE).apply { serverToSync = this@nlf2data }
+    get() = this.dataStorage.computeIfAbsent(Nlf2Data.TYPE).apply { serverToSync = this@nlf2data }
