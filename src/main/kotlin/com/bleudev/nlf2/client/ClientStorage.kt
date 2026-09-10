@@ -167,6 +167,9 @@ val sunGlitchEffectEnabled: Boolean get() = listOf(
 var prevScarySound: SoundEvent? = null
 var scarySoundEffectEnabled: Boolean = false
 var scarySoundEffectDuration: Int = 0
+val scarySoundEffectAmount: Float get() = TICKER_SCARY_SOUND_EFFECT
+    .delta(0, scarySoundEffectDuration, SCARY_SOUND_FADE_IN, scarySoundEffectDuration - SCARY_SOUND_FADE_IN)
+    .onlyIf(scarySoundEffectEnabled)
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -200,17 +203,17 @@ val shaderRedMajUniformStrength: Float get() = listOf(
     event101_noise_amount,
     beforeMeetWaterFluidAmount,
     amethyst_daisy_amount,
-    // Need to use safe condition (because of zeroable duration)
-    if (scarySoundEffectEnabled) TICKER_SCARY_SOUND_EFFECT.delta(0, scarySoundEffectDuration, SCARY_SOUND_FADE_IN, scarySoundEffectDuration - SCARY_SOUND_FADE_IN) else 0f
+    scarySoundEffectAmount,
 ).max()
 var shaderAnaglyphUniformX: Float = 0f
     get() = listOf(
         field,
-        manualUpdateEffectAmount * 0.01f,
-        event101_noise_amount * 0.01f,
-        amethyst_daisy_amount * 0.004f,
-        (textBoxShake.toFloat() * 0.01f).onlyIf(ripVertEventEnabled),
-        ripSanyaRandomAnaglyphAmount * 0.025f,
+        manualUpdateEffectAmount * .01f,
+        event101_noise_amount * .01f,
+        amethyst_daisy_amount * .004f,
+        (textBoxShake.toFloat() * .01f).onlyIf(ripVertEventEnabled),
+        ripSanyaRandomAnaglyphAmount * .025f,
+        scarySoundEffectAmount * .005f,
     ).max()
 var shaderAnaglyphUniformY: Float = 0f
     get() = listOf(
@@ -220,6 +223,7 @@ var shaderAnaglyphUniformY: Float = 0f
         amethyst_daisy_amount * 0.002f,
         (textBoxShake.toFloat() * 0.008f).onlyIf(ripVertEventEnabled),
         ripSanyaRandomAnaglyphAmount * 0.025f,
+        scarySoundEffectAmount * .002f,
     ).max()
 val shaderBeforeMeetOrangeOverlayStrength: Float get() = .2f * beforeMeetStrength
 val shaderBeforeMeetCopySize: Float get() = beforeMeetAmount.lerp(.97f, .95f) * beforeMeetStrength

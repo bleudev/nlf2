@@ -13,7 +13,7 @@ abstract class Ticker {
     }
 
     fun delta(start: Long, duration: Long): Float {
-        if (duration == 0L) return if (ticks >= start) 1f else 0f
+        if (duration <= 0) return if (ticks >= start) 1f else 0f
         return ((ticks - start).toFloat() / duration).coerceIn(0f, 1f)
     }
     fun delta(start: Int, duration: Int): Float = delta(start.toLong(), duration.toLong())

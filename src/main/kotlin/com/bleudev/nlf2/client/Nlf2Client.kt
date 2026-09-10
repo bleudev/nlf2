@@ -275,6 +275,11 @@ class Nlf2Client : ClientModInitializer {
             if (battleEnabled) TICKER_BATTLE.tick()
             if (battleSecondEnabled) TICKER_BATTLE_SECOND.tick()
             if (scarySoundEffectEnabled) TICKER_SCARY_SOUND_EFFECT.tick()
+            if (TICKER_SCARY_SOUND_EFFECT >= scarySoundEffectDuration) {
+                scarySoundEffectEnabled = false
+                scarySoundEffectDuration = 0
+                TICKER_SCARY_SOUND_EFFECT.reset()
+            }
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
