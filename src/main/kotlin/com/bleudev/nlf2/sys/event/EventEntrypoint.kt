@@ -18,8 +18,10 @@ object EventEntrypoint {
             names[id] = ev.name
         }
 
+        // First join teleports (temporally unused)
         add(34, ::TryTeleportOnFirstJoin)
         add(35, ::ResetTeleportsOnFirstJoin)
+        // Rouge cutscenes
         add(65, ::RedAppearSky)
         add(66, ::RedAppearsSpectacularly)
         add(67, ::RedDisappearsSpectacularly)
@@ -42,16 +44,22 @@ object EventEntrypoint {
         add(94, ::Manual2)
         add(95, ::Manual3)
         add(96, ::Manual4)
-
+        // Orange skin
         add(101, ::OrangeSkinOverlayRemove)
+        // RIPs
         add(111, ::`RIP Vert(`)
         add(112, ::`RIP Sanya(`)
+        // Lab overlay
         add(140, ::LabOverlay0)
         add(141, ::LabOverlay1)
+        // End serie
         add(189, ::EndSerieCrash)
+        // Compass crazy
         add(200, ::CompassCrazyFalse)
         add(201, ::CompassCrazyTrue)
+        // Story
         add(228, ::StoryStart)
+        // Avoid players
         add(300, ::MobAvoidPlayersFalse)
         add(301, ::MobAvoidPlayersTrue)
         // Force jukebox

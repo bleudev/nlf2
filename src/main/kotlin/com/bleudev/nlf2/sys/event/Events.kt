@@ -454,7 +454,7 @@ class StealStrangeJukebox(server: MinecraftServer) : Nlf2Event(server, "steal_st
     }
 }
 
-class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_wip") {
+class StoryStart(server: MinecraftServer) : Nlf2Event(server, "story_start_internal") {
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         server.playerList.players.forEach {
             if (it.wantsToListenStory) {
