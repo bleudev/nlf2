@@ -223,13 +223,7 @@ class Nlf2 : ModInitializer {
                 }
                 ripSanyaTakingTicks = -1
             }
-            server.nlf2data.scaryVoiceData.tick({
-                causeEvent(888)
-                val player = if (DEV_EVENT_888) server.actor else server.playerList.getPlayer(EVENT888_NICKNAME)
-                if (player != null && player.health >= 5f) {
-                    player.hurtUnknown(1f)
-                }
-            }, server)
+            server.nlf2data.scaryVoiceData.tick({causeEvent(888)}, server)
 
             clearVertItemsCludge = server.nlf2data.loreData.noVert
             clearVertItemsIfNeed(server)

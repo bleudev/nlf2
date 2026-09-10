@@ -627,7 +627,12 @@ class ScaryVoice(server: MinecraftServer) : Nlf2Event(server, "scary_voice_inter
     override fun cause(causedBy: ServerPlayer?, vararg args: Any?) {
         super.cause(causedBy, *args)
         val player = if (DEV_EVENT_888) server.actor else server.playerList.getPlayer(EVENT888_NICKNAME)
-        player?.sendPacket(ScaryVoicePhrase.INSTANCE)
+        if (player != null) {
+            player.sendPacket(ScaryVoicePhrase.INSTANCE)
+            if (player.health >= 5f) {
+                player.hurtUnknown(1f)
+            }
+        }
     }
 }
 
