@@ -274,6 +274,7 @@ class Nlf2Client : ClientModInitializer {
             } else if (beforeMeetWaterFluidTicks > 0) beforeMeetWaterFluidTicks--
             if (battleEnabled) TICKER_BATTLE.tick()
             if (battleSecondEnabled) TICKER_BATTLE_SECOND.tick()
+            if (scarySoundEffectEnabled) TICKER_SCARY_SOUND_EFFECT.tick()
 
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
@@ -595,6 +596,15 @@ class Nlf2Client : ClientModInitializer {
             }
             ctx.client().soundManager.play(ScaryVoiceInstance(s))
             prevScarySound = s
+            TICKER_SCARY_SOUND_EFFECT.reset()
+            try {
+                scarySoundEffectDuration = SCARY_SOUND_DURATION_FACTORY(s)
+                scarySoundEffectEnabled = true
+            } catch (_: MatchException) {
+                scarySoundEffectDuration = 0
+                scarySoundEffectEnabled = false
+                LOGGER.error("Sound ${s.location} isn't supported by duration factory. Scary effect is disabled.")
+            }
         }
         registerPacketReceiver(StartBattle) { _, ctx ->
             ctx.client().soundManager.play(MusPart5BattleInstance())

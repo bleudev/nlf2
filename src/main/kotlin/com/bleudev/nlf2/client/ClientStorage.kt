@@ -165,6 +165,8 @@ val sunGlitchEffectEnabled: Boolean get() = listOf(
 ).any{it}
 // Scary sounds
 var prevScarySound: SoundEvent? = null
+var scarySoundEffectEnabled: Boolean = false
+var scarySoundEffectDuration: Int = 0
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
@@ -198,6 +200,8 @@ val shaderRedMajUniformStrength: Float get() = listOf(
     event101_noise_amount,
     beforeMeetWaterFluidAmount,
     amethyst_daisy_amount,
+    // Need to use safe condition (because of zeroable duration)
+    if (scarySoundEffectEnabled) TICKER_SCARY_SOUND_EFFECT.delta(0, scarySoundEffectDuration, SCARY_SOUND_FADE_IN, scarySoundEffectDuration - SCARY_SOUND_FADE_IN) else 0f
 ).max()
 var shaderAnaglyphUniformX: Float = 0f
     get() = listOf(

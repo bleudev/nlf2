@@ -2,8 +2,10 @@ package com.bleudev.nlf2
 
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
+import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.mojang.authlib.GameProfile
 import net.minecraft.client.Minecraft
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.phys.Vec3
 import java.util.*
@@ -108,6 +110,17 @@ const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
 const val PART4_LAST_MEET_MASK = "mask_boberobo"
 
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
+
+const val SCARY_SOUND_FADE_IN = 10
+val SCARY_SOUND_DURATION_FACTORY: (SoundEvent) -> Int = {
+    when (it) {
+        Nlf2Sounds.SCARY_VOICE_GIVE_IT -> 60
+        Nlf2Sounds.SCARY_VOICE_GIVE_UP -> 72
+        Nlf2Sounds.SCARY_VOICE_MY_WORLD -> 144
+        Nlf2Sounds.SCARY_VOICE_WHY_YOU -> 102
+        else -> throw MatchException("Sound isn't scary(", null)
+    }
+}
 
 // Rainbow tooltip + highlight items
 @JvmField

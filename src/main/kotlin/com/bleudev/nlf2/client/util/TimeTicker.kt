@@ -66,6 +66,7 @@ val TICKER_UNKNOWN_RAINBOW_EFFECT = TimeTicker()
 val TICKER_WHITENESS_ADVANCED = TimeTicker()
 val TICKER_BATTLE_SECOND = TimeTicker()
 val TICKER_BATTLE = TimeTicker()
+val TICKER_SCARY_SOUND_EFFECT = TimeTicker()
 
 class TimeTimer {
     private var start: Long = System.currentTimeMillis()
