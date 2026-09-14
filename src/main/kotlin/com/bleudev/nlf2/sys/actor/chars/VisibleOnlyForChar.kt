@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.sys.actor.chars
+package com.bleudev.nlf2.sys.actor.chars
 
 import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.player.PlayerModelType

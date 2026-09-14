@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.skin;
+import static com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient.skin;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AbstractClientPlayer.class)

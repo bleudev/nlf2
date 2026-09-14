@@ -1,6 +1,6 @@
-package com.bleudev.nlf2.client.sys.actor.chars.res
+package com.bleudev.nlf2.sys.actor.chars.res
 
-import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
+import com.bleudev.nlf2.sys.actor.chars.ActorChar
 
 class Event101Char : ActorChar {
     private val overlays: List<String> = listOf(

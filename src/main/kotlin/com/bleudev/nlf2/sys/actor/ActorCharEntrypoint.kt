@@ -1,7 +1,7 @@
-package com.bleudev.nlf2.client.sys.actor
+package com.bleudev.nlf2.sys.actor
 
-import com.bleudev.nlf2.client.sys.actor.chars.*
-import com.bleudev.nlf2.client.sys.actor.chars.res.*
+import com.bleudev.nlf2.sys.actor.chars.*
+import com.bleudev.nlf2.sys.actor.chars.res.*
 
 object ActorCharEntrypoint {
     internal val chars: HashMap<String, ActorChar> = HashMap()

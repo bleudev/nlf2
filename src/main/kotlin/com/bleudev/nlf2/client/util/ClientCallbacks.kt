@@ -7,9 +7,9 @@ import com.bleudev.nlf2.EVENT101_COMPASS_CRAZY_DISTANCE
 import com.bleudev.nlf2.EVENT101_NICKNAME
 import com.bleudev.nlf2.UNKNOWN_GAME_PROFILE
 import com.bleudev.nlf2.client.*
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
+import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient.current
 import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment

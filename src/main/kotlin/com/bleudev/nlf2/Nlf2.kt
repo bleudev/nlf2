@@ -10,7 +10,6 @@ import com.bleudev.nine_lifes.util.alwaysTrue
 import com.bleudev.nine_lifes.util.entityIn
 import com.bleudev.nine_lifes.util.lifes
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.custom.*
 import com.bleudev.nlf2.custom.Nlf2Commands.causeDebug
 import com.bleudev.nlf2.custom.Nlf2Commands.causeEvent
@@ -28,6 +27,7 @@ import com.bleudev.nlf2.custom.packet.payload.unit.CancelBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.unit.EndBattle
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
 import com.bleudev.nlf2.custom.world.level.saveddata.nlf2data
+import com.bleudev.nlf2.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.sys.event.DebugEntrypoint
 import com.bleudev.nlf2.sys.event.EventEntrypoint
 import com.bleudev.nlf2.util.*

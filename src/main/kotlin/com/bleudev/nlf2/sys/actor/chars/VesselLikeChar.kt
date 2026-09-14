@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.sys.actor.chars
+package com.bleudev.nlf2.sys.actor.chars
 
 import com.bleudev.nlf2.SLIM_SKINS
 import net.minecraft.world.entity.player.PlayerModelType

@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.client.sys.actor.chars
+package com.bleudev.nlf2.sys.actor.chars
 
 open class OnlyEyesLikeChar(protected val char: String?) : ActorChar {
     override fun skin(client: String): String? = ActorChar.EMPTY_TEXTURE

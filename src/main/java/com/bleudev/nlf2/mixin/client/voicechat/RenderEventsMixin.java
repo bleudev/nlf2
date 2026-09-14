@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.mixin.client.voicechat;
 
-import com.bleudev.nlf2.client.sys.actor.chars.ActorChar;
+import com.bleudev.nlf2.sys.actor.chars.ActorChar;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.UUID;
 
-import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current;
+import static com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient.current;
 
 @Environment(EnvType.CLIENT)
 @Mixin(RenderEvents.class)

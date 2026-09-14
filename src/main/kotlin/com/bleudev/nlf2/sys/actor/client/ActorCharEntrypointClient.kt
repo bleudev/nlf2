@@ -1,13 +1,13 @@
-package com.bleudev.nlf2.client.sys.actor
+package com.bleudev.nlf2.sys.actor.client
 
 import com.bleudev.nlf2.DEV_STORY_ACTOR
 import com.bleudev.nlf2.EVENT112_NICKNAME
 import com.bleudev.nlf2.SUPPORTED_NICKNAMES
 import com.bleudev.nlf2.client.*
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint.chars
-import com.bleudev.nlf2.client.sys.actor.chars.ActorChar
 import com.bleudev.nlf2.client.util.isEvent101Char
 import com.bleudev.nlf2.getIdentifier
+import com.bleudev.nlf2.sys.actor.ActorCharEntrypoint
+import com.bleudev.nlf2.sys.actor.chars.ActorChar
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
@@ -21,7 +21,7 @@ object ActorCharEntrypointClient {
     private val clientNickname get() = Minecraft.getInstance().gameProfile.name
 
     fun tick() {
-        for (i in chars.values) i.tick()
+        for (i in ActorCharEntrypoint.chars.values) i.tick()
     }
 
     private data class PrepareData(val client: String, val entity: String, val char: ActorChar?)
@@ -41,13 +41,13 @@ object ActorCharEntrypointClient {
 
         if (client == actor && client !in SUPPORTED_NICKNAMES) client = "bleugame"
 
-        if (!dataSyncedEvent101 && isEvent101Char(entity)) return PrepareData(client, entity, chars["event101"])
+        if (!dataSyncedEvent101 && isEvent101Char(entity)) return PrepareData(client, entity, ActorCharEntrypoint.chars["event101"])
         if (ripSanyaTaking && entity.equals(
             if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
         )
-            return PrepareData(client, entity, chars["rip_sanya"])
+            return PrepareData(client, entity, ActorCharEntrypoint.chars["rip_sanya"])
         // Other event specific chars...
-        if (entity == actor && client in SUPPORTED_NICKNAMES) return PrepareData(client, entity, chars[char])
+        if (entity == actor) return PrepareData(client, entity, ActorCharEntrypoint.chars[char])
         return PrepareData(client, entity, null)
     }
 

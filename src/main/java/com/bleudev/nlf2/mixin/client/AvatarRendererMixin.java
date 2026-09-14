@@ -1,8 +1,8 @@
 package com.bleudev.nlf2.mixin.client;
 
 import com.bleudev.nlf2.client.custom.renderer.entity.layers.AvatarOverlayLayer;
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient;
 import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
+import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
@@ -30,9 +30,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
 
-import static com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current;
 import static com.bleudev.nlf2.client.util.ClientCallbacksKt.modifyPlayerNameTag;
 import static com.bleudev.nlf2.client.util.ClientCallbacksKt.renderPlayerNameTag;
+import static com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient.current;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AvatarRenderer.class)

@@ -13,8 +13,6 @@ import com.bleudev.nlf2.client.custom.Nlf2ParticleProviders
 import com.bleudev.nlf2.client.custom.gui.screens.JoinDisconnectScreen
 import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypoint
-import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient
 import com.bleudev.nlf2.client.sys.util.GuiTextBoxSequence
 import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
@@ -29,6 +27,8 @@ import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipVertEnd
 import com.bleudev.nlf2.custom.packet.payload.unit.*
 import com.bleudev.nlf2.custom.world.level.saveddata.BorderStates
+import com.bleudev.nlf2.sys.actor.ActorCharEntrypoint
+import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
