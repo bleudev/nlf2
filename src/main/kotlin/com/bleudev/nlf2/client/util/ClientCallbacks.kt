@@ -10,6 +10,7 @@ import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.actor.ActorCharEntrypointClient.current
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
+import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.KeyMapping
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
+import java.util.*
 
 val isCompassCrazy: Boolean get() = noise_amount > .3f || dataSyncedCompassCrazy || event101_distance <= EVENT101_COMPASS_CRAZY_DISTANCE
 val isHoldingCompass: Boolean get() {
@@ -67,12 +69,29 @@ fun modifyPlayerNameTag(original: Component?): Component? {
 fun renderPlayerNameTag(name: String): Boolean {
     return dataSyncedActor.equals(name, true) && dataSyncedActorLoreChar == "unknown"
 }
-fun modifyMessage(message: Component): Component {
+fun modifyChatMessage(message: Component): Component {
     val text = message.string
     if (text.startsWith("<???>")) {
         return message.copy().withColor(unknownRainbowEffectColor)
     }
     return message
+}
+
+fun modifyWaypointColor(id: Either<UUID, String>, original: Int): Int {
+    // TODO: Left check (need to get actor's uuid)
+    val isActor = id.map(
+        { it == dataSyncedActorId },
+        { it.equals(dataSyncedActor, true) }
+    )
+    // Unknown's rainbow waypoint
+    if (isActor && dataSyncedActorLoreChar == "unknown") {
+        return unknownRainbowEffectColor
+    }
+    // Rouge's masking etc.
+    if (isActor) {
+        return 0xffff0000.toInt()
+    }
+    return original
 }
 
 // Event 101
@@ -81,7 +100,6 @@ fun isEvent101Char(nickname: String): Boolean = nickname.equals(CURRENT_EVENT101
 fun isEvent101Char(): Boolean = isEvent101Char(Minecraft.getInstance().gameProfile.name)
 
 // Keyboard / mouse
-
 private val event85var: Boolean get() =
     beforeMeetWaterFluidAmount < 1f || Minecraft.getInstance().player?.let { it.isDeadOrDying || !(it.gameMode()?.isSurvival ?: false) } ?: true
 var canUseMouse: Boolean = true

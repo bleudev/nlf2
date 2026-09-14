@@ -16,6 +16,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.network.chat.Component
+import java.util.*
 
 object Nlf2Commands {
     fun initialize() {
@@ -33,6 +34,7 @@ object Nlf2Commands {
                                 val player = EntityArgument.getPlayer(ctx, "player")
                                 ctx.source.server.nlf2data::loreData.transform {
                                     it.actor = player.gameProfile.name
+                                    it.actorId = player.gameProfile.id
                                     it.actorChar = "null"
                                     it
                                 }
@@ -43,6 +45,7 @@ object Nlf2Commands {
                             .executes { ctx ->
                                 ctx.source.server.nlf2data::loreData.transform {
                                     it.actor = "null"
+                                    it.actorId = UUID.randomUUID()
                                     it.actorChar = "null"
                                     it
                                 }

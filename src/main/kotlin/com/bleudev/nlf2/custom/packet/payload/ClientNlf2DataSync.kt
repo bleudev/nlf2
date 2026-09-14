@@ -2,13 +2,16 @@ package com.bleudev.nlf2.custom.packet.payload
 
 import com.bleudev.nlf2.custom.Nlf2Packets
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import net.minecraft.core.UUIDUtil
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import java.util.*
 
 class ClientNlf2DataSync(
     val actor: String,
+    val actorId: UUID,
     val actorChar: String,
     val borderState: Int,
     val meetState: Int,
@@ -23,6 +26,7 @@ class ClientNlf2DataSync(
         override val identifier = Nlf2Packets.CLIENT_NLF2_DATA_SYNC
         override val codec: StreamCodec<RegistryFriendlyByteBuf, ClientNlf2DataSync> = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, ClientNlf2DataSync::actor,
+            UUIDUtil.STREAM_CODEC, ClientNlf2DataSync::actorId,
             ByteBufCodecs.STRING_UTF8, ClientNlf2DataSync::actorChar,
             ByteBufCodecs.INT, ClientNlf2DataSync::borderState,
             ByteBufCodecs.INT, ClientNlf2DataSync::meetState,

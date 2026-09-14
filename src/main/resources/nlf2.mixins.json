@@ -45,6 +45,7 @@
     "client.LevelLoadingScreenMixin",
     "client.LoadingOverlayMixin",
     "client.LocalPlayerMixin",
+    "client.LocatorBarMixin",
     "client.MainMixin",
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",

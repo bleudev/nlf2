@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import org.spongepowered.asm.mixin.Mixin;
 
-import static com.bleudev.nlf2.client.util.ClientCallbacksKt.modifyMessage;
+import static com.bleudev.nlf2.client.util.ClientCallbacksKt.modifyChatMessage;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ChatComponent.class)
@@ -24,7 +24,7 @@ public class ChatComponentMixin {
 
         GuiMessage newMessage = new GuiMessage(
             message.addedTime(),
-            modifyMessage(message.content()),
+            modifyChatMessage(message.content()),
             message.signature(),
             message.source(),
             bl ? null : message.tag()

@@ -8,11 +8,13 @@ import com.bleudev.nlf2.getIdentifier
 import com.bleudev.nlf2.util.clearVertItemsIfNeed
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.core.UUIDUtil
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.datafix.DataFixTypes
 import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
+import java.util.*
 import kotlin.random.Random
 
 
@@ -20,6 +22,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
     private fun ServerPlayer.sync() {
         sendPacket(ClientNlf2DataSync(
             loreData.actor,
+            loreData.actorId,
             loreData.actorChar,
             loreData.borderState,
             loreData.meetState,
@@ -67,6 +70,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
 
     class LoreData(
         var actor: String = "",
+        var actorId: UUID = UUID.randomUUID(),
         var actorChar: String = "null",
         var borderState: Int = BorderStates.STANDARD,
         var meetState: Int = 0,
@@ -85,6 +89,7 @@ class Nlf2Data(loreData: LoreData = LoreData(), playersData: Map<String, PlayerD
         companion object {
             val CODEC: Codec<LoreData> = RecordCodecBuilder.create { it.group(
                 Codec.STRING.fieldOf("actor").forGetter(LoreData::actor),
+                UUIDUtil.CODEC.fieldOf("actorId").forGetter(LoreData::actorId),
                 Codec.STRING.fieldOf("actorChar").forGetter(LoreData::actorChar),
                 Codec.INT.fieldOf("borderState").forGetter(LoreData::borderState),
                 Codec.INT.fieldOf("meetState").forGetter(LoreData::meetState),

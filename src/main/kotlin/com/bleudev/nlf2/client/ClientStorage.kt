@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Range
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import java.util.*
 import kotlin.math.cos
 import kotlin.random.Random
 
@@ -342,6 +343,8 @@ var killedTimes: @Range(from = 0, to = Long.MAX_VALUE) Int
 // Data
 @JvmField
 var dataSyncedActor: String = "null"
+@JvmField
+var dataSyncedActorId: UUID = UUID.randomUUID()
 @JvmField
 var dataSyncedActorLoreChar: String = "null"
 @JvmField

@@ -473,6 +473,7 @@ class Nlf2Client : ClientModInitializer {
             dataSyncedActor = payload.actor
             if (oldActor != dataSyncedActor)
                 AdjustVolumeList.update()
+            dataSyncedActorId = payload.actorId
 
             dataSyncedActorLoreChar = payload.actorChar
             dataSyncedBorderState = payload.borderState
