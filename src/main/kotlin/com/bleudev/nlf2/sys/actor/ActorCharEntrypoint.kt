@@ -6,6 +6,7 @@ import com.bleudev.nlf2.sys.actor.chars.res.*
 object ActorCharEntrypoint {
     internal val chars: HashMap<String, ActorChar> = HashMap()
 
+    fun fetchChar(id: String): ActorChar? = chars[id]
     fun getAllCharsNames(): List<String> = chars.keys.toList()
 
     fun initialize() {

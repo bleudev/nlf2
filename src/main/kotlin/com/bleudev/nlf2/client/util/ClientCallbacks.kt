@@ -9,6 +9,7 @@ import com.bleudev.nlf2.UNKNOWN_GAME_PROFILE
 import com.bleudev.nlf2.client.*
 import com.bleudev.nlf2.client.sys.anim.StoryAnimation
 import com.bleudev.nlf2.custom.Nlf2Sounds
+import com.bleudev.nlf2.sys.actor.ActorCharEntrypoint
 import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient.current
 import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
@@ -78,18 +79,13 @@ fun modifyChatMessage(message: Component): Component {
 }
 
 fun modifyWaypointColor(id: Either<UUID, String>, original: Int): Int {
-    // TODO: Left check (need to get actor's uuid)
     val isActor = id.map(
         { it == dataSyncedActorId },
         { it.equals(dataSyncedActor, true) }
     )
-    // Unknown's rainbow waypoint
-    if (isActor && dataSyncedActorLoreChar == "unknown") {
-        return unknownRainbowEffectColor
-    }
-    // Rouge's masking etc.
     if (isActor) {
-        return 0xffff0000.toInt()
+        val c = ActorCharEntrypoint.fetchChar(dataSyncedActorLoreChar)
+        return c?.customWaypointColor ?: original
     }
     return original
 }

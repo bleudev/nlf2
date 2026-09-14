@@ -15,6 +15,7 @@ interface ActorChar {
     val hideHandItems: Boolean get() = false
     val renderHitboxes: Boolean get() = false
     val isForceNameTagVoiceDisconnected: Boolean get() = false
+    val customWaypointColor: Int? get() = 0xffff0000.toInt()
 
     // Instanceof based booleans
     val isMask: Boolean get() = this is PlayerMaskChar || this is InvisibleForOnePlayerMask
