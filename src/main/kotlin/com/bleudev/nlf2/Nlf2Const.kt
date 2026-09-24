@@ -21,8 +21,11 @@ const val MONITOR_WIDTH = 1920
 const val MONITOR_HEIGHT = 1080
 
 // Address
-private const val SERVER_OUT_ADDRESS: String = "white.fnode.me:8336"
-private const val SERVER_IN_ADDRESS: String = "white.in.fnode.me:8336"
+// blue.fnode.me:19147
+private const val FAITHNODE_NODE = "blue"
+private const val FAITHNODE_PORT = 19147
+private const val SERVER_OUT_ADDRESS: String = "$FAITHNODE_NODE.fnode.me:$FAITHNODE_PORT"
+private const val SERVER_IN_ADDRESS: String = "$FAITHNODE_NODE.in.fnode.me:$FAITHNODE_PORT"
 private val IN_ADDRESS_NICKNAMES = listOf(
     "crockomd",
 )
@@ -107,7 +110,7 @@ const val RIP_SANYA_EVENT_WINDOW_SHAKE_MAX_DXY = 20
 
 const val UNKNOWN_RAINBOW_NAME_TAG_DURATION = 100
 
-const val PART4_LAST_MEET_MASK = "mask_boberobo"
+const val PART4_LAST_MEET_MASK = "mask_ync"
 
 const val BATTLE_BOSSBAR_FADE_IN_DURATION = 60
 
@@ -132,17 +135,17 @@ val RAINBOW_ITEMS_CHECKER: (ItemLike) -> Boolean = { it.asItem() in listOf(
 )}
 
 // Booleans
-const val INTRO_ENABLED = false
+const val INTRO_ENABLED = true
 
 /// DEV
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
 const val DEV_STORY_ACTOR = true
 const val DEV_BAN_EVENT_112 = false
-const val DEV_EVENT_888 = true
+const val DEV_EVENT_888 = false
 
 // Custom dev arguments
 @Suppress("RedundantNullableReturnType", "RedundantSuppression")
 @JvmField
-val DEV_ARG_USERNAME: String? = "PlayerDev"
-//val DEV_ARG_USERNAME: String? = null
+//val DEV_ARG_USERNAME: String? = "PlayerDev"
+val DEV_ARG_USERNAME: String? = null
