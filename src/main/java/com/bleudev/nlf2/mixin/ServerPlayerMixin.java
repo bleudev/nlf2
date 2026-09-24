@@ -1,19 +1,37 @@
 package com.bleudev.nlf2.mixin;
 
+import com.bleudev.nlf2.custom.Nlf2Items;
+import com.bleudev.nlf2.custom.packet.payload.OpenManual;
+import com.bleudev.nlf2.custom.packet.payload.OpenPuzzle;
+import com.bleudev.nlf2.custom.packet.payload.PacketPuzzle;
 import com.bleudev.nlf2.custom.world.level.saveddata.Nlf2Data;
 import com.bleudev.nlf2.custom.world.level.saveddata.Nlf2DataKt;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Consumer;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
+    @Shadow
+    public abstract @NonNull ServerLevel level();
+
     public ServerPlayerMixin(Level level, GameProfile gameProfile) {
         super(level, gameProfile);
     }
@@ -34,5 +52,16 @@ public abstract class ServerPlayerMixin extends Player {
             }
         }
         return original.call(level, source, damage);
+    }
+
+    @Inject(method = "openItemGui", at = @At("TAIL"))
+    private void openCustomGuis(ItemStack itemStack, InteractionHand hand, CallbackInfo ci) {
+        Consumer<CustomPacketPayload> sender = (p) -> ServerPlayNetworking.send((ServerPlayer) (Object) this, p);
+        if (itemStack.is(Nlf2Items.WD_PUZZLE)) {
+            sender.accept(new OpenPuzzle(PacketPuzzle.WD));
+        }
+        else if (itemStack.is(Nlf2Items.MANUAL)) {
+            sender.accept(new OpenManual(Nlf2DataKt.getNlf2data(level().getServer()).getLoreData().getManualId()));
+        }
     }
 }

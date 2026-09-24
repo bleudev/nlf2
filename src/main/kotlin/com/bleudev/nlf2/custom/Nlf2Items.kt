@@ -39,9 +39,13 @@ object Nlf2Items {
         fun initialize() {}
     }
 
+    @JvmField
     val WD_PUZZLE = registerItem("wd_puzzle", ::WDPuzzleItem)
+    @JvmField
     val MANUAL = registerItem("manual", ::ManualItem, Item.Properties().lightningAndFireResistant())
+    @JvmField
     val CARD = registerItem("card", ::CardItem)
+    @JvmField
     val CHARGED_MANUAL = registerItem("charged_manual", ::ChargedManualItem, Item.Properties().lightningAndFireResistant())
 
     fun initialize() {
