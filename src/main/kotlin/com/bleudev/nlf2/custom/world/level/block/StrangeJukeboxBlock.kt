@@ -65,11 +65,19 @@ class StrangeJukeboxBlock(properties: Properties) : BaseEntityBlock(properties) 
         hand: InteractionHand,
         hitResult: BlockHitResult
     ): InteractionResult {
-        if (itemStack.`is`(Nlf2Items.CARD) && state.getValue(MUS).isFree) {
-            val entity = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity) ?: return InteractionResult.PASS
-            if (!entity.cardConsumed && !state.getValue(ON)) {
-                player.consumeOneItemInHand(hand)
-                return entity.use(state, level, pos, player, true)
+        if (itemStack.`is`(Nlf2Items.CARD)) {
+            if (state.getValue(MUS).isFree) {
+                val entity = (level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity) ?: return InteractionResult.PASS
+                if (!entity.cardConsumed && !state.getValue(ON)) {
+                    player.consumeOneItemInHand(hand)
+                    return entity.use(state, level, pos, player, true)
+                }
+            } else {
+                if (!level.isClientSide) {
+                    val entity = level.getBlockEntity(pos) as? StrangeJukeboxBlockEntity
+                    entity?.broadcastCardFail()
+                }
+                return InteractionResult.SUCCESS
             }
         }
         return useWithoutItem(state, level, pos, player, hitResult)

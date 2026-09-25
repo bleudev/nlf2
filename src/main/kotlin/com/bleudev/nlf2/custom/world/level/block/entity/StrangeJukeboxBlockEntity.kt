@@ -45,6 +45,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     var cardConsumed: Boolean = false
     private var cardOwner: UUID? = null
     private var sinceLastTurningOn: Int = 0
+    private var sinceLastCardFail: Int = -1
     private var sleepTryCount: Int = -1
 
     val rainbowedPlayers: ArrayList<String> = ArrayList()
@@ -68,6 +69,8 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     }
 
     internal fun tick(level: Level, pos: BlockPos, state: BlockState) {
+        println("DEBUG CARD FAIL $sinceLastCardFail")
+
         if (breakVertBlockIfNeed(level, pos, state)) {
             return
         }
@@ -99,6 +102,7 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         } else {
             sinceLastTurningOn = 0
         }
+        if (sinceLastCardFail >= 0) sinceLastCardFail++
 
         if (t >= duration) {
             if (on && !mus.loop) {
@@ -183,9 +187,18 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
                         }
                     }
                 }
-                if (message != null) {
-                    send(message)
+                when (sinceLastCardFail) {
+                    1 -> {
+                        message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.card.0")
+                        sinceLastTurningOn = 999
+                    }
+                    60 -> {
+                        message = Component.translatable("nlf2.message.block.strange_jukebox.sleep.card.1")
+                        sinceLastTurningOn = 999
+                    }
                 }
+
+                message?.also(::send)
             }
             else {
                 sleepTryCount = -1
@@ -213,6 +226,10 @@ class StrangeJukeboxBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
             level.setBlockAndUpdate(pos, state)
         }
         return InteractionResult.SUCCESS
+    }
+
+    internal fun broadcastCardFail() {
+        sinceLastCardFail = 0
     }
 
     private fun updatePlayer(level: Level, on: Boolean, mus: StrangeJukeboxBlock.SelectedMus) {
