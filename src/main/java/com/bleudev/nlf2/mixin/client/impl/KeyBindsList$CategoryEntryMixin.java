@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.mixin.client.impl;
 
-import com.bleudev.nlf2.interfaces.mixin.client.IKeyBindsList$CategoryEntry;
+import com.bleudev.nlf2.i.mixin.client.IKeyBindsList$CategoryEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;

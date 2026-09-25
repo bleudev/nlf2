@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.interfaces.mixin.client;
+package com.bleudev.nlf2.i.mixin.client;
 
 import net.minecraft.client.KeyMapping;
 

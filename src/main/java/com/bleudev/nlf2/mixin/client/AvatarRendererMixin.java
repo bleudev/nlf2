@@ -1,7 +1,7 @@
 package com.bleudev.nlf2.mixin.client;
 
 import com.bleudev.nlf2.client.custom.renderer.entity.layers.AvatarOverlayLayer;
-import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
+import com.bleudev.nlf2.i.mixin.client.IAvatarRenderState;
 import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

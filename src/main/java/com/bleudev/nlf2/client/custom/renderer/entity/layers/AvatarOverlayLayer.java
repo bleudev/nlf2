@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.client.custom.renderer.entity.layers;
 
-import com.bleudev.nlf2.interfaces.mixin.client.IAvatarRenderState;
+import com.bleudev.nlf2.i.mixin.client.IAvatarRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;

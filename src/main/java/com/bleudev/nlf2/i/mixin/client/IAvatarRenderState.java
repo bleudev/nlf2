@@ -1,4 +1,4 @@
-package com.bleudev.nlf2.interfaces.mixin.client;
+package com.bleudev.nlf2.i.mixin.client;
 
 public interface IAvatarRenderState extends IHumanoidRenderState {
     String nlf2$getNickname();

@@ -1,6 +1,6 @@
 package com.bleudev.nlf2.mixin.client;
 
-import com.bleudev.nlf2.interfaces.mixin.client.IHumanoidRenderState;
+import com.bleudev.nlf2.i.mixin.client.IHumanoidRenderState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
