@@ -17,6 +17,7 @@ import com.bleudev.nlf2.custom.packet.payload.BeforeMeetWaterFluid
 import com.bleudev.nlf2.custom.packet.payload.DistanceUpdate
 import com.bleudev.nlf2.custom.packet.payload.JoinDisconnectVersion
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.CharFeaturesSync
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
@@ -352,6 +353,9 @@ class Nlf2 : ModInitializer {
             entity is Player && entity.hasEffect(Nlf2MobEffects.GLIDING)
         }
 
+        registerPacketReceiver(CharFeaturesSync) { payload, ctx ->
+            ctx.player().setIsForceVisible(payload.isForceVisible)
+        }
         registerPacketReceiver(JoinSendVersion) { payload, ctx ->
             val clientVersion = payload.version
             val player = ctx.player()

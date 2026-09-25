@@ -22,6 +22,7 @@ import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nlf2.custom.packet.payload.serverbound.CharFeaturesSync
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
@@ -261,6 +262,24 @@ class Nlf2Client : ClientModInitializer {
                 AudioHolySheepInstance.t = 41 // Prevent next time
                 sm.play(MusPart4UnknownAppearsInstance())
             }
+
+            // Char features syncing
+            val pl = mc.player
+            if (pl != null) {
+                val ch = ActorCharEntrypointClient.current(pl.gameProfile.name)
+                val isForceVisible = ch?.isForceVisible ?: false
+                var needsResync = false
+
+                if (prevCharSyncIsForceVisible == null || isForceVisible != prevCharSyncIsForceVisible) {
+                    prevCharSyncIsForceVisible = isForceVisible
+                    needsResync = true
+                }
+
+                if (needsResync) {
+                    ClientPlayNetworking.send(CharFeaturesSync(isForceVisible))
+                }
+            }
+
         }
         ClientTickEvents.END_LEVEL_TICK.register {
             if (rainbowTicks >= 0) rainbowTicks++

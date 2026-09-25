@@ -8,6 +8,8 @@ import com.bleudev.nlf2.custom.packet.payload.unit.BroadcastNewCardCheck;
 import com.bleudev.nlf2.custom.world.level.saveddata.Nlf2Data;
 import com.bleudev.nlf2.custom.world.level.saveddata.Nlf2DataKt;
 import com.bleudev.nlf2.i.mixin.IPlayer;
+import com.bleudev.nlf2.i.mixin.IServerPlayer;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
@@ -30,7 +32,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin extends Player implements IPlayer {
+public abstract class ServerPlayerMixin extends Player implements IPlayer, IServerPlayer {
+    @Unique
+    private boolean isForceVisible = false;
+
     @Shadow
     public abstract @NonNull ServerLevel level();
 
@@ -74,5 +79,26 @@ public abstract class ServerPlayerMixin extends Player implements IPlayer {
     @Override
     public void broadcastNewCardCheck() {
         sendPacket(BroadcastNewCardCheck.INSTANCE);
+    }
+
+    @Override
+    public void setIsForceVisible(boolean isForceVisible) {
+        this.isForceVisible = isForceVisible;
+    }
+
+    @Override
+    public boolean isForceVisible() {
+        return this.isForceVisible;
+    }
+
+    @ModifyExpressionValue(
+        method = "broadcastToPlayer",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"
+        )
+    )
+    private boolean makeSpecForceVisible(boolean original) {
+        return original && !isForceVisible();
     }
 }

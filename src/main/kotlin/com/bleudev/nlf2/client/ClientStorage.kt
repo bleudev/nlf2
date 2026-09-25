@@ -173,6 +173,8 @@ val scarySoundEffectAmount: Float get() = TICKER_SCARY_SOUND_EFFECT
     .onlyIf(scarySoundEffectEnabled)
 // New card check dialogue
 var newCardCheckDialogueTicks = -1
+// Char features syncing
+var prevCharSyncIsForceVisible: Boolean? = null
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1

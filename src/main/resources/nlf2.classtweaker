@@ -4,3 +4,4 @@ transitive-accessible class net/minecraft/client/gui/components/AbstractSelectio
 accessible class net/minecraft/client/gui/components/SubtitleOverlay$Subtitle
 
 transitive-inject-interface net/minecraft/world/entity/player/Player com/bleudev/nlf2/i/mixin/IPlayer
+transitive-inject-interface net/minecraft/server/level/ServerPlayer com/bleudev/nlf2/i/mixin/IServerPlayer

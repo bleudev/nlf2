@@ -1,6 +1,7 @@
 package com.bleudev.nlf2.custom
 
 import com.bleudev.nlf2.custom.packet.payload.*
+import com.bleudev.nlf2.custom.packet.payload.serverbound.CharFeaturesSync
 import com.bleudev.nlf2.custom.packet.payload.serverbound.JoinSendVersion
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.KillBorderBlackFog
 import com.bleudev.nlf2.custom.packet.payload.serverbound.unit.RipSanyaTakeStart
@@ -40,6 +41,7 @@ object Nlf2Packets {
     val UNIT_STORY_START = getIdentifier("packet/unit/story_start")
     val UNIT_STRANGE_JUKEBOX_MUSIC_STOP = getIdentifier("packet/unit/strange_jukebox_music_stop")
 
+    val SB_CHAR_FEATURES_SYNC = getIdentifier("packet/sb/char_features_sync")
     val SB_JOIN_SEND_VERSION = getIdentifier("packet/sb/join_send_version")
 
     val SB_UNIT_KILL_BORDER_BLACK_FOG = getIdentifier("packet/sb/unit/kill_border_black_fog")
@@ -82,6 +84,7 @@ object Nlf2Packets {
         // Server bound
         val c2s = PayloadTypeRegistry.serverboundPlay()
         // Normal
+        c2s.register(CharFeaturesSync)
         c2s.register(JoinSendVersion)
         // Unit
         c2s.register(KillBorderBlackFog)
