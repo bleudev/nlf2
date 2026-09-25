@@ -1,4 +1,6 @@
-accessWidener v2 official
+classTweaker v2 official
 
 transitive-accessible class net/minecraft/client/gui/components/AbstractSelectionList$Entry
 accessible class net/minecraft/client/gui/components/SubtitleOverlay$Subtitle
+
+transitive-inject-interface net/minecraft/world/entity/player/Player com/bleudev/nlf2/i/mixin/IPlayer

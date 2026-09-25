@@ -284,6 +284,34 @@ class Nlf2Client : ClientModInitializer {
             if (manualUpdateTicks > 0) manualUpdateTicks--
             if (event101screenEffectClearTicks > 0) event101screenEffectClearTicks--
 
+            if (newCardCheckDialogueTicks >= 0) {
+                val player = Minecraft.getInstance().player
+                if (player != null) {
+                    newCardCheckDialogueTicks++
+
+                    val isBleu = player.gameProfile.name == "bleugame"
+
+                    var message: Component? = null
+
+                    when (newCardCheckDialogueTicks) {
+                        40 -> message = Component.translatable("nlf2.message.item.card.check.new.1")
+                        100 -> message = Component.translatable("nlf2.message.item.card.check.new.2")
+                        160 -> message =
+                            if (isBleu) Component.translatable("nlf2.message.item.card.check.new.3.bleu")
+                            else Component.translatable("nlf2.message.item.card.check.new.3")
+                        220 -> {
+                            message =
+                                if (isBleu) Component.translatable("nlf2.message.item.card.check.new.4.bleu")
+                                else Component.translatable("nlf2.message.item.card.check.new.4")
+                            newCardCheckDialogueTicks = -1
+                        }
+                    }
+                    if (message != null) {
+                        player.sendOverlayMessage(message)
+                    }
+                }
+            }
+
             join_blackness_delay_ticks = (join_blackness_delay_ticks - 1).coerceAtLeast(0)
             if (join_blackness_delay_ticks == 0)
                 join_blackness = (join_blackness - .05f).coerceAtLeast(0f)

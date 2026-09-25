@@ -10,6 +10,7 @@
     "EnderEyeItemMixin",
     "MonstersMixin",
     "PlayerListMixin",
+    "PlayerMixin",
     "PortalShapeMixin",
     "ServerPlayerMixin",
     "accessor.LivingEntityAccessor",

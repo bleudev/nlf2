@@ -4,6 +4,7 @@ import com.bleudev.nlf2.client.custom.gui.screens.ManualScreen;
 import com.bleudev.nlf2.client.custom.gui.screens.PuzzleScreen;
 import com.bleudev.nlf2.custom.Nlf2Items;
 import com.bleudev.nlf2.custom.packet.payload.PacketPuzzle;
+import com.bleudev.nlf2.i.mixin.IPlayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -17,12 +18,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nlf2.client.ClientStorageKt.dataSyncedManualId;
-import static com.bleudev.nlf2.client.ClientStorageKt.deathScreenBlackFogEffect;
+import static com.bleudev.nlf2.client.ClientStorageKt.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin(LocalPlayer.class)
-public class LocalPlayerMixin {
+public class LocalPlayerMixin implements IPlayer {
     @Shadow
     @Final
     protected Minecraft minecraft;
@@ -40,5 +40,10 @@ public class LocalPlayerMixin {
         else if (itemStack.is(Nlf2Items.MANUAL)) {
             this.minecraft.gui.setScreen(new ManualScreen(dataSyncedManualId, true));
         }
+    }
+
+    @Override
+    public void broadcastNewCardCheck() {
+        setNewCardCheckDialogueTicks(0);
     }
 }

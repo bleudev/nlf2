@@ -171,6 +171,8 @@ var scarySoundEffectDuration: Int = 0
 val scarySoundEffectAmount: Float get() = TICKER_SCARY_SOUND_EFFECT
     .delta(0, scarySoundEffectDuration, SCARY_SOUND_FADE_IN, scarySoundEffectDuration - SCARY_SOUND_FADE_IN)
     .onlyIf(scarySoundEffectEnabled)
+// New card check dialogue
+var newCardCheckDialogueTicks = -1
 // SHADERS
 // Rainbow effect
 var rainbowTicks: Int = -1
