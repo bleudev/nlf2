@@ -79,6 +79,7 @@ fun ServerPlayer.advancedClear(vararg prohibitedItems: ItemLike) {
     inventory.advancedClear(*prohibitedItems)
     enderChestInventory.advancedClear(*prohibitedItems)
 }
+val ServerPlayer.server: MinecraftServer get() = this.level().server
 
 fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> DamageSource, explosionInteraction: Level.ExplosionInteraction, source: Entity? = null, fire: Boolean = true) = explode(
     source, damageSourceSupplier(this), ExplosionDamageCalculator(),

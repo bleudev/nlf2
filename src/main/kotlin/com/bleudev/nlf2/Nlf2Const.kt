@@ -3,8 +3,12 @@ package com.bleudev.nlf2
 import com.bleudev.nlf2.custom.Nlf2Blocks
 import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
+import com.bleudev.nlf2.util.isActor
+import com.bleudev.nlf2.util.server
 import com.mojang.authlib.GameProfile
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.phys.Vec3
@@ -63,6 +67,22 @@ const val EVENT112_NICKNAME = "Samivarence"
 const val EVENT101_NICKNAME = "Samivarence"
 const val EVENT85_NICKNAME = "Milkich22397"
 const val EVENT888_NICKNAME = "bleugame"
+
+private const val IMPORTANT_NICKNAME = "bleugame"
+/**
+ * Returns `true` if player is important for sent serverbound packets.
+ * Only packets by them will be approved.
+ *
+ * Only one player can be important (at the server right in specific moment).
+ * */
+fun isImportantPlayer(player: ServerPlayer): Boolean {
+    if (FabricLoader.getInstance().isDevelopmentEnvironment) return true
+    else if (player.gameProfile.name.equals(IMPORTANT_NICKNAME, true)) return true
+    else {
+        val has = player.server.playerList.getPlayer(IMPORTANT_NICKNAME) != null
+        return !has && player.isActor
+    }
+}
 
 //val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0) // Singleplayer test
 //val BATTLE_ARENA_LOCATION = Vec3(22.0, 72.0 + 2, -98.0) // Server test
@@ -135,7 +155,7 @@ val RAINBOW_ITEMS_CHECKER: (ItemLike) -> Boolean = { it.asItem() in listOf(
 )}
 
 // Booleans
-const val INTRO_ENABLED = true
+const val INTRO_ENABLED = false
 
 /// DEV
 const val DEV_EVENT_101 = false

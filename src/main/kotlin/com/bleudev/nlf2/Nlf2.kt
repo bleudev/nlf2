@@ -370,13 +370,13 @@ class Nlf2 : ModInitializer {
             if (ctx.server().nlf2data.loreData.borderState != 2) return@registerPacketReceiver
             ctx.player().hurtUnknown(9999f)
         }
-        registerPacketReceiver(RipSanyaTakeStart) {
-            if (sbSendRipSanyaTakeStartTicks > 0) return@registerPacketReceiver
+        registerPacketReceiver(RipSanyaTakeStart) { _, ctx ->
+            if (sbSendRipSanyaTakeStartTicks > 0 || !isImportantPlayer(ctx.player())) return@registerPacketReceiver
             sbSendRipSanyaTakeStartTicks = 200
             ripSanyaTakingTicks = RIP_SANYA_EVENT_SANYA_TAKE
         }
         registerPacketReceiver(RipVertEnd) { _, ctx ->
-            if (sbSendRipVertTicks > 0) return@registerPacketReceiver
+            if (sbSendRipVertTicks > 0 || !isImportantPlayer(ctx.player())) return@registerPacketReceiver
             sbSendRipVertTicks = 200
             ctx.server().nlf2data::loreData.transform {
                 it.noVert = true
@@ -386,7 +386,7 @@ class Nlf2 : ModInitializer {
             ripSanyaStartTicks = 200
         }
         registerPacketReceiver(StoryEnd) { _, ctx ->
-            if (sbSendRipSanyaTicks > 0) return@registerPacketReceiver
+            if (sbSendRipSanyaTicks > 0 || !isImportantPlayer(ctx.player())) return@registerPacketReceiver
             sbSendRipSanyaTicks = 200
             isStorySpectator = false
             for (player in ctx.server().playerList.players) {
