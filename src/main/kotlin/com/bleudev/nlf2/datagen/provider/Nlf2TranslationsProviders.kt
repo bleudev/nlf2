@@ -15,12 +15,12 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.server.disconnect.version.please.update", "Please update the mod")
         builder.add("nlf2.message.item.card.check", "(You have deja vu.)")
         builder.add("nlf2.message.item.card.check.new.0", "(You ...)")
-        builder.add("nlf2.message.item.card.check.new.1", "(... just got a label.)") // TODO: TR check
+        builder.add("nlf2.message.item.card.check.new.1", "(... got an inscription appeared")
         builder.add("nlf2.message.item.card.check.new.2", "(... \"end\".)")
-        builder.add("nlf2.message.item.card.check.new.3", "(After the moment it disappeared.)") // TODO: TR check
-        builder.add("nlf2.message.item.card.check.new.4", "(What was it?)") // TODO: TR check
-        builder.add("nlf2.message.item.card.check.new.3.bleu", "(A label?)") // TODO: TR check
-        builder.add("nlf2.message.item.card.check.new.4.bleu", "(There wasn't any label.)") // TODO: TR check
+        builder.add("nlf2.message.item.card.check.new.3", "(In an instant, it was gone.)")
+        builder.add("nlf2.message.item.card.check.new.4", "(What was that?)")
+        builder.add("nlf2.message.item.card.check.new.3.bleu", "(What inscription?)")
+        builder.add("nlf2.message.item.card.check.new.4.bleu", "(There is no inscription here.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.0.0", "(In sleep mode.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.0.1", "(...It sleeps.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.1.0", "(You want to turn it on so badly...)")
@@ -84,7 +84,7 @@ class RuRuTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add("nlf2.message.item.card.check.new.3", "(Вмиг ее не стало)")
         builder.add("nlf2.message.item.card.check.new.4", "(Что это было?)")
         builder.add("nlf2.message.item.card.check.new.3.bleu", "(Какая надпись?)")
-        builder.add("nlf2.message.item.card.check.new.4.bleu", "(Здесь не было никакой надписи.)")
+        builder.add("nlf2.message.item.card.check.new.4.bleu", "(Здесь нет никакой надписи.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.0.0", "(В спящем режиме.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.0.1", "(...Он спит.)")
         builder.add("nlf2.message.block.strange_jukebox.sleep.1.0", "(Вы так хотите включить его...)")
