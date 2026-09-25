@@ -18,6 +18,7 @@ import com.bleudev.nlf2.client.util.*
 import com.bleudev.nlf2.client.util.sound.BorderAmbientSoundInstance
 import com.bleudev.nlf2.client.util.sound.Event101NoiseSoundInstance
 import com.bleudev.nlf2.client.util.sound.TickableLoopedAmbientSoundInstance
+import com.bleudev.nlf2.custom.Nlf2Items
 import com.bleudev.nlf2.custom.Nlf2Sounds
 import com.bleudev.nlf2.custom.packet.payload.*
 import com.bleudev.nlf2.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -287,27 +288,31 @@ class Nlf2Client : ClientModInitializer {
             if (newCardCheckDialogueTicks >= 0) {
                 val player = Minecraft.getInstance().player
                 if (player != null) {
-                    newCardCheckDialogueTicks++
+                    if (player.mainHandItem.`is`(Nlf2Items.CARD) || player.offhandItem.`is`(Nlf2Items.CARD)) {
+                        newCardCheckDialogueTicks++
 
-                    val isBleu = player.gameProfile.name == "bleugame"
+                        val isBleu = player.gameProfile.name == "bleugame"
 
-                    var message: Component? = null
+                        var message: Component? = null
 
-                    when (newCardCheckDialogueTicks) {
-                        40 -> message = Component.translatable("nlf2.message.item.card.check.new.1")
-                        100 -> message = Component.translatable("nlf2.message.item.card.check.new.2")
-                        160 -> message =
-                            if (isBleu) Component.translatable("nlf2.message.item.card.check.new.3.bleu")
-                            else Component.translatable("nlf2.message.item.card.check.new.3")
-                        220 -> {
-                            message =
-                                if (isBleu) Component.translatable("nlf2.message.item.card.check.new.4.bleu")
-                                else Component.translatable("nlf2.message.item.card.check.new.4")
-                            newCardCheckDialogueTicks = -1
+                        when (newCardCheckDialogueTicks) {
+                            40 -> message = Component.translatable("nlf2.message.item.card.check.new.1")
+                            100 -> message = Component.translatable("nlf2.message.item.card.check.new.2")
+                            160 -> message =
+                                if (isBleu) Component.translatable("nlf2.message.item.card.check.new.3.bleu")
+                                else Component.translatable("nlf2.message.item.card.check.new.3")
+                            220 -> {
+                                message =
+                                    if (isBleu) Component.translatable("nlf2.message.item.card.check.new.4.bleu")
+                                    else Component.translatable("nlf2.message.item.card.check.new.4")
+                                newCardCheckDialogueTicks = -1
+                            }
                         }
-                    }
-                    if (message != null) {
-                        player.sendOverlayMessage(message)
+                        if (message != null) {
+                            player.sendOverlayMessage(message)
+                        }
+                    } else {
+                        newCardCheckDialogueTicks = -1
                     }
                 }
             }
