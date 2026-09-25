@@ -43,8 +43,8 @@ object ActorCharEntrypointClient {
 
         if (!dataSyncedEvent101 && isEvent101Char(entity)) return PrepareData(client, entity, ActorCharEntrypoint.chars["event101"])
         if (ripSanyaTaking && entity.equals(
-            if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true)
-        ) return PrepareData(client, entity, ActorCharEntrypoint.chars["rip_sanya"])
+            if (DEV_STORY_ACTOR) dataSyncedActor else EVENT112_NICKNAME, true
+        )) return PrepareData(client, entity, ActorCharEntrypoint.chars["rip_sanya"])
         // Other event specific chars...
         if (entity == actor) return PrepareData(client, entity, ActorCharEntrypoint.chars[char])
         return PrepareData(client, entity, null)
