@@ -37,8 +37,6 @@ object StoryAnimation {
     private var playedMusStory = false
     private var playedNoise = false
     private var playedMusManStory = false
-    private var preSavedHideIcons = false
-    private var preSavedDisabled = false
     internal var endTick = 99999
     private var ruler3Tick = 99999
 
@@ -53,12 +51,8 @@ object StoryAnimation {
         val t = TICKER_STORY.tick().toInt()
         graphics.black(otherVolume.reverseDelta())
         if (t == endTick - 60) {
-            if (VoicechatClient.CLIENT_CONFIG.hideIcons.get() != preSavedHideIcons) {
-                VoicechatClient.CLIENT_CONFIG.hideIcons.set(preSavedHideIcons).save()
-            }
-            if (ClientManager.getPlayerStateManager().isDisabled != preSavedDisabled) {
-                ClientManager.getPlayerStateManager().isDisabled = preSavedDisabled
-            }
+            VoicechatClient.CLIENT_CONFIG.hideIcons.set(false).save()
+            ClientManager.getPlayerStateManager().isDisabled = false
             ClientPlayNetworking.send(StoryEnd.INSTANCE)
         }
         if (t >= endTick + 5) {
@@ -82,10 +76,6 @@ object StoryAnimation {
             canUseMouse = true
             canUseKeyboard = true
             return
-        }
-        if (t == 10) {
-            preSavedHideIcons = VoicechatClient.CLIENT_CONFIG.hideIcons.get()
-            preSavedDisabled = ClientManager.getPlayerStateManager().isDisabled
         }
         if (t >= 10) {
             canUseMouse = false
