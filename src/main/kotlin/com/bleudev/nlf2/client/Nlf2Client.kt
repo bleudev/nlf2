@@ -481,8 +481,9 @@ class Nlf2Client : ClientModInitializer {
             val oldMeetState = dataSyncedMeetState
             dataSyncedMeetState = payload.meetState
             if (oldMeetState != dataSyncedMeetState) {
-                if (oldMeetState != -1 && dataSyncedMeetState in listOf(1, 3))
+                if (oldMeetState != -1) {
                     beforeMeetTransTicks = BEFORE_MEET_TRANS_DURATION
+                }
                 AdjustVolumeList.update()
             }
 

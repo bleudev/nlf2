@@ -179,7 +179,7 @@ var beforeMeetTick: Int = 0
 private val beforeMeetPreAmount: Float get() = (beforeMeetTick % BEFORE_MEET_EFFECT_BEAT_DURATION).toFloat() / BEFORE_MEET_EFFECT_BEAT_DURATION
 val beforeMeetAmount: Float get() = if (beforeMeetPreAmount <= 0.5) (beforeMeetPreAmount * 2) else (-2 * beforeMeetPreAmount + 2)
 var beforeMeetTransTicks: Int = 0
-private val beforeMeetStrength get() = if (dataSyncedMeetState in listOf(0, 2)) 1f else beforeMeetTransTicks.toFloat() / BEFORE_MEET_TRANS_DURATION
+private val beforeMeetStrength get() = (beforeMeetTransTicks.toFloat() / BEFORE_MEET_TRANS_DURATION).reverseDeltaIf(dataSyncedMeetState in listOf(0, 2))
 // Lab overlay effect
 var labOverlayTick: Int = 0
 private val labOverlayPreAmount: Float get() = (labOverlayTick % LAB_OVERLAY_EFFECT_BEAT_DURATION).toFloat() / LAB_OVERLAY_EFFECT_BEAT_DURATION
