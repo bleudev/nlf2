@@ -156,6 +156,7 @@ val RAINBOW_ITEMS_CHECKER: (ItemLike) -> Boolean = { it.asItem() in listOf(
 
 // Booleans
 const val INTRO_ENABLED = false
+const val CARD_NEW_DIALOGUE = true
 
 /// DEV
 const val DEV_EVENT_101 = false
