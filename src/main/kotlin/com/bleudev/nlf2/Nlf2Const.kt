@@ -86,7 +86,7 @@ fun isImportantPlayer(player: ServerPlayer): Boolean {
 
 //val BATTLE_ARENA_LOCATION = Vec3(-4045056.0, 125.0 + 2, -16169914.0) // Singleplayer test
 //val BATTLE_ARENA_LOCATION = Vec3(22.0, 72.0 + 2, -98.0) // Server test
-val BATTLE_ARENA_LOCATION = Vec3(411.0, 63.0 + 2, 572.0) // Actual server test
+val BATTLE_ARENA_LOCATION = Vec3(535.0, 211.0, 903.0) // Actual server test
 
 // Unknown
 @JvmField
