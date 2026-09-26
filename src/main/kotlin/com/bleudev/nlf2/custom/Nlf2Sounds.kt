@@ -29,6 +29,7 @@ object Nlf2Sounds {
     val SCARY_VOICE_GIVE_UP = registerSound("scary_voice_give_up")
     val SCARY_VOICE_MY_WORLD = registerSound("scary_voice_my_world")
     val SCARY_VOICE_WHY_YOU = registerSound("scary_voice_why_you")
+    val MUS_MANUAL = registerSound("mus_manual")
 
     fun allJukeboxMusic() = listOf(
         MUS_STRANGE_NOISE,
@@ -65,6 +66,7 @@ object Nlf2Sounds {
         MUS_PART4_UNKNOWN_APPEARS,
         MUS_JUKEBOX_SLEEP,
         MUS_PART5_BATTLE,
+        MUS_MANUAL,
     ).with(*scaryVoiceSounds().toTypedArray())
     fun allWithoutSubtitle(): List<SoundEvent> = listOf(
         MUS_JUKEBOX_PUZZLE,

@@ -107,6 +107,12 @@ class Nlf2Client : ClientModInitializer {
             this.looping = false
         }
     }
+    class MusManualInstance : TickableLoopedAmbientSoundInstance(Nlf2Sounds.MUS_MANUAL, SoundSource.UI) {
+        init {
+            this.volume = .25f
+        }
+    }
+    private var playedMusManual: Boolean = false
 
     companion object {
         private var computerMessages: HashMap<BlockPos, List<Component>> = HashMap()
@@ -261,6 +267,17 @@ class Nlf2Client : ClientModInitializer {
             if (AudioHolySheepInstance.t == 40) {
                 AudioHolySheepInstance.t = 41 // Prevent next time
                 sm.play(MusPart4UnknownAppearsInstance())
+            }
+
+            // Manual music
+            if (mc.gui.screen() is ManualScreen) {
+                if (!playedMusManual) {
+                    playedMusManual = true
+                    sm.play(MusManualInstance())
+                }
+            } else {
+                sm.stop(Nlf2Sounds.MUS_MANUAL.location, SoundSource.UI)
+                playedMusManual = false
             }
 
             // Char features syncing

@@ -70,6 +70,7 @@ class EnUsTranslationProvider(packOutput: FabricPackOutput, reg: CompletableFutu
         builder.add(Nlf2Sounds.SCARY_VOICE_GIVE_UP, "GIVE UP")
         builder.add(Nlf2Sounds.SCARY_VOICE_MY_WORLD, "IT IS MY WORLD")
         builder.add(Nlf2Sounds.SCARY_VOICE_WHY_YOU, "WHY YOU?")
+        builder.add(Nlf2Sounds.MUS_MANUAL, "05 Manualing")
     }
 }
 
