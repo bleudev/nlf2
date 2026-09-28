@@ -34,7 +34,6 @@ import com.bleudev.nlf2.sys.actor.client.ActorCharEntrypointClient
 import com.bleudev.nlf2.sys.util.TextBoxSequence
 import com.bleudev.nlf2.util.normalize
 import com.bleudev.nlf2.util.onlyIf
-import com.github.sarxos.webcam.Webcam
 import com.google.common.primitives.Floats.max
 import com.google.common.primitives.Floats.min
 import com.terraformersmc.modmenu.config.ModMenuConfig
@@ -207,9 +206,9 @@ class Nlf2Client : ClientModInitializer {
         PostEffectRegistry.registerNlf2("border_end", ::shaderBorderEnd)
 
         ClientTickEvents.END_CLIENT_TICK.register { mc ->
-            if (Webcam.getDefault().isOpen) {
-                if (!webcamEnabled) Webcam.getDefault().close()
-            } else if (webcamEnabled) Webcam.getDefault().open()
+//            if (Webcam.getDefault().isOpen) {
+//                if (!webcamEnabled) Webcam.getDefault().close()
+//            } else if (webcamEnabled) Webcam.getDefault().open()
             tryHideMod()
             pause_screen_ticks++
             noise_tick++

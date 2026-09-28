@@ -161,8 +161,8 @@ const val CARD_NEW_DIALOGUE = true
 /// DEV
 const val DEV_EVENT_101 = false
 const val DEV_EVENT_85 = false
-const val DEV_STORY_ACTOR = true
-const val DEV_BAN_EVENT_112 = false
+const val DEV_STORY_ACTOR = false
+const val DEV_BAN_EVENT_112 = true
 const val DEV_EVENT_888 = false
 
 // Custom dev arguments
